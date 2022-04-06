@@ -1,3 +1,21 @@
 @import "~bootstrap/scss/functions";
 @import "./_variables";
 @import "~bootstrap/scss/bootstrap";
+
+.indexContainer{
+  padding-left:calc((100% - 1024px) /2) !important;
+  padding-right:calc((100% - 1024px) /2) !important;
+  box-sizing:border-box;
+}
+@media(max-width:1200px){
+  .indexContainer{
+    padding-left:2% !important;
+    padding-right:2% !important;
+  }
+}
+@media(max-width:768px){
+  .indexContainer{
+    padding-left:2% !important;
+    padding-right:2% !important;
+  }
+}
