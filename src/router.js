@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import customer from './views/customer.vue'
+import Customer from './views/Customer.vue'
 
 Vue.use(Router)
 
@@ -8,8 +8,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'customer',
-      component: customer
+      name: 'Customer',
+      component: Customer
     },
     {
       path: '/about',
