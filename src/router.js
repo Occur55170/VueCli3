@@ -7,6 +7,49 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
+      name: '登入頁',
+      path: '/Login',
+      component: () => import('./views/Back-End/Login.vue')
+    },
+    {
+      // name: '產品列表',
+      path: '/admin',
+      component: () => import('./views/Back-End/Dashedboard.vue'),
+      meta: { requiresAuth: true },
+      children: [
+        {
+          mame: '產品頁',
+          path: 'Products',
+          component: () => import('./views/Back-End/Products.vue'),
+          meta: { requiresAuth: true }
+        },
+        {
+          mame: '優惠卷頁面',
+          path: 'Coupon',
+          component: () => import('./views/Back-End/Coupon.vue'),
+          meta: { requiresAuth: true }
+        },
+        {
+          name: '訂單列表',
+          path: 'OrderList',
+          component: () => import('./views/Back-End/OrderList.vue'),
+          meta: { requiresAuth: true }
+        },
+        {
+          mame: '模擬_購物頁面頁',
+          path: '/admin_Order',
+          component: () => import('./views/Back-End/AdminOrder.vue'),
+          meta: { requiresAuth: true }
+        },
+        {
+          name: '模擬_結帳頁面',
+          path: '/adminCheckout/:id',
+          component: () => import('./views/Back-End/AdminCheckout.vue'),
+          meta: { requiresAuth: true }
+        }
+      ]
+    },
+    {
       path: '/',
       component: Customer,
       children: [
