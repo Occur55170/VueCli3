@@ -15,10 +15,10 @@
             <router-link to="/productList/all" class="">產品列表</router-link>
           </li>
           <li>
-            <router-link to="/search" class="">查詢訂單</router-link>
+            <router-link to="/Search" class="">查詢訂單</router-link>
           </li>
           <li>
-            <router-link to="/storeBase" class="">門市據點</router-link>
+            <router-link to="/Storebase" class="">門市據點</router-link>
           </li>
         </ul>
         <button type="button" class="cartA" id="btn" @click="openCartModal()">

@@ -19,11 +19,11 @@ export default new Router({
           name: '門市據點',
           path: '/storeBase',
           component: () => import('./views/Front-End/Storebase.vue')
-        // },
-        // {
-        //   name: '查詢訂單',
-        //   path: '/search',
-        //   component:search
+        },
+        {
+          name: '查詢訂單',
+          path: '/Search',
+          component: () => import('./views/Front-End/Search.vue')
         // },
         // {
         //   name: '產品列表',

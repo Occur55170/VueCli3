@@ -12,6 +12,12 @@ import router from './router'
 import './bus'
 import store from './store'
 
+/* vue3不支援，之後刪除 */
+import correncyFilter from './filters/corrency'
+import dateDue from './filters/dateDue'
+Vue.filter('corrency', correncyFilter)
+Vue.filter('dateDue', dateDue)
+
 Vue.use(VueAxios, axios)
 Vue.component('Loading', Loading)
 
