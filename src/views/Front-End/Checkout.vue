@@ -247,7 +247,6 @@
 
 <script>
 import $ from 'jquery'
-
 export default {
   data () {
     return {
@@ -311,7 +310,7 @@ export default {
       vm.$http.post(api, { 'data': { 'user': vm.form.user, 'message': vm.form.message } }).then((response) => {
         if (response.data.success) {
           console.log(response.data.orderId)
-          vm.$router.push(`/pay/${response.data.orderId}`)
+          vm.$router.push(`/Pay/${response.data.orderId}`)
         }
       })
     },

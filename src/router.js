@@ -75,7 +75,7 @@ export default new Router({
         },
         {
           name: '產品資訊頁',
-          path: '/product/:id',
+          path: '/Product/:id',
           component: () => import('./views/Front-End/Product.vue')
         },
         {
@@ -85,7 +85,7 @@ export default new Router({
         },
         {
           name: '顧客付款頁面',
-          path: '/pay/:id',
+          path: '/Pay/:id',
           component: () => import('./views/Front-End/Pay.vue')
         }
       ]

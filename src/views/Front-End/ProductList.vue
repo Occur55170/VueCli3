@@ -76,7 +76,7 @@ export default {
     },
     moreProduct (pid) {
       const vm = this
-      vm.$router.push(`/product/${pid}`)
+      vm.$router.push(`/Product/${pid}`)
     },
     changGroup (sortName) {
       if (this.sort !== sortName) {

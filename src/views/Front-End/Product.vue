@@ -33,9 +33,9 @@
               <span v-if="product.is_enable==0">缺貨中</span>
             </button>
             <div class="text-muted text-right">
-              <i class="h3 fab fa-cc-visa"></i>
-              <i class="h3 fab fa-cc-jcb"></i>
-              <i class="h3 fab fa-cc-paypal"></i>
+              <i class="h3 mx-1 fab fa-cc-visa"></i>
+              <i class="h3 mx-1 fab fa-cc-jcb"></i>
+              <i class="h3 mx-1 fab fa-cc-paypal"></i>
             </div>
           </div>
         </div>
