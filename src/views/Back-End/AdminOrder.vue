@@ -279,8 +279,7 @@ export default {
       vm.$http.post(api, { 'data': vm.form }).then((response) => {
         console.log(response.data)
         if (response.data.success) {
-          console.log(response.data.orderId)
-          vm.$router.push(`/adminCheckout/${response.data.orderId}`)
+          vm.$router.push(`/AdminCheckout/${response.data.orderId}`)
         }
       })
     }

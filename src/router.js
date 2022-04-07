@@ -7,6 +7,10 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
+      path: '*',
+      redirect: '/'
+    },
+    {
       name: '登入頁',
       path: '/Login',
       component: () => import('./views/Back-End/Login.vue')
@@ -37,13 +41,13 @@ export default new Router({
         },
         {
           mame: '模擬_購物頁面頁',
-          path: '/admin_Order',
+          path: '/AdminOrder',
           component: () => import('./views/Back-End/AdminOrder.vue'),
           meta: { requiresAuth: true }
         },
         {
           name: '模擬_結帳頁面',
-          path: '/adminCheckout/:id',
+          path: '/AdminCheckout/:id',
           component: () => import('./views/Back-End/AdminCheckout.vue'),
           meta: { requiresAuth: true }
         }

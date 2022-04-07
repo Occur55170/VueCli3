@@ -26,7 +26,7 @@ export default {
       const api = `${process.env.APIPATH}/api/user/check`
       vm.$http.post(api).then((response) => {
         if (!(response.data.success)) {
-          this.$router.push(`/login`)
+          this.$router.push('/login')
         }
       })
     }
