@@ -1,4 +1,4 @@
-# vuex_puffs
+# VueCli3
 
 ## Project setup
 ```
