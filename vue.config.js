@@ -1,3 +1,3 @@
 module.exports = {
-  publicPath: '/test/'
+  publicPath: '/Vuex_puffs/'
 }
