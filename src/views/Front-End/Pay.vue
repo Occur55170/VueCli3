@@ -83,7 +83,7 @@ export default {
     getOrder () {
       const vm = this
       vm.$emit('LoadingModel', true)
-      const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/pay/${vm.orderId}`
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/pay/${vm.orderId}`
       vm.$http.post(api).then(response => {
         console.log(response.data)
         if (response.data.success) {
@@ -94,7 +94,7 @@ export default {
     },
     searchOrder () {
       const vm = this
-      const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/order/${vm.orderId}`
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/order/${vm.orderId}`
       vm.$http.get(api).then(response => {
         console.log(response.data)
         if (response.data.success) {

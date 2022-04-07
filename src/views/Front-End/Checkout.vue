@@ -279,7 +279,7 @@ export default {
     getCart () {
       const vm = this
       vm.$emit('LoadingModel', true)
-      const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart`
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
       vm.$http.get(api).then((response) => {
         console.log(response.data)
         if (response.data.success) {
@@ -295,7 +295,7 @@ export default {
     removeCart (pid) {
       const vm = this
       this.$emit('LoadingModel', true)
-      const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart/${pid}`
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${pid}`
       vm.$http.delete(api).then((response) => {
         if (response.data.success) {
           vm.getCart()
@@ -307,7 +307,7 @@ export default {
     },
     createOrder () {
       const vm = this
-      const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/order`
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/order`
       vm.$http.post(api, { 'data': { 'user': vm.form.user, 'message': vm.form.message } }).then((response) => {
         if (response.data.success) {
           console.log(response.data.orderId)
@@ -317,7 +317,7 @@ export default {
     },
     addCoupon () {
       const vm = this
-      const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/coupon`
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/coupon`
       vm.$http.post(api, { 'data': { 'code': vm.couponCode } }).then(response => {
         if (response.data.success) {
           vm.$bus.$emit('message:push', '已成功加入優惠卷')
@@ -332,7 +332,7 @@ export default {
     restartCoupon () {
       const vm = this
       vm.$emit('LoadingModel', true)
-      const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/coupon`
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/coupon`
       vm.$http.post(api, { 'data': { 'code': 'cancel' } }).then(response => {
         if (response.data.success) {
           vm.cart.final_total = ''

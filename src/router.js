@@ -67,26 +67,26 @@ export default new Router({
           name: '查詢訂單',
           path: '/Search',
           component: () => import('./views/Front-End/Search.vue')
-        // },
-        // {
-        //   name: '產品列表',
-        //   path: '/ProductList/:sortId',
-        //   component:ProductList
-        // },
-        // {
-        //   name: '產品資訊頁',
-        //   path: '/product/:id',
-        //   component:Product
-        // },
-        // {
-        //   name: '顧客結帳頁面',
-        //   path: '/Checkout',
-        //   component:Checkout
-        // },
-        // {
-        //   name: '顧客付款頁面',
-        //   path: '/pay/:id',
-        //   component:pay,
+        },
+        {
+          name: '產品列表',
+          path: '/ProductList/:sortId',
+          component: () => import('./views/Front-End/ProductList.vue')
+        },
+        {
+          name: '產品資訊頁',
+          path: '/product/:id',
+          component: () => import('./views/Front-End/Product.vue')
+        },
+        {
+          name: '顧客結帳頁面',
+          path: '/Checkout',
+          component: () => import('./views/Front-End/Checkout.vue')
+        },
+        {
+          name: '顧客付款頁面',
+          path: '/pay/:id',
+          component: () => import('./views/Front-End/Pay.vue')
         }
       ]
     }

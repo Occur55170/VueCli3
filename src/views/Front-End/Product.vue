@@ -65,7 +65,7 @@ export default {
     getProduct () {
       const vm = this
       vm.$emit('LoadingModel', true)
-      const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/product/${vm.pid}`
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/product/${vm.pid}`
       vm.$http.get(api).then((response) => {
         vm.$emit('LoadingModel', false)
         if (response.data.success) {
@@ -96,7 +96,7 @@ export default {
     },
     addCart (pid, qty = 1) {
       const vm = this
-      const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart`
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
       vm.$emit('LoadingModel', true)
       vm.$http.post(api, { 'data': { 'product_id': pid, 'qty': qty } }).then((response) => {
         vm.$emit('getcart', '已成功將商品加入購物車')

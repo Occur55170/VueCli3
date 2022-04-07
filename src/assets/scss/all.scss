@@ -2,6 +2,14 @@
 @import "./_variables";
 @import "~bootstrap/scss/bootstrap";
 
+.co-or{
+  color:#f28200;
+}
+
+.bg-or{
+  background:#f28200;
+}
+
 .indexContainer{
   padding-left:calc((100% - 1024px) /2) !important;
   padding-right:calc((100% - 1024px) /2) !important;

@@ -149,6 +149,7 @@ export default {
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
       vm.$http.get(api).then((response) => {
         if (response.data.success) {
+          console.log(response.data.success)
           vm.cart = response.data.data
           vm.assortCarts()
           if (loadMode !== undefined) {
@@ -159,6 +160,9 @@ export default {
     },
     assortCarts () {
       const vm = this
+      if (vm.cart.carts.length === 0) {
+        vm.filterCarts = []
+      }
       vm.cart.carts.forEach(element => {
         // 判斷是否有重複的值在購物車上
         const newItem = vm.filterCarts.find((item, index) => item.product_id === element.product_id)
@@ -179,11 +183,6 @@ export default {
           }
         }
       })
-
-      if (vm.cart.carts.length === 0) {
-        vm.filterCarts = []
-      }
-
       vm.cartCount = vm.filterCarts.length
       if (vm.cartCount) {
         vm.cartMSG = false
@@ -209,16 +208,15 @@ export default {
       del.forEach((element, index) => {
         const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${element.id}`
         vm.$http.delete(api).then((response) => {
-          console.log(response.data)
           // 刪除最後一筆後，重新整理購物車
           if (index + 1 === del.length) {
-            vm.cartCount = vm.filterCarts.length
-            if (vm.cartCount) {
-              vm.cartMSG = false
-            } else {
-              vm.cartMSG = true
-            }
             vm.getCart()
+            // vm.cartCount = vm.filterCarts.length
+            // if (vm.cartCount) {
+            //   vm.cartMSG = false
+            // } else {
+            //   vm.cartMSG = true
+            // }
           }
         })
       })

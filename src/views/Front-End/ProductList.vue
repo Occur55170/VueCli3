@@ -66,7 +66,7 @@ export default {
     getProducts (page = 1) {
       const vm = this
       vm.$emit('LoadingModel', true)
-      const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/products/all`
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/products/all`
       vm.$http.get(api).then((response) => {
         vm.$emit('LoadingModel', false)
         if (response.data.success) {
@@ -86,7 +86,7 @@ export default {
     },
     addCart (pid, qty = 1) {
       const vm = this
-      const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart`
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
       vm.$emit('LoadingModel', true)
       vm.$http.post(api, { 'data': { 'product_id': pid, 'qty': qty } }).then((response) => {
         vm.$emit('getcart', '已成功將商品加入購物車')
@@ -96,15 +96,9 @@ export default {
   computed: {
     GList () {
       const vm = this
-      const api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/products/all`
-      vm.$http.get(api).then((response) => {
-        // for( let i = 0 ;i>response.data.products )
-        if (response.data.success) {
-          response.data.products.map(element => {
-            if (vm.GroupList.indexOf(element.category) === -1) {
-              vm.GroupList.push(element.category)
-            }
-          })
+      vm.productList.map(element => {
+        if (vm.GroupList.indexOf(element.category) === -1) {
+          vm.GroupList.push(element.category)
         }
       })
       return vm.GroupList
