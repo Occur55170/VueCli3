@@ -64,6 +64,7 @@
             <a href="#" class="btn btn-white" @click.prevent="closeCartModal()"><i class="text-white fas fa-times-circle mb-0"></i></a>
           </div>
           <div class="cart-body">
+            <a href="" @click.prevent="get">get</a>
             <div class="text-center h5 p-3 mb-0" v-if="cartMSG">
               <h3 class="text-center my-5">您尚未加入商品至購物車</h3>
               <a href="" class="btn bg-or text-white" @click.prevent="goPl()">趕快去逛逛</a>
@@ -144,6 +145,15 @@ export default {
       }
       this.closeCartModal()
     },
+    get () {
+      const vm = this
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
+      vm.$http.get(api).then((response) => {
+        if (response.data.success) {
+          console.log(response.data.data)
+        }
+      })
+    },
     getCart (loadMode) {
       const vm = this
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
@@ -159,11 +169,17 @@ export default {
     },
     assortCarts () {
       const vm = this
-      if (vm.cart.carts.length === 0) {
-        vm.filterCarts = []
-      }
+      // 比對carts上的商品種類跟filterCarts的商品種類是否一樣
+      // if (vm.cart.carts.length === 0) {
+      vm.filterCarts = []
+      // } else {
+      console.log(vm.cart.carts)
+      console.log(vm.filterCarts)
+      // }
+      // 比對carts上的商品種類跟filterCarts的商品種類是否一樣
+
       vm.cart.carts.forEach(element => {
-        // 判斷是否有重複的值在購物車上
+        // 找出在購物車上重複的值
         const newItem = vm.filterCarts.find((item, index) => item.product_id === element.product_id)
         if (!newItem) {
           vm.filterCarts.push(element)
@@ -171,10 +187,12 @@ export default {
           // 數量計算
           let sum = 0
           const spAr = vm.cart.carts.filter(el => el.product_id === element.product_id)
+          console.log(spAr)
           spAr.forEach(item => {
             sum = sum + item.qty
           })
-          // 數量小於一的商品刪除
+          console.log('sum' + sum)
+          // 數量小於一刪除，其餘加總
           if (newItem.qty < 1) {
             vm.removeCart(element.product_id)
           } else {
@@ -206,6 +224,7 @@ export default {
           })
         }
       } else {
+        console.log(qty)
         const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
         vm.$emit('LoadingModel', true)
         vm.$http.post(api, { data: { product_id: pid, qty: qty } }).then((response) => {
