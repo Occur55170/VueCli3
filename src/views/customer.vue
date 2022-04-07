@@ -149,7 +149,6 @@ export default {
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
       vm.$http.get(api).then((response) => {
         if (response.data.success) {
-          console.log(response.data.success)
           vm.cart = response.data.data
           vm.assortCarts()
           if (loadMode !== undefined) {
@@ -194,11 +193,25 @@ export default {
     correctCart (pid, qty = 1) {
       const vm = this
       vm.loadingEvent(true)
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-      vm.$emit('LoadingModel', true)
-      vm.$http.post(api, { data: { product_id: pid, qty: qty } }).then((response) => {
-        vm.getCart()
-      })
+      // 判斷filterCarts數量
+      if (vm.filterCarts.length !== 0) {
+        const filP = vm.filterCarts.filter(element => element.product_id === pid)
+        if (filP[0].qty + qty < 1) {
+          vm.removeCart(pid)
+        } else {
+          const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
+          vm.$emit('LoadingModel', true)
+          vm.$http.post(api, { data: { product_id: pid, qty: qty } }).then((response) => {
+            vm.getCart()
+          })
+        }
+      } else {
+        const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
+        vm.$emit('LoadingModel', true)
+        vm.$http.post(api, { data: { product_id: pid, qty: qty } }).then((response) => {
+          vm.getCart()
+        })
+      }
     },
     removeCart (pid) {
       const vm = this
@@ -211,12 +224,12 @@ export default {
           // 刪除最後一筆後，重新整理購物車
           if (index + 1 === del.length) {
             vm.getCart()
-            // vm.cartCount = vm.filterCarts.length
-            // if (vm.cartCount) {
-            //   vm.cartMSG = false
-            // } else {
-            //   vm.cartMSG = true
-            // }
+            vm.cartCount = vm.filterCarts.length
+            if (vm.cartCount) {
+              vm.cartMSG = false
+            } else {
+              vm.cartMSG = true
+            }
           }
         })
       })
