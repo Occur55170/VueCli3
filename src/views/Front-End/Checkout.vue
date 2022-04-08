@@ -34,7 +34,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in cart.carts" :key="item.id" class="border-bottom">
+            <tr v-for="item in filterCarts" :key="item.id" class="border-bottom">
               <td class="align-middle text-center py-5">
                 <a href="#" class="text-muted h4" @click.prevent="removeCart(item.id)">
                   <i class="fas fa-trash-alt"></i>
@@ -187,7 +187,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in cart.carts" :key="item.id">
+                <tr v-for="item in filterCarts" :key="item.id">
                   <td class="text-left">{{ item.product.title }}</td>
                   <td class="text-center">{{ item.qty }} {{ item.product.unit }}</td>
                   <td class="text-right">{{ item.product.price|corrency }}</td>
@@ -281,39 +281,25 @@ export default {
       vm.$http.get(api).then((response) => {
         if (response.data.success) {
           vm.cart = response.data.data
-          // vm.assortCarts()
-          vm.$emit('LoadingModel', false)
+          vm.assortCarts(response.data.data.carts)
+          // vm.$emit('LoadingModel', false)
         }
       })
     },
-    assortCarts () {
+    assortCarts (carts) {
+      // 初始整合購物車
       const vm = this
-      if (vm.cart.carts.length === 0) {
-        vm.filterCarts = []
-      }
-      vm.filterCarts.forEach((element, index) => {
-        let x = vm.cart.carts.find(item => item.product_id === element.product_id)
-        if (!x) {
-          vm.filterCarts.splice(index, 1)
-        }
-      })
-      vm.cart.carts.forEach(element => {
+      vm.filterCarts = []
+      carts.forEach((element, num) => {
         // 找出在購物車上重複的值
         const newItem = vm.filterCarts.find((item, index) => item.product_id === element.product_id)
         if (!newItem) {
           vm.filterCarts.push(element)
         } else {
-          // 數量計算
-          let sum = 0
-          const spAr = vm.cart.carts.filter(el => el.product_id === element.product_id)
-          spAr.forEach(item => {
-            sum = sum + item.qty
-          })
-          // 數量小於一刪除，其餘加總
-          if (newItem.qty < 1) {
+          if (newItem.qty + element.qty < 1) {
             vm.removeCart(element.product_id)
           } else {
-            vm.filterCarts[vm.filterCarts.indexOf(newItem)].qty = sum
+            newItem.qty = newItem.qty + element.qty
           }
         }
       })
@@ -380,11 +366,13 @@ export default {
       vm.$http.post(api, { 'data': { 'code': 'cancel' } }).then(response => {
         if (response.data.success) {
           vm.cart.final_total = ''
-          console.log('啟動getCart')
           vm.getCart()
         }
       })
     }
+  },
+  computed: {
+
   },
   created () {
     if (!(localStorage.getItem('checkoutStep'))) {
