@@ -85,7 +85,6 @@ export default {
       vm.$emit('LoadingModel', true)
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/pay/${vm.orderId}`
       vm.$http.post(api).then(response => {
-        console.log(response.data)
         if (response.data.success) {
           vm.$emit('getcart')
           vm.searchOrder()
@@ -96,7 +95,6 @@ export default {
       const vm = this
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/order/${vm.orderId}`
       vm.$http.get(api).then(response => {
-        console.log(response.data)
         if (response.data.success) {
           vm.order = response.data.order
           vm.$emit('LoadingModel', false)

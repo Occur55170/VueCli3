@@ -67,8 +67,8 @@
           </tbody>
         </table>
         <div class="text-right">
-          <button class="btn btn-outline-secondary" type="button" @click.prevent="cancelOrder()">繼續選購</button>
-          <button class="btn text-white nextStep" type="button" @click.prevent=" step++ ">確認，下一步</button>
+          <button class="btn mx-2 btn-outline-secondary" type="button" @click.prevent="cancelOrder()">繼續選購</button>
+          <button class="btn mx-2 text-white nextStep" type="button" @click.prevent=" step++ ">確認，下一步</button>
         </div>
       </section>
       <!-- 1.購物車 -->
@@ -164,8 +164,8 @@
             </div>
             <!-- 備註 -->
             <div class="text-right">
-              <button class="btn btn-outline-secondary" type="button" @click.prevent="step--">上一步</button>
-              <button class="btn text-white nextStep" type="submit" @click.prevent="step++" :disabled="invalid">確認，下一步</button>
+              <button class="btn mx-2 btn-outline-secondary" type="button" @click.prevent="step--">上一步</button>
+              <button class="btn mx-2 text-white nextStep" type="submit" @click.prevent="step++" :disabled="invalid">確認，下一步</button>
             </div>
           </form>
         </validation-observer>
@@ -234,8 +234,8 @@
               </tbody>
             </table>
             <div class="text-center">
-              <button class="btn btn-secondary" type="button" @click.prevent="step--">上一步</button>
-              <button type="submit" class="btn btn-primary" @click.prevent="createOrder">確定付款</button>
+              <button class="btn mx-2 btn-secondary" type="button" @click.prevent="step--">上一步</button>
+              <button type="submit" class="btn mx-2 btn-primary" @click.prevent="createOrder">確定付款</button>
             </div>
           </div>
         </section>
@@ -246,7 +246,6 @@
 </template>
 
 <script>
-import $ from 'jquery'
 export default {
   data () {
     return {
@@ -271,34 +270,80 @@ export default {
         cvc: ''
       },
       couponCode: '',
-      CouponTip: ''
+      CouponTip: '',
+      filterCarts: []
     }
   },
   methods: {
     getCart () {
       const vm = this
-      vm.$emit('LoadingModel', true)
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
       vm.$http.get(api).then((response) => {
-        console.log(response.data)
         if (response.data.success) {
           vm.cart = response.data.data
-          if (vm.cart.carts.length === 0) {
-            $('.checkoutBG').addClass('d-none')
-            $('.emptyCart').addClass('d-block')
-          }
+          // vm.assortCarts()
           vm.$emit('LoadingModel', false)
         }
       })
     },
+    assortCarts () {
+      const vm = this
+      if (vm.cart.carts.length === 0) {
+        vm.filterCarts = []
+      }
+      vm.filterCarts.forEach((element, index) => {
+        let x = vm.cart.carts.find(item => item.product_id === element.product_id)
+        if (!x) {
+          vm.filterCarts.splice(index, 1)
+        }
+      })
+      vm.cart.carts.forEach(element => {
+        // 找出在購物車上重複的值
+        const newItem = vm.filterCarts.find((item, index) => item.product_id === element.product_id)
+        if (!newItem) {
+          vm.filterCarts.push(element)
+        } else {
+          // 數量計算
+          let sum = 0
+          const spAr = vm.cart.carts.filter(el => el.product_id === element.product_id)
+          spAr.forEach(item => {
+            sum = sum + item.qty
+          })
+          // 數量小於一刪除，其餘加總
+          if (newItem.qty < 1) {
+            vm.removeCart(element.product_id)
+          } else {
+            vm.filterCarts[vm.filterCarts.indexOf(newItem)].qty = sum
+          }
+        }
+      })
+      vm.cartCount = vm.filterCarts.length
+      if (vm.cartCount) {
+        vm.cartMSG = false
+      } else {
+        vm.cartMSG = true
+      }
+      vm.$emit('LoadingModel', false)
+    },
     removeCart (pid) {
       const vm = this
-      this.$emit('LoadingModel', true)
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${pid}`
-      vm.$http.delete(api).then((response) => {
-        if (response.data.success) {
-          vm.getCart()
-        }
+      vm.$emit('LoadingModel', true)
+      const del = vm.cart.carts.filter(el => el.product_id === pid)
+      vm.filterCart = vm.filterCarts.filter(item => item.product_id !== pid)
+      del.forEach((element, index) => {
+        const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${element.id}`
+        vm.$http.delete(api).then((response) => {
+          // 刪除最後一筆後，重新整理購物車
+          if (index + 1 === del.length) {
+            vm.getCart()
+            vm.cartCount = vm.filterCarts.length
+            if (vm.cartCount) {
+              vm.cartMSG = false
+            } else {
+              vm.cartMSG = true
+            }
+          }
+        })
       })
     },
     cancelOrder () {
@@ -335,6 +380,7 @@ export default {
       vm.$http.post(api, { 'data': { 'code': 'cancel' } }).then(response => {
         if (response.data.success) {
           vm.cart.final_total = ''
+          console.log('啟動getCart')
           vm.getCart()
         }
       })

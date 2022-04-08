@@ -56,7 +56,7 @@
       </div>
     </div>
     <!-- Modal -->
-    <div class="modal cartList" id="cartList" v-on:keyup.enter="closeCartModal()">
+    <div class="modal cartMoadl" id="cartMoadl" v-on:keyup.enter="closeCartModal()">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="cart-header">
@@ -134,10 +134,10 @@ export default {
       }
     },
     closeCartModal () {
-      $('#cartList').modal('hide')
+      $('#cartMoadl').modal('hide')
     },
     openCartModal () {
-      $('#cartList').modal('show')
+      $('#cartMoadl').modal('show')
     },
     goPl () {
       if (this.$route.path !== '/productList/all') {
@@ -150,7 +150,7 @@ export default {
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
       vm.$http.get(api).then((response) => {
         if (response.data.success) {
-          console.log(response.data.data)
+          console.log(response.data.data.carts)
         }
       })
     },
@@ -160,43 +160,27 @@ export default {
       vm.$http.get(api).then((response) => {
         if (response.data.success) {
           vm.cart = response.data.data
-          vm.assortCarts()
+          vm.assortCarts(response.data.data.carts)
           if (loadMode !== undefined) {
             vm.$bus.$emit('message:push', loadMode)
           }
         }
       })
     },
-    assortCarts () {
+    assortCarts (carts) {
+      // 初始整合購物車
       const vm = this
-      // 比對carts上的商品種類跟filterCarts的商品種類是否一樣
-      // if (vm.cart.carts.length === 0) {
       vm.filterCarts = []
-      // } else {
-      console.log(vm.cart.carts)
-      console.log(vm.filterCarts)
-      // }
-      // 比對carts上的商品種類跟filterCarts的商品種類是否一樣
-
-      vm.cart.carts.forEach(element => {
+      carts.forEach((element, num) => {
         // 找出在購物車上重複的值
         const newItem = vm.filterCarts.find((item, index) => item.product_id === element.product_id)
         if (!newItem) {
           vm.filterCarts.push(element)
         } else {
-          // 數量計算
-          let sum = 0
-          const spAr = vm.cart.carts.filter(el => el.product_id === element.product_id)
-          console.log(spAr)
-          spAr.forEach(item => {
-            sum = sum + item.qty
-          })
-          console.log('sum' + sum)
-          // 數量小於一刪除，其餘加總
-          if (newItem.qty < 1) {
+          if (newItem.qty + element.qty < 1) {
             vm.removeCart(element.product_id)
           } else {
-            vm.filterCarts[vm.filterCarts.indexOf(newItem)].qty = sum
+            newItem.qty = newItem.qty + element.qty
           }
         }
       })
@@ -211,24 +195,19 @@ export default {
     correctCart (pid, qty = 1) {
       const vm = this
       vm.loadingEvent(true)
+      const filP = vm.filterCarts.filter(element => element.product_id === pid)
       // 判斷filterCarts數量
-      if (vm.filterCarts.length !== 0) {
-        const filP = vm.filterCarts.filter(element => element.product_id === pid)
-        if (filP[0].qty + qty < 1) {
-          vm.removeCart(pid)
-        } else {
-          const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-          vm.$emit('LoadingModel', true)
-          vm.$http.post(api, { data: { product_id: pid, qty: qty } }).then((response) => {
-            vm.getCart()
-          })
-        }
+      if (filP[0].qty + qty < 1) {
+        vm.removeCart(pid)
       } else {
-        console.log(qty)
         const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-        vm.$emit('LoadingModel', true)
+        vm.loadingEvent(true)
         vm.$http.post(api, { data: { product_id: pid, qty: qty } }).then((response) => {
-          vm.getCart()
+          if (response.data.success) {
+            let ar = vm.filterCarts.find(item => item.product_id === pid)
+            ar.qty = filP[0].qty + qty
+            vm.loadingEvent(false)
+          }
         })
       }
     },
@@ -242,20 +221,22 @@ export default {
         vm.$http.delete(api).then((response) => {
           // 刪除最後一筆後，重新整理購物車
           if (index + 1 === del.length) {
-            vm.getCart()
+            let ar = vm.filterCarts.find(item => item.product_id === pid)
+            vm.filterCarts.splice(vm.filterCarts.indexOf(ar), 1)
             vm.cartCount = vm.filterCarts.length
             if (vm.cartCount) {
               vm.cartMSG = false
             } else {
               vm.cartMSG = true
             }
+            vm.loadingEvent(false)
           }
         })
       })
     },
     goOrder () {
       const vm = this
-      $('#cartList').modal('hide')
+      $('#cartMoadl').modal('hide')
       localStorage.setItem('checkoutStep', '1')
       vm.$router.push('/Checkout')
     }
@@ -361,7 +342,7 @@ export default {
   .show{
     display: flex !important
   }
-  .cartList{
+  .cartMoadl{
     justify-content: flex-end;
     align-items: flex-start;
     padding-right:0 !important;
@@ -607,11 +588,11 @@ export default {
         }
       }
     }
-  }
-  .cartList {
-    .cart-body {
-      h3 {
-        font-size:1.6rem;
+    .cartMoadl {
+      .cart-body {
+        h3 {
+          font-size:1.6rem;
+        }
       }
     }
   }
