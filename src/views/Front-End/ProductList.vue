@@ -12,14 +12,12 @@
 
     <!-- main -->
     <div class="container mainContant mb-1 d-flex justify-content-between flex-wrap">
-
         <!-- 類別選單 (List group) -->
         <div class="list-group pb-2 text-left">
           <a href="#" class="h5 list-group-item font-weight-bold list-group-item-action list-group-item-light mb-0" @click.prevent="changGroup('all')">全部顯示</a>
           <a href="#" class="h5 list-group-item font-weight-bold list-group-item-action list-group-item-light mb-0" v-for="(item,key) in GList" :key="key" @click.prevent="changGroup(item)">{{ item }}</a>
         </div>
         <!-- 類別選單 (List group) -->
-
         <!-- 主要商品列表 (Card) -->
         <div class="productList">
           <div class="mb-4" v-for="item in proList" :key="item.id">
@@ -115,8 +113,8 @@ export default {
     }
   },
   created () {
-    this.sort = this.$route.params.sortId
     this.$emit('closeNavList')
+    this.sort = this.$route.params.sortId
     this.getProducts()
   }
 }

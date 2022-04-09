@@ -156,6 +156,7 @@ export default {
     },
     getCart (loadMode) {
       const vm = this
+      vm.isLoading = true
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
       vm.$http.get(api).then((response) => {
         if (response.data.success) {

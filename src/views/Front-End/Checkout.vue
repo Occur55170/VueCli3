@@ -1,13 +1,12 @@
 <template>
   <div>
-    <div class="emptyCart py-5 mb-5 container">
+    <div class="py-5 mb-5 container" v-if="cart.carts.length==0">
       <h2 class="text-center font-weight-bold">您的購物車目前是空的</h2>
-      <!--，尚未新增商品到購物車喔!-->
       <div class="alert alert-info p-3 px-5 col-6 mx-auto" role="alert">
         您可以前往<a href="#" class="text-primary" type="button" @click.prevent="cancelOrder()">產品列表</a>，以選購您想要的商品。
       </div>
     </div>
-    <div class="checkoutBG main-contant py-5" id="product1">
+    <div class="checkoutBG main-contant py-5" id="product1" v-if="cart.carts.length!==0">
       <!-- 步驟 -->
       <section class="stepList container mb-3">
           <div class="alert alert-rounded mb-0" role="alert" :class="{['alert-success']:step==1,['alert-light']:step!==1}">
@@ -34,9 +33,9 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in filterCarts" :key="item.id" class="border-bottom">
+            <tr v-for="item in cart.carts" :key="item.id" class="border-bottom">
               <td class="align-middle text-center py-5">
-                <a href="#" class="text-muted h4" @click.prevent="removeCart(item.id)">
+                <a href="#" class="text-muted h4" @click.prevent="removeCart(item.id, false)">
                   <i class="fas fa-trash-alt"></i>
                 </a>
               </td>
@@ -187,7 +186,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in filterCarts" :key="item.id">
+                <tr v-for="item in cart.carts" :key="item.id">
                   <td class="text-left">{{ item.product.title }}</td>
                   <td class="text-center">{{ item.qty }} {{ item.product.unit }}</td>
                   <td class="text-right">{{ item.product.price|corrency }}</td>
@@ -251,6 +250,7 @@ export default {
     return {
       orderId: '',
       cart: {
+        carts: [],
         final_total: ''
       },
       form: {
@@ -270,8 +270,7 @@ export default {
         cvc: ''
       },
       couponCode: '',
-      CouponTip: '',
-      filterCarts: []
+      CouponTip: ''
     }
   },
   methods: {
@@ -280,56 +279,77 @@ export default {
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
       vm.$http.get(api).then((response) => {
         if (response.data.success) {
-          vm.cart = response.data.data
-          vm.assortCarts(response.data.data.carts)
-          // vm.$emit('LoadingModel', false)
+          console.log('getCart載入的資料', response.data.data.carts)
+          vm.checkoutCarts(response.data.data)
         }
       })
     },
-    assortCarts (carts) {
-      // 初始整合購物車
+    checkoutCarts (cart) {
       const vm = this
-      vm.filterCarts = []
-      carts.forEach((element, num) => {
-        // 找出在購物車上重複的值
-        const newItem = vm.filterCarts.find((item, index) => item.product_id === element.product_id)
-        if (!newItem) {
-          vm.filterCarts.push(element)
-        } else {
-          if (newItem.qty + element.qty < 1) {
-            vm.removeCart(element.product_id)
-          } else {
-            newItem.qty = newItem.qty + element.qty
-          }
+      let carts = cart.carts
+      let cateList = []
+      carts.forEach(element => {
+        if (cateList.indexOf(element.product_id) === -1) {
+          cateList.push(element.product_id)
         }
       })
-      vm.cartCount = vm.filterCarts.length
-      if (vm.cartCount) {
-        vm.cartMSG = false
-      } else {
-        vm.cartMSG = true
-      }
-      vm.$emit('LoadingModel', false)
+      cateList.forEach(element => {
+        let sum = carts.reduce((total, val, index, arr) => {
+          // 分別為前一個回傳值, 目前值, 當前索引值
+          if (val.product_id === element) {
+          // 與前一個值相加
+            return total + val.qty
+          } else {
+            return total + 0
+          }
+        }, 0)
+        if (element.qty !== 1) {
+          vm.removeCart(element, carts)
+          vm.addCart(element, sum)
+        }
+      })
+      vm.end()
+      console.log('載入完畢')
     },
-    removeCart (pid) {
+    removeCart (pid, carts) {
       const vm = this
       vm.$emit('LoadingModel', true)
-      const del = vm.cart.carts.filter(el => el.product_id === pid)
-      vm.filterCart = vm.filterCarts.filter(item => item.product_id !== pid)
-      del.forEach((element, index) => {
-        const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${element.id}`
-        vm.$http.delete(api).then((response) => {
-          // 刪除最後一筆後，重新整理購物車
-          if (index + 1 === del.length) {
-            vm.getCart()
-            vm.cartCount = vm.filterCarts.length
-            if (vm.cartCount) {
-              vm.cartMSG = false
-            } else {
-              vm.cartMSG = true
-            }
-          }
+      let del = []
+      if (carts) {
+        console.log('透過調整購物車刪除')
+        del = carts.filter(el => el.product_id === pid)
+        del.forEach((element, index) => {
+          const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${element.id}`
+          vm.$http.delete(api).then((response) => {
+            console.log(response.data.success)
+          })
         })
+      } else {
+        console.log('按checkout頁面的刪除鈕')
+        const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${pid}`
+        vm.$http.delete(api).then((response) => {
+          console.log(pid)
+        })
+        vm.end()
+      }
+    },
+    end () {
+      const vm = this
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
+      vm.$http.get(api).then((response) => {
+        if (response.data.success) {
+          console.log(response.data.data)
+          vm.cart = response.data.data
+          console.log('okok')
+          vm.$emit('LoadingModel', false)
+        }
+      })
+    },
+    addCart (pid, qty = 1) {
+      const vm = this
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
+      vm.$http.post(api, { 'data': { 'product_id': pid, 'qty': qty } }).then((response) => {
+        console.log('調整新增資料完畢')
       })
     },
     cancelOrder () {
@@ -340,7 +360,6 @@ export default {
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/order`
       vm.$http.post(api, { 'data': { 'user': vm.form.user, 'message': vm.form.message } }).then((response) => {
         if (response.data.success) {
-          console.log(response.data.orderId)
           vm.$router.push(`/Pay/${response.data.orderId}`)
         }
       })
@@ -361,7 +380,6 @@ export default {
     },
     restartCoupon () {
       const vm = this
-      vm.$emit('LoadingModel', true)
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/coupon`
       vm.$http.post(api, { 'data': { 'code': 'cancel' } }).then(response => {
         if (response.data.success) {
@@ -371,10 +389,8 @@ export default {
       })
     }
   },
-  computed: {
-
-  },
   created () {
+    this.$emit('LoadingModel', true)
     if (!(localStorage.getItem('checkoutStep'))) {
       this.$router.push('/')
     } else {
@@ -386,9 +402,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.emptyCart {
-  display:none;
-}
 .checkoutBG {
   background:#f1f1f1;
   h2 {

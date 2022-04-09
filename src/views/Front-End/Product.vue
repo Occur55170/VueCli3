@@ -110,6 +110,7 @@ export default {
     }
   },
   created () {
+    this.$emit('closeNavList')
     this.pid = this.$route.params.id
     this.getProduct()
   }
