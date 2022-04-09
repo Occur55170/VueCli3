@@ -110,7 +110,7 @@ import AlertMSG from '@/components/AlertMSG.vue'
 export default {
   data  () {
     return {
-      msg: 'customer',
+      msg: 'Customer',
       isLoading: false,
       cart: {
         carts: []
