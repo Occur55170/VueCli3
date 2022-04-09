@@ -144,6 +144,7 @@ export default {
       }
       this.closeCartModal()
     },
+    // 測試後刪除
     get () {
       const vm = this
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
@@ -153,6 +154,11 @@ export default {
         }
       })
     },
+    chend (a) {
+      let b = this.filterCarts.find(item => item.id === a)
+      this.filterCarts.splice(b, 1)
+    },
+    // 測試後刪除
     getCart (loadMode) {
       const vm = this
       vm.isLoading = true

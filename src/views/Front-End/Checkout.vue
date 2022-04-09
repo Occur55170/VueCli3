@@ -270,7 +270,8 @@ export default {
         cvc: ''
       },
       couponCode: '',
-      CouponTip: ''
+      CouponTip: '',
+      preLen: 0
     }
   },
   props: ['filterCarts'],
@@ -290,6 +291,7 @@ export default {
     removeCart (rmData, mode) {
       const vm = this
       vm.$emit('LoadingModel', true)
+      vm.preLen = vm.cart.carts.length
       if (mode === 'get') {
         rmData.forEach((item, index) => {
           const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${item.id}`
@@ -303,13 +305,22 @@ export default {
             }
           })
         })
-      } else {
-        console.log(mode)
-        console.log(rmData)
+      } else if (mode === 'adjust') {
         const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${rmData}`
+        console.log(rmData)
         vm.$http.delete(api).then((response) => {
           if (response.data.success) {
             vm.end()
+          }
+        })
+      } else {
+        const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${rmData}`
+        console.log(rmData)
+        let ckr = vm.cart.carts.filter(element => element.id === rmData)
+        vm.$http.delete(api).then((response) => {
+          if (response.data.success) {
+            console.log(ckr[0].product_id)
+            vm.end(ckr[0].product_id)
           }
         })
       }
@@ -321,20 +332,29 @@ export default {
         vm.$http.post(api, { 'data': { 'product_id': item.product_id, 'qty': item.qty } }).then((response) => {
           if (response.data.success) {
             console.log('調整新增資料完畢')
-            vm.cart.carts = this.filterCarts
-            vm.$emit('LoadingModel', false)
+            // vm.cart.carts = this.filterCarts
+            // vm.$emit('LoadingModel', false)
+            vm.end()
           }
         })
       })
     },
-    end () {
+    end (pid) {
       const vm = this
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
       vm.$http.get(api).then((response) => {
         if (response.data.success) {
-          vm.cart = response.data.data
-          console.log('okok')
-          vm.$emit('LoadingModel', false)
+          if (response.data.data.carts.length !== vm.preLen) {
+            vm.cart = response.data.data
+            console.log(response.data.data)
+            vm.$emit('LoadingModel', false)
+          } else {
+            console.log(response.data.data.carts)
+            console.log('pid的資料=' + pid)
+            let y = response.data.data.carts.filter(item => item.product_id === pid)
+            console.log(y)
+            vm.removeCart(y[0].id, 'adjust')
+          }
         }
       })
     },
