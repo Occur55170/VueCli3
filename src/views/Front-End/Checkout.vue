@@ -398,8 +398,6 @@ export default {
           const apis = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
           vm.$http.get(apis).then((response) => {
             if (response.data.success) {
-              // vm.cart.total = response.data.data.total
-              // vm.cart.final_total = response.data.data.final_total
               vm.cart = response.data.data
             }
           })
