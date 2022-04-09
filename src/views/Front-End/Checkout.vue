@@ -271,11 +271,25 @@ export default {
       },
       couponCode: '',
       CouponTip: '',
-      preLen: 0
+      preLen: 0,
+      // 初次載入數字依據
+      adstartlen: 0,
+      // 載入商品次數加總
+      addLen: 0
     }
   },
   props: ['filterCarts'],
   methods: {
+    restartCoupon () {
+      const vm = this
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/coupon`
+      vm.$http.post(api, { 'data': { 'code': 'cancel' } }).then(response => {
+        if (response.data.success) {
+          vm.cart.final_total = ''
+          vm.getCart()
+        }
+      })
+    },
     getCart () {
       const vm = this
       vm.$emit('LoadingModel', true)
@@ -284,6 +298,7 @@ export default {
         if (response.data.success) {
           vm.cart.total = response.data.data.total
           vm.cart.final_total = response.data.data.final_total
+          vm.adstartlen = vm.filterCarts.length
           vm.removeCart(response.data.data.carts, 'get')
         }
       })
@@ -334,7 +349,10 @@ export default {
             console.log('調整新增資料完畢')
             // vm.cart.carts = this.filterCarts
             // vm.$emit('LoadingModel', false)
-            vm.end()
+            vm.addLen = vm.addLen + 1
+            if (vm.addLen === vm.adstartlen) {
+              vm.end()
+            }
           }
         })
       })
@@ -344,6 +362,7 @@ export default {
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
       vm.$http.get(api).then((response) => {
         if (response.data.success) {
+          // 因為第一次載入頁面preLen不會賦值為0
           if (response.data.data.carts.length !== vm.preLen) {
             vm.cart = response.data.data
             console.log(response.data.data)
@@ -376,21 +395,18 @@ export default {
       vm.$http.post(api, { 'data': { 'code': vm.couponCode } }).then(response => {
         if (response.data.success) {
           vm.$bus.$emit('message:push', '已成功加入優惠卷')
-          vm.getCart()
+          const apis = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
+          vm.$http.get(apis).then((response) => {
+            if (response.data.success) {
+              // vm.cart.total = response.data.data.total
+              // vm.cart.final_total = response.data.data.final_total
+              vm.cart = response.data.data
+            }
+          })
           console.log(response.data.final_total)
         } else {
           vm.couponCode = ''
           vm.$bus.$emit('message:push', response.data.message)
-        }
-      })
-    },
-    restartCoupon () {
-      const vm = this
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/coupon`
-      vm.$http.post(api, { 'data': { 'code': 'cancel' } }).then(response => {
-        if (response.data.success) {
-          vm.cart.final_total = ''
-          vm.getCart()
         }
       })
     }

@@ -22,20 +22,25 @@
             <td class="align-middle text-right">{{ item.final_total | corrency }}</td>
           </tr>
           <tr>
-            <td colspan="3" class="text-right">運費</td>
+            <td colspan="3" class="text-right">金額</td>
             <td class="text-right">
-              <strong>$60</strong>
+              {{ order.total | corrency }}
             </td>
           </tr>
           <tr>
-            <td colspan="3" class="text-right h4">總計</td>
-            <td class="text-right h4">
+            <td colspan="3" class="text-right">運費</td>
+            <td class="text-right">
+              $60
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3" class="text-right h3">總計</td>
+            <td class="text-right h3">
               <strong>{{ order.total+60 | corrency }}</strong>
             </td>
           </tr>
         </tbody>
       </table>
-      <hr>
       <div class="coustomer">
         <h2 class="text-left mt-5 font-weight-bold">買家資料</h2>
         <p>
@@ -138,14 +143,8 @@ export default {
   }
 }
 @media(max-width:600px){
-
   h2{
     margin-top: 30px !important;
-  }
-  .pay{
-    hr{
-      display:none;
-    }
   }
 }
 </style>
