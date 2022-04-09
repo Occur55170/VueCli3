@@ -27,7 +27,7 @@
       </div>
     </header>
     <main>
-      <router-view @LoadingModel="loadingEvent" @getcart="getCart" @closeNavList="closeNavList"></router-view>
+      <router-view @LoadingModel="loadingEvent" @getcart="getCart" @closeNavList="closeNavList" :filterCarts="filterCarts"></router-view>
     </main>
     <footer class="bg-dark text-muted p-2">
       <div class="footer indexContainer">
@@ -47,7 +47,6 @@
         </ul>
       </div>
     </footer>
-
     <div class="p-3 copyright">
       <p class="text-center m-1">本網站僅個人練習使用．不做任何商業用途。商品圖片與內容均為<a href="https://www.frenchkiss.com.tw/">幸福烘焙</a>所有</p>
       <div class="d-flex justify-content-center mt-2">

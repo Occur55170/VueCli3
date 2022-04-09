@@ -273,83 +273,69 @@ export default {
       CouponTip: ''
     }
   },
+  props: ['filterCarts'],
   methods: {
     getCart () {
       const vm = this
+      vm.$emit('LoadingModel', true)
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
       vm.$http.get(api).then((response) => {
         if (response.data.success) {
-          console.log('getCart載入的資料', response.data.data.carts)
-          vm.checkoutCarts(response.data.data)
+          vm.cart.total = response.data.data.total
+          vm.cart.final_total = response.data.data.final_total
+          vm.removeCart(response.data.data.carts, 'get')
         }
       })
     },
-    checkoutCarts (cart) {
-      const vm = this
-      let carts = cart.carts
-      let cateList = []
-      carts.forEach(element => {
-        if (cateList.indexOf(element.product_id) === -1) {
-          cateList.push(element.product_id)
-        }
-      })
-      cateList.forEach(element => {
-        let sum = carts.reduce((total, val, index, arr) => {
-          // 分別為前一個回傳值, 目前值, 當前索引值
-          if (val.product_id === element) {
-          // 與前一個值相加
-            return total + val.qty
-          } else {
-            return total + 0
-          }
-        }, 0)
-        if (element.qty !== 1) {
-          vm.removeCart(element, carts)
-          vm.addCart(element, sum)
-        }
-      })
-      vm.end()
-      console.log('載入完畢')
-    },
-    removeCart (pid, carts) {
+    removeCart (rmData, mode) {
       const vm = this
       vm.$emit('LoadingModel', true)
-      let del = []
-      if (carts) {
-        console.log('透過調整購物車刪除')
-        del = carts.filter(el => el.product_id === pid)
-        del.forEach((element, index) => {
-          const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${element.id}`
+      if (mode === 'get') {
+        rmData.forEach((item, index) => {
+          const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${item.id}`
           vm.$http.delete(api).then((response) => {
             console.log(response.data.success)
+            if (response.data.success) {
+              // 刪除最後一筆後，重新整理購物車
+              if (index + 1 === rmData.length) {
+                vm.addCart()
+              }
+            }
           })
         })
       } else {
-        console.log('按checkout頁面的刪除鈕')
-        const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${pid}`
+        console.log(mode)
+        console.log(rmData)
+        const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${rmData}`
         vm.$http.delete(api).then((response) => {
-          console.log(pid)
+          if (response.data.success) {
+            vm.end()
+          }
         })
-        vm.end()
       }
+    },
+    addCart (pid, qty = 1) {
+      const vm = this
+      vm.filterCarts.forEach(item => {
+        const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
+        vm.$http.post(api, { 'data': { 'product_id': item.product_id, 'qty': item.qty } }).then((response) => {
+          if (response.data.success) {
+            console.log('調整新增資料完畢')
+            vm.cart.carts = this.filterCarts
+            vm.$emit('LoadingModel', false)
+          }
+        })
+      })
     },
     end () {
       const vm = this
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
       vm.$http.get(api).then((response) => {
         if (response.data.success) {
-          console.log(response.data.data)
           vm.cart = response.data.data
           console.log('okok')
           vm.$emit('LoadingModel', false)
         }
-      })
-    },
-    addCart (pid, qty = 1) {
-      const vm = this
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-      vm.$http.post(api, { 'data': { 'product_id': pid, 'qty': qty } }).then((response) => {
-        console.log('調整新增資料完畢')
       })
     },
     cancelOrder () {
