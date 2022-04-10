@@ -12,7 +12,7 @@
             <router-link to="/" class="active"><strong>首頁</strong></router-link>
           </li>
           <li>
-            <router-link to="/productList/all" class="">產品列表</router-link>
+            <router-link to="ProductList/all" class="">產品列表</router-link>
           </li>
           <li>
             <router-link to="/Search" class="">查詢訂單</router-link>
@@ -138,8 +138,8 @@ export default {
       $('#cartMoadl').modal('show')
     },
     goPl () {
-      if (this.$route.path !== '/productList/all') {
-        this.$router.push('/productList/all')
+      if (this.$route.path !== 'ProductList/all') {
+        this.$router.push('ProductList/all')
       }
       this.closeCartModal()
     },
