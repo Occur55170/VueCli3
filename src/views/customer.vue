@@ -63,7 +63,6 @@
             <a href="#" class="btn btn-white" @click.prevent="closeCartModal()"><i class="text-white fas fa-times-circle mb-0"></i></a>
           </div>
           <div class="cart-body">
-            <a href="" @click.prevent="get">get</a>
             <div class="text-center h5 p-3 mb-0" v-if="cartMSG">
               <h3 class="text-center my-5">您尚未加入商品至購物車</h3>
               <a href="" class="btn bg-or text-white" @click.prevent="goPl()">趕快去逛逛</a>
@@ -144,21 +143,6 @@ export default {
       }
       this.closeCartModal()
     },
-    // 測試後刪除
-    get () {
-      const vm = this
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-      vm.$http.get(api).then((response) => {
-        if (response.data.success) {
-          console.log(response.data.data.carts)
-        }
-      })
-    },
-    chend (a) {
-      let b = this.filterCarts.find(item => item.id === a)
-      this.filterCarts.splice(b, 1)
-    },
-    // 測試後刪除
     getCart (loadMode) {
       const vm = this
       vm.isLoading = true
