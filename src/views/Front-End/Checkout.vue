@@ -77,7 +77,6 @@
         <h2 class="text-center w-100 font-weight-bold">2.填寫訂購資訊</h2>
         <validation-observer class="mb-3" v-slot="{ invalid }">
           <form class="col-12">
-            <!-- 基本資料 -->
             <div class="basicInfo mb-4 d-flex flex-wrap">
               <h5 class="font-weight-bold w-100">基本資料</h5>
               <validation-provider rules="required" v-slot="{ errors,classes }" class="form-group nameInput">
@@ -111,8 +110,6 @@
                 </div>
               </div>
             </div>
-            <!-- 基本資料 -->
-            <!-- 付款方式區塊 -->
             <div class="pay mb-4">
               <h5 class="font-weight-bold">付款方式</h5>
               <a href="" @click.prevent="payMode='信用卡'" class="payModeA text-decoration-none" :class="{'click':payMode=='信用卡'}">信用卡</a>
@@ -140,8 +137,6 @@
                 </div>
               </form>
             </div>
-            <!-- 付款方式區塊 -->
-            <!-- 使用優惠卷 -->
             <div class="mb-4">
               <h5 class="font-weight-bold">使用優惠卷</h5>
               <div class="couponCon mt-3">
@@ -153,15 +148,12 @@
               <p v-if="cart.final_total==cart.total" class="CouponTip text-danger my-2 px-2 h6">現在輸入優惠碼"2022"，即可享有8折優惠喔!</p>
               <p v-if="cart.final_total!==cart.total" class="CouponTip text-success my-0 px-2 h6">已成功套用優惠卷</p>
             </div>
-            <!-- 使用優惠卷 -->
-            <!-- 備註 -->
             <div class="remark input-group mb-4 mt-5 px-2">
               <div class="input-group-prepend">
                 <label for="msg" class="input-group-text">備註</label>
               </div>
               <textarea id="msg" aria-label="With textarea" class="form-control"></textarea>
             </div>
-            <!-- 備註 -->
             <div class="text-right">
               <button class="btn mx-2 btn-outline-secondary" type="button" @click.prevent="step--">上一步</button>
               <button class="btn mx-2 text-white nextStep" type="submit" @click.prevent="step++" :disabled="invalid">確認，下一步</button>
@@ -347,8 +339,6 @@ export default {
         vm.$http.post(api, { 'data': { 'product_id': item.product_id, 'qty': item.qty } }).then((response) => {
           if (response.data.success) {
             console.log('調整新增資料完畢')
-            // vm.cart.carts = this.filterCarts
-            // vm.$emit('LoadingModel', false)
             vm.addLen = vm.addLen + 1
             if (vm.addLen === vm.adstartlen) {
               vm.end()
@@ -401,7 +391,6 @@ export default {
               vm.cart = response.data.data
             }
           })
-          console.log(response.data.final_total)
         } else {
           vm.couponCode = ''
           vm.$bus.$emit('message:push', response.data.message)
