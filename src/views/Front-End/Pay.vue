@@ -108,6 +108,8 @@ export default {
     }
   },
   created () {
+    this.$emit('closeNavList')
+    this.$emit('cartSw', false)
     this.orderId = this.$route.params.id
     this.getOrder()
   }

@@ -27,7 +27,7 @@
       </div>
     </header>
     <main>
-      <router-view @LoadingModel="loadingEvent" @getcart="getCart" @closeNavList="closeNavList" :filterCarts="filterCarts"></router-view>
+      <router-view @LoadingModel="loadingEvent" @getcart="getCart" @closeNavList="closeNavList" @cartSw="cartSw" :filterCarts="filterCarts"></router-view>
     </main>
     <footer class="bg-dark text-muted p-2">
       <div class="footer indexContainer">
@@ -120,6 +120,14 @@ export default {
     }
   },
   methods: {
+    cartSw (Sw) {
+      if (Sw) {
+        $('.cartA').show()
+      } else {
+        $('.cartA').hide()
+      }
+      this.getCart()
+    },
     loadingEvent (opa) {
       this.isLoading = opa
     },

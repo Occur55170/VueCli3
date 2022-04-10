@@ -84,6 +84,7 @@ export default {
   },
   created () {
     this.$emit('closeNavList')
+    this.$emit('cartSw', true)
   }
 }
 </script>

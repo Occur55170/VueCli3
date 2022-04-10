@@ -400,6 +400,8 @@ export default {
   },
   created () {
     this.$emit('LoadingModel', true)
+    this.$emit('closeNavList')
+    this.$emit('cartSw', false)
     if (!(localStorage.getItem('checkoutStep'))) {
       this.$router.push('/')
     } else {

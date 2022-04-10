@@ -111,6 +111,7 @@ export default {
   },
   created () {
     this.$emit('closeNavList')
+    this.$emit('cartSw', true)
     this.pid = this.$route.params.id
     this.getProduct()
   }
