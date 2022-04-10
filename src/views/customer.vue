@@ -158,11 +158,11 @@ export default {
       })
     },
     assortCarts (carts) {
-      // 初始整合購物車
+      // 整合購物車
       const vm = this
       vm.filterCarts = []
       carts.forEach((element, num) => {
-        // 找出在購物車上重複的值
+        // 找出重複的值
         const newItem = vm.filterCarts.find((item, index) => item.product_id === element.product_id)
         if (!newItem) {
           vm.filterCarts.push(element)
