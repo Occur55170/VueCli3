@@ -87,7 +87,7 @@ export default {
   methods: {
     getOrder () {
       const vm = this
-      vm.$emit('LoadingModel', true)
+      vm.$store.dispatch('updateLoad', true)
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/pay/${vm.orderId}`
       vm.$http.post(api).then(response => {
         if (response.data.success) {
@@ -102,7 +102,7 @@ export default {
       vm.$http.get(api).then(response => {
         if (response.data.success) {
           vm.order = response.data.order
-          vm.$emit('LoadingModel', false)
+          vm.$store.dispatch('updateLoad', false)
         }
       })
     }

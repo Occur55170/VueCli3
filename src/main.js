@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import Vuex from 'vuex'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import Loading from 'vue-loading-overlay'
@@ -10,7 +11,7 @@ import 'bootstrap'
 import App from './App.vue'
 import router from './router'
 import './bus'
-import store from './store'
+import store from './store/store'
 
 /* vue3不支援，之後刪除 */
 import correncyFilter from './filters/corrency'
@@ -19,6 +20,7 @@ Vue.filter('corrency', correncyFilter)
 Vue.filter('dateDue', dateDue)
 
 Vue.use(VueAxios, axios)
+Vue.use(Vuex)
 Vue.component('Loading', Loading)
 
 Vue.config.productionTip = false

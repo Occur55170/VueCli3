@@ -15,12 +15,12 @@
         <!-- 類別選單 (List group) -->
         <div class="list-group pb-2 text-left">
           <a href="#" class="h5 list-group-item font-weight-bold list-group-item-action list-group-item-light mb-0" @click.prevent="changGroup('all')">全部顯示</a>
-          <a href="#" class="h5 list-group-item font-weight-bold list-group-item-action list-group-item-light mb-0" v-for="(item,key) in GList" :key="key" @click.prevent="changGroup(item)">{{ item }}</a>
+          <a href="#" class="h5 list-group-item font-weight-bold list-group-item-action list-group-item-light mb-0" v-for="(item,key) in groupList" :key="key" @click.prevent="changGroup(item)">{{ item }}</a>
         </div>
         <!-- 類別選單 (List group) -->
         <!-- 主要商品列表 (Card) -->
         <div class="productList">
-          <div class="mb-4" v-for="item in proList" :key="item.id">
+          <div class="mb-4" v-for="item in productList" :key="item.id">
             <div class="card border-0 box-shadow text-center h-100">
               <a href="#" class="card-title" @click.prevent="moreProduct(item.id)">
                 <img class="card-img-top" :src="item.imageUrl" alt="Card image cap">
@@ -51,71 +51,42 @@
 </div>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
   data () {
     return {
-      productList: [],
-      modalProduct: {},
-      GroupList: [],
-      sort: ''
+      msg: ''
     }
   },
   methods: {
-    getProducts (page = 1) {
-      const vm = this
-      vm.$emit('LoadingModel', true)
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/products/all`
-      vm.$http.get(api).then((response) => {
-        vm.$emit('LoadingModel', false)
-        if (response.data.success) {
-          vm.productList = response.data.products
-        }
-      })
-    },
     moreProduct (pid) {
-      const vm = this
-      vm.$router.push(`/Product/${pid}`)
+      this.$router.push(`/Product/${pid}`)
     },
-    changGroup (sortName) {
-      if (this.sort !== sortName) {
-        this.sort = sortName
-        this.$router.push(`/productList/${sortName}`)
-      }
+    changGroup (sort) {
+      this.$store.dispatch('productsModules/changGroup', sort)
     },
     addCart (pid, qty = 1) {
-      const vm = this
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-      vm.$emit('LoadingModel', true)
-      vm.$http.post(api, { 'data': { 'product_id': pid, 'qty': qty } }).then((response) => {
-        vm.$emit('getcart', '已成功將商品加入購物車')
-      })
-    }
+      this.$store.dispatch('addCart', { pid, qty })
+      // const vm = this
+      // const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
+      // vm.$store.dispatch('updateLoad', true)
+      // vm.$http.post(api, { 'data': { 'product_id': pid, 'qty': qty } }).then((response) => {
+      //   vm.$emit('getcart', '已成功將商品加入購物車')
+      // })
+    },
+    // ...mapActions(['getProducts'])
+    ...mapActions('productsModules', ['getProducts'])
   },
   computed: {
-    GList () {
-      const vm = this
-      vm.productList.map(element => {
-        if (vm.GroupList.indexOf(element.category) === -1) {
-          vm.GroupList.push(element.category)
-        }
-      })
-      return vm.GroupList
-    },
-    proList () {
-      const vm = this
-      if (vm.sort !== 'all') {
-        return vm.productList.filter(element => {
-          return element.category === vm.sort
-        })
-      } else {
-        return vm.productList
-      }
-    }
+    ...mapGetters('productsModules', ['productList', 'groupList', 'sort'])
   },
   created () {
     this.$emit('closeNavList')
     this.$emit('cartSw', true)
-    this.sort = this.$route.params.sortId
+    // this.sort = this.$route.params.sortId
+    // console.log(this.$route.params.sortId)
+    // this.$store.commit('productsModules/SORT', this.$route.params.sortId)
     this.getProducts()
   }
 }

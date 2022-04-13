@@ -51,6 +51,7 @@
 </template>
 
 <script>
+// import { mapActions } from 'vuex'
 import $ from 'jquery'
 
 export default {
@@ -64,14 +65,14 @@ export default {
   methods: {
     getProduct () {
       const vm = this
-      vm.$emit('LoadingModel', true)
+      vm.$store.dispatch('updateLoad', true)
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/product/${vm.pid}`
       vm.$http.get(api).then((response) => {
-        vm.$emit('LoadingModel', false)
+        vm.$store.dispatch('updateLoad', false)
         if (response.data.success) {
           vm.product = response.data.product
           vm.textFilt()
-          vm.$emit('LoadingModel', false)
+          vm.$store.dispatch('updateLoad', false)
         }
       })
     },
@@ -97,7 +98,7 @@ export default {
     addCart (pid, qty = 1) {
       const vm = this
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-      vm.$emit('LoadingModel', true)
+      vm.$store.dispatch('updateLoad', true)
       vm.$http.post(api, { 'data': { 'product_id': pid, 'qty': qty } }).then((response) => {
         vm.$emit('getcart', '已成功將商品加入購物車')
       })
@@ -108,6 +109,7 @@ export default {
         vm.qty = 1
       }
     }
+    // ...mapActions(['addCart'])
   },
   created () {
     this.$emit('closeNavList')

@@ -284,7 +284,7 @@ export default {
     },
     getCart () {
       const vm = this
-      vm.$emit('LoadingModel', true)
+      vm.$store.dispatch('updateLoad', true)
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
       vm.$http.get(api).then((response) => {
         if (response.data.success) {
@@ -297,7 +297,7 @@ export default {
     },
     removeCart (rmData, mode) {
       const vm = this
-      vm.$emit('LoadingModel', true)
+      vm.$store.dispatch('updateLoad', true)
       vm.preLen = vm.cart.carts.length
       if (mode === 'get') {
         rmData.forEach((item, index) => {
@@ -356,7 +356,7 @@ export default {
           if (response.data.data.carts.length !== vm.preLen) {
             vm.cart = response.data.data
             console.log(response.data.data)
-            vm.$emit('LoadingModel', false)
+            vm.$store.dispatch('updateLoad', false)
           } else {
             console.log(response.data.data.carts)
             console.log('pid的資料=' + pid)
@@ -399,7 +399,7 @@ export default {
     }
   },
   created () {
-    this.$emit('LoadingModel', true)
+    this.$store.dispatch('updateLoad', true)
     this.$emit('closeNavList')
     this.$emit('cartSw', false)
     if (!(localStorage.getItem('checkoutStep'))) {
