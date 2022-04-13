@@ -65,7 +65,7 @@
           <div class="cart-body">
             <div class="text-center h5 p-3 mb-0" v-if="!cartMSG">
               <h3 class="text-center my-5">您尚未加入商品至購物車</h3>
-              <a href="" class="btn bg-or text-white" @click.prevent="goPl()">趕快去逛逛</a>
+              <a href="#" class="btn bg-or text-white" @click.prevent="goPl()">趕快去逛逛</a>
             </div>
             <div v-if="cartMSG">
               <ul>
@@ -75,15 +75,15 @@
                     <p class="title">{{ item.product.title }}</p>
                     <div class="price d-flex">
                       <div class="w-50 d-flex align-items-center">
-                        <a href="" class="co-or" @click.prevent="correctCart(item.product.product_id,-1)" ><i class="fas fa-minus"></i></a>
+                        <a href="" class="co-or" @click.prevent="correctCart(item.product.id,-1)" ><i class="fas fa-minus"></i></a>
                         <span class="w-75 text-center">{{ item.qty }}</span>
-                        <a href="" class="co-or" @click.prevent="correctCart(item.product.product_id,1)" ><i class="fas fa-plus"></i></a>
+                        <a href="" class="co-or" @click.prevent="correctCart(item.product.id,1)" ><i class="fas fa-plus"></i></a>
                       </div>
                       <div class="w-50 text-right">
                         {{ item.product.price | corrency }}/{{ item.product.unit }}
                       </div>
                     </div>
-                    <a href="" class="text-muted close" data-title="取消加入購物車" @click.prevent="removeCart(item.id)">
+                    <a href="" class="text-muted close" data-title="取消加入購物車" @click.prevent="removeCart(item.product.id)">
                       <i class="fas fa-trash-alt"></i>
                     </a>
                   </div>
@@ -99,8 +99,6 @@
     </div>
     <!-- Modal -->
     <AlertMSG/>
-    <button @click="alertMSG">123</button>
-    <button @click="tesr">tesr</button>
   </div>
 </template>
 
@@ -117,12 +115,6 @@ export default {
     }
   },
   methods: {
-    tesr () {
-      console.log(this)
-      console.log(this.$bus)
-      console.log(this.$bus.$emit)
-      this.$bus.$emit('message:push', '測試', 'danger')
-    },
     cartSw (Sw) {
       if (Sw) {
         $('.cartA').show()
@@ -161,10 +153,12 @@ export default {
       this.closeCartModal()
     },
     removeCart (pid) {
-      console.log(pid)
-      // this.$store.dispatch('addCart', pid)
+      this.$store.dispatch('removeCart', pid)
     },
-    ...mapActions(['getCart', 'removeCart', 'alertMSG'])
+    correctCart (pid, qty) {
+      this.$store.dispatch('correctCart', { pid, qty })
+    },
+    ...mapActions(['getCart'])
   },
   computed: {
     ...mapGetters(['isLoading', 'cart', 'cartCount', 'cartMSG'])

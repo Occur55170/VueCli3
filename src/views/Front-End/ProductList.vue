@@ -68,24 +68,16 @@ export default {
     },
     addCart (pid, qty = 1) {
       this.$store.dispatch('addCart', { pid, qty })
-      // const vm = this
-      // const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-      // vm.$store.dispatch('updateLoad', true)
-      // vm.$http.post(api, { 'data': { 'product_id': pid, 'qty': qty } }).then((response) => {
-      //   vm.$emit('getcart', '已成功將商品加入購物車')
-      // })
     },
-    // ...mapActions(['getProducts'])
     ...mapActions('productsModules', ['getProducts'])
   },
   computed: {
-    ...mapGetters('productsModules', ['productList', 'groupList', 'sort'])
+    ...mapGetters('productsModules', ['productList', 'groupList'])
   },
   created () {
     this.$emit('closeNavList')
     this.$emit('cartSw', true)
     // this.sort = this.$route.params.sortId
-    // console.log(this.$route.params.sortId)
     // this.$store.commit('productsModules/SORT', this.$route.params.sortId)
     this.getProducts()
   }

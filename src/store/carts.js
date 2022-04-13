@@ -1,27 +1,15 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import productsModules from './products'
-import cartsModules from './carts'
-import alertModules from './alertMsg'
-
 // import axios from 'axios'
 
-Vue.use(Vuex)
-
-export default new Vuex.Store({
-  strict: false,
+export default {
+  strict: true,
   namespaced: true,
   state: {
-    isLoading: false,
     cart: {
       carts: []
     },
     cartCount: ''
   },
   actions: {
-    updateLoad (context, status) {
-      context.commit('LOAD', status)
-    },
     getCart (context, status) {
       context.dispatch('updateLoad', true)
       // 第一次進入頁面購物車領取，之後更新購物車
@@ -55,9 +43,6 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    LOAD (state, payload) {
-      state.isLoading = payload
-    },
     CARTS (state, payload) {
       // payload 須為陣列
       state.cart.carts = payload
@@ -93,7 +78,6 @@ export default new Vuex.Store({
     }
   },
   getters: {
-    isLoading: (state) => state.isLoading,
     cart: (state) => state.cart,
     cartCount: (state) => state.cartCount,
     cartMSG (state) {
@@ -103,10 +87,5 @@ export default new Vuex.Store({
         return true
       }
     }
-  },
-  modules: {
-    productsModules,
-    alertModules,
-    cartsModules
   }
-})
+}
