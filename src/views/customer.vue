@@ -158,10 +158,11 @@ export default {
     correctCart (pid, qty) {
       this.$store.dispatch('correctCart', { pid, qty })
     },
-    ...mapActions(['getCart'])
+    ...mapActions('cartsModules', ['getCart'])
   },
   computed: {
-    ...mapGetters(['isLoading', 'cart', 'cartCount', 'cartMSG'])
+    ...mapGetters(['isLoading']),
+    ...mapGetters('cartsModules', ['cart', 'cartCount', 'cartMSG'])
   },
   created () {
     this.getCart()
