@@ -58,13 +58,13 @@ export default {
     },
     clertCart (context, status) {
       // 初始化後台購物車
-      context.dispatch('updateLoad', true, { root: true })
+      // context.dispatch('updateLoad', true, { root: true })
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
       axios.get(api).then(response => {
         if (response.data.success) {
+          // 會一直回傳購物車內容給刪除事件清空
           response.data.data.carts.forEach((item) => {
             context.dispatch('UpdateRemoveCart')
-            // context.dispatch('initCart')
           })
         }
       })

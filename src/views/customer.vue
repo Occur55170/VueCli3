@@ -143,8 +143,8 @@ export default {
     },
     goOrder () {
       $('#cartMoadl').modal('hide')
-      this.clertCart()
       localStorage.setItem('checkoutStep', '1')
+      this.clertCart()
       this.$router.push('/Checkout')
     },
     goProduct () {
