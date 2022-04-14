@@ -5,17 +5,29 @@ export default {
   namespaced: true,
   state: {
     productList: [],
+    product: {},
     groupList: [],
     sort: 'all'
   },
   actions: {
-    getProducts (context, page = 1) {
+    getProducts (context, status) {
       context.dispatch('updateLoad', true, { root: true })
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/products/all`
       axios.get(api).then((response) => {
         if (response.data.success) {
           context.commit('PRODUCTlIST', response.data.products)
           context.commit('GLIST', response.data.products)
+          context.dispatch('updateLoad', false, { root: true })
+        }
+      })
+    },
+    getProduct (context, pid) {
+      context.dispatch('updateLoad', true, { root: true })
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/product/${pid}`
+      axios.get(api).then((response) => {
+        if (response.data.success) {
+          context.commit('PRODUCT', response.data.product)
+          // vm.textFilt()
           context.dispatch('updateLoad', false, { root: true })
         }
       })
@@ -27,6 +39,9 @@ export default {
   mutations: {
     PRODUCTlIST (state, status) {
       state.productList = status
+    },
+    PRODUCT (state, status) {
+      state.product = status
     },
     GLIST (state, status) {
       status.map(element => {
@@ -51,6 +66,9 @@ export default {
     },
     groupList (state) {
       return state.groupList
+    },
+    product (state) {
+      return state.product
     }
   }
 }

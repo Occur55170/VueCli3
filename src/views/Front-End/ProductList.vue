@@ -65,9 +65,11 @@ export default {
     },
     changGroup (sort) {
       this.$store.dispatch('productsModules/changGroup', sort)
+      this.$router.push(`/productList/${sort}`)
     },
     addCart (pid, qty = 1) {
-      this.$store.dispatch('addCart', { pid, qty })
+      console.log(pid, qty)
+      this.$store.dispatch('cartsModules/addCart', { pid, qty })
     },
     ...mapActions('productsModules', ['getProducts'])
   },
@@ -76,9 +78,9 @@ export default {
   },
   created () {
     this.$emit('closeNavList')
-    this.$emit('cartSw', true)
-    // this.sort = this.$route.params.sortId
-    // this.$store.commit('productsModules/SORT', this.$route.params.sortId)
+    this.$emit('cartSwitch', true)
+    this.sort = this.$route.params.sortId
+    this.$store.commit('productsModules/SORT', this.$route.params.sortId)
     this.getProducts()
   }
 }

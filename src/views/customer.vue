@@ -12,7 +12,7 @@
             <router-link to="/" class="active"><strong>首頁</strong></router-link>
           </li>
           <li>
-            <router-link to="ProductList/all" class="">產品列表</router-link>
+            <router-link to="/ProductList/all" class="">產品列表</router-link>
           </li>
           <li>
             <router-link to="/Search" class="">查詢訂單</router-link>
@@ -22,12 +22,13 @@
           </li>
         </ul>
         <button type="button" class="cartA" id="btn" @click="openCartModal()">
-         <i class="fas fa-shopping-cart"></i><span v-if="!(cartCount==0)">{{ cartCount }}</span>
+          <i class="fas fa-shopping-cart"></i>
+          <span v-if="cart.carts.length !== 0">{{ cart.carts.length }}</span>
         </button>
       </div>
     </header>
     <main>
-      <router-view @LoadingModel="loadingEvent" @getcart="getCart" @closeNavList="closeNavList" @cartSw="cartSw" :filterCarts="filterCarts"></router-view>
+      <router-view @closeNavList="closeNavList" @cartSwitch="cartSwitch" :filterCarts="filterCarts"></router-view>
     </main>
     <footer class="bg-dark text-muted p-2">
       <div class="footer indexContainer">
@@ -63,11 +64,10 @@
             <a href="#" class="btn btn-white" @click.prevent="closeCartModal()"><i class="text-white fas fa-times-circle mb-0"></i></a>
           </div>
           <div class="cart-body">
-            <div class="text-center h5 p-3 mb-0" v-if="!cartMSG">
+            <div class="text-center h5 p-3 mb-0" v-if="cart.carts.length == 0">
               <h3 class="text-center my-5">您尚未加入商品至購物車</h3>
-              <a href="#" class="btn bg-or text-white" @click.prevent="goPl()">趕快去逛逛</a>
             </div>
-            <div v-if="cartMSG">
+            <div v-if="cart.carts.length !== 0">
               <ul>
                 <li v-for="item in cart.carts" :key="item.id">
                   <img :src="item.product.imageUrl" :alt="item.product.title">
@@ -92,7 +92,8 @@
             </div>
           </div>
           <div class="cart-footer">
-            <a v-if="cartMSG" @click.prevent="goOrder()"><i class="fa fa-cart-plus" aria-hidden="true"></i> 結帳去</a>
+            <a @click.prevent="goOrder()" v-if="cart.carts.length !== 0"><i class="fa fa-cart-plus" aria-hidden="true"></i> 結帳去</a>
+            <a href="#" class="btn bg-or text-white" @click.prevent="goProduct()" v-if="cart.carts.length == 0">趕快去逛逛</a>
           </div>
         </div>
       </div>
@@ -115,13 +116,13 @@ export default {
     }
   },
   methods: {
-    cartSw (Sw) {
+    cartSwitch (Sw) {
       if (Sw) {
         $('.cartA').show()
+        // this.getCart()
       } else {
         $('.cartA').hide()
       }
-      this.getCart()
     },
     loadingEvent (opa) {
       this.isLoading = opa
@@ -141,28 +142,28 @@ export default {
       $('#cartMoadl').modal('show')
     },
     goOrder () {
-      const vm = this
       $('#cartMoadl').modal('hide')
+      this.clertCart()
       localStorage.setItem('checkoutStep', '1')
-      vm.$router.push('/Checkout')
+      this.$router.push('/Checkout')
     },
-    goPl () {
-      if (this.$route.path !== 'ProductList/all') {
+    goProduct () {
+      if (this.$route.path !== '/ProductList/all') {
         this.$router.push('ProductList/all')
       }
       this.closeCartModal()
     },
     removeCart (pid) {
-      this.$store.dispatch('removeCart', pid)
+      this.$store.dispatch('cartsModules/removeCart', pid)
     },
     correctCart (pid, qty) {
-      this.$store.dispatch('correctCart', { pid, qty })
+      this.$store.dispatch('cartsModules/correctCart', { pid, qty })
     },
-    ...mapActions('cartsModules', ['getCart'])
+    ...mapActions('cartsModules', ['getCart', 'clertCart'])
   },
   computed: {
     ...mapGetters(['isLoading']),
-    ...mapGetters('cartsModules', ['cart', 'cartCount', 'cartMSG'])
+    ...mapGetters('cartsModules', ['cart'])
   },
   created () {
     this.getCart()

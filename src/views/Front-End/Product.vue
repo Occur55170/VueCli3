@@ -51,31 +51,16 @@
 </template>
 
 <script>
-// import { mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import $ from 'jquery'
 
 export default {
   data () {
     return {
-      pid: '',
-      product: {},
       qty: 1
     }
   },
   methods: {
-    getProduct () {
-      const vm = this
-      vm.$store.dispatch('updateLoad', true)
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/product/${vm.pid}`
-      vm.$http.get(api).then((response) => {
-        vm.$store.dispatch('updateLoad', false)
-        if (response.data.success) {
-          vm.product = response.data.product
-          vm.textFilt()
-          vm.$store.dispatch('updateLoad', false)
-        }
-      })
-    },
     proCate (categoryName) {
       this.$router.push(`/ProductList/${categoryName}`)
     },
@@ -96,12 +81,8 @@ export default {
       $('#productDesc').html(newTextAry.join(''))
     },
     addCart (pid, qty = 1) {
-      const vm = this
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-      vm.$store.dispatch('updateLoad', true)
-      vm.$http.post(api, { 'data': { 'product_id': pid, 'qty': qty } }).then((response) => {
-        vm.$emit('getcart', '已成功將商品加入購物車')
-      })
+      let prod = this.product
+      this.$store.dispatch('cartsModules/addCart', { prod, qty })
     },
     qtyblur () {
       const vm = this
@@ -109,13 +90,16 @@ export default {
         vm.qty = 1
       }
     }
-    // ...mapActions(['addCart'])
+  },
+  computed: {
+    ...mapGetters('productsModules', ['product'])
   },
   created () {
     this.$emit('closeNavList')
     this.$emit('cartSw', true)
     this.pid = this.$route.params.id
-    this.getProduct()
+    this.$store.dispatch('productsModules/getProduct', this.$route.params.id)
+    // this.getProduct()
   }
 }
 </script>

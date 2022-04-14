@@ -10,7 +10,6 @@ import * as rules from 'vee-validate/dist/rules'
 import 'bootstrap'
 import App from './App.vue'
 import router from './router'
-import './bus'
 import store from './store/store'
 
 /* vue3不支援，之後刪除 */

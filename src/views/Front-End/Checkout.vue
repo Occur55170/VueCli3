@@ -237,14 +237,11 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
       orderId: '',
-      cart: {
-        carts: [],
-        final_total: ''
-      },
       form: {
         user: {
           name: '',
@@ -262,15 +259,10 @@ export default {
         cvc: ''
       },
       couponCode: '',
-      CouponTip: '',
-      preLen: 0,
-      // 初次載入數字依據
-      adstartlen: 0,
-      // 載入商品次數加總
-      addLen: 0
+      CouponTip: ''
     }
   },
-  props: ['filterCarts'],
+  // props: ['filterCarts'],
   methods: {
     restartCoupon () {
       const vm = this
@@ -278,92 +270,7 @@ export default {
       vm.$http.post(api, { 'data': { 'code': 'cancel' } }).then(response => {
         if (response.data.success) {
           vm.cart.final_total = ''
-          vm.getCart()
-        }
-      })
-    },
-    getCart () {
-      const vm = this
-      vm.$store.dispatch('updateLoad', true)
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-      vm.$http.get(api).then((response) => {
-        if (response.data.success) {
-          vm.cart.total = response.data.data.total
-          vm.cart.final_total = response.data.data.final_total
-          vm.adstartlen = vm.filterCarts.length
-          vm.removeCart(response.data.data.carts, 'get')
-        }
-      })
-    },
-    removeCart (rmData, mode) {
-      const vm = this
-      vm.$store.dispatch('updateLoad', true)
-      vm.preLen = vm.cart.carts.length
-      if (mode === 'get') {
-        rmData.forEach((item, index) => {
-          const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${item.id}`
-          vm.$http.delete(api).then((response) => {
-            console.log(response.data.success)
-            if (response.data.success) {
-              // 刪除最後一筆後，重新整理購物車
-              if (index + 1 === rmData.length) {
-                vm.addCart()
-              }
-            }
-          })
-        })
-      } else if (mode === 'adjust') {
-        const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${rmData}`
-        console.log(rmData)
-        vm.$http.delete(api).then((response) => {
-          if (response.data.success) {
-            vm.end()
-          }
-        })
-      } else {
-        const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${rmData}`
-        console.log(rmData)
-        let ckr = vm.cart.carts.filter(element => element.id === rmData)
-        vm.$http.delete(api).then((response) => {
-          if (response.data.success) {
-            console.log(ckr[0].product_id)
-            vm.end(ckr[0].product_id)
-          }
-        })
-      }
-    },
-    addCart (pid, qty = 1) {
-      const vm = this
-      vm.filterCarts.forEach(item => {
-        const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-        vm.$http.post(api, { 'data': { 'product_id': item.product_id, 'qty': item.qty } }).then((response) => {
-          if (response.data.success) {
-            console.log('調整新增資料完畢')
-            vm.addLen = vm.addLen + 1
-            if (vm.addLen === vm.adstartlen) {
-              vm.end()
-            }
-          }
-        })
-      })
-    },
-    end (pid) {
-      const vm = this
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-      vm.$http.get(api).then((response) => {
-        if (response.data.success) {
-          // 因為第一次載入頁面preLen不會賦值為0
-          if (response.data.data.carts.length !== vm.preLen) {
-            vm.cart = response.data.data
-            console.log(response.data.data)
-            vm.$store.dispatch('updateLoad', false)
-          } else {
-            console.log(response.data.data.carts)
-            console.log('pid的資料=' + pid)
-            let y = response.data.data.carts.filter(item => item.product_id === pid)
-            console.log(y)
-            vm.removeCart(y[0].id, 'adjust')
-          }
+          vm.initCart()
         }
       })
     },
@@ -396,7 +303,14 @@ export default {
           vm.$bus.$emit('message:push', response.data.message)
         }
       })
-    }
+    },
+    removeCart (pid) {
+      this.$store.dispatch('cartsModules/UpdateRemoveCart', pid)
+    },
+    ...mapActions('cartsModules', ['initCart'])
+  },
+  computed: {
+    ...mapGetters('cartsModules', ['cart'])
   },
   created () {
     this.$store.dispatch('updateLoad', true)
