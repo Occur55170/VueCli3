@@ -28,6 +28,7 @@
             <tr>
               <th></th>
               <th>商品名稱</th>
+              <th class="text-right">金額</th>
               <th class="text-right">數量</th>
               <th class="text-right">小計</th>
             </tr>
@@ -35,32 +36,22 @@
           <tbody>
             <tr v-for="item in cart.carts" :key="item.id" class="border-bottom">
               <td class="align-middle text-center py-5">
-                <a href="#" class="text-muted h4" @click.prevent="removeCart(item.id, false)">
+                <a href="#" class="text-muted h4" @click.prevent="removeCart(item.product.id, false)">
                   <i class="fas fa-trash-alt"></i>
                 </a>
               </td>
               <td class="align-middle">
                 <img :src="item.product.imageUrl" class="prodImg img-thumbnail" :alt="item.product.title">
-                  {{ item.product.title }}</td>
-              <td class="align-middle text-right">{{ item.qty }} {{ item.product.unit }}</td>
+                  {{ item.product.title }}
+              </td>
               <td class="align-middle text-right">{{ item.product.price|corrency }}</td>
+              <td class="align-middle text-right">{{ item.qty }} {{ item.product.unit }}</td>
+              <td class="align-middle text-right">{{ item.final_total|corrency }}</td>
             </tr>
-            <tr v-if="cart.final_total!==cart.total">
-              <td colspan="3" class="text-right border-top-0">商品總額</td>
+            <tr v-if="cart.final_total==cart.total">
+              <td colspan="4" class="text-right border-top-0">訂單金額</td>
               <td class="text-right border-top-0">
                 <strong>{{ cart.total|corrency }}</strong>
-              </td>
-            </tr>
-            <tr v-if="cart.final_total!==cart.total">
-              <td colspan="3" class="text-right border-top-0">優惠折扣</td>
-              <td class="text-right border-top-0">
-                <strong>{{ cart.total-cart.final_total|corrency }}</strong>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="3" class="text-right border-top-0 text-danger">總計</td>
-              <td class="text-right border-top-0">
-                <strong>{{ cart.final_total|corrency }}</strong>
               </td>
             </tr>
           </tbody>
@@ -173,6 +164,7 @@
               <thead>
                 <tr>
                   <td class="text-left">商品名稱</td>
+                  <td class="text-center">單價</td>
                   <td class="text-center">數量</td>
                   <td class="text-right">金額</td>
                 </tr>
@@ -180,21 +172,22 @@
               <tbody>
                 <tr v-for="item in cart.carts" :key="item.id">
                   <td class="text-left">{{ item.product.title }}</td>
+                  <td class="text-left">{{ item.product.price }}</td>
                   <td class="text-center">{{ item.qty }} {{ item.product.unit }}</td>
-                  <td class="text-right">{{ item.product.price|corrency }}</td>
+                  <td class="text-right">{{ item.product.price * item.qty|corrency }}</td>
                 </tr>
               </tbody>
               <tfoot>
                 <tr v-if="cart.final_total!==cart.total">
-                  <td colspan="2" class="text-right border-top-0">小計</td>
+                  <td colspan="3" class="text-right border-top-0">小計</td>
                   <td class="text-right border-top-0">{{ cart.total|corrency }}</td>
                 </tr>
                 <tr v-if="cart.final_total!==cart.total">
-                  <td colspan="2" class="text-right border-top-0">優惠折扣</td>
+                  <td colspan="3" class="text-right border-top-0">優惠折扣</td>
                   <td class="text-right border-top-0">-{{ cart.total-cart.final_total|corrency }}</td>
                 </tr>
                 <tr>
-                  <td colspan="2" class="text-right border-top-0 text-danger">總計</td>
+                  <td colspan="3" class="text-right border-top-0 text-danger">總計</td>
                   <td class="text-right border-top-0">{{ cart.final_total|corrency }}</td>
                 </tr>
               </tfoot>
@@ -237,14 +230,11 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
-      orderId: '',
-      cart: {
-        carts: [],
-        final_total: ''
-      },
+      payMode: '',
       form: {
         user: {
           name: '',
@@ -254,119 +244,17 @@ export default {
         },
         message: ''
       },
-      step: 1,
-      payMode: '',
       credit: {
         cardNum: '',
         expireDate: '',
         cvc: ''
       },
+      step: 1,
       couponCode: '',
-      CouponTip: '',
-      preLen: 0,
-      // 初次載入數字依據
-      adstartlen: 0,
-      // 載入商品次數加總
-      addLen: 0
+      CouponTip: ''
     }
   },
-  props: ['filterCarts'],
   methods: {
-    restartCoupon () {
-      const vm = this
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/coupon`
-      vm.$http.post(api, { 'data': { 'code': 'cancel' } }).then(response => {
-        if (response.data.success) {
-          vm.cart.final_total = ''
-          vm.getCart()
-        }
-      })
-    },
-    getCart () {
-      const vm = this
-      vm.$emit('LoadingModel', true)
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-      vm.$http.get(api).then((response) => {
-        if (response.data.success) {
-          vm.cart.total = response.data.data.total
-          vm.cart.final_total = response.data.data.final_total
-          vm.adstartlen = vm.filterCarts.length
-          vm.removeCart(response.data.data.carts, 'get')
-        }
-      })
-    },
-    removeCart (rmData, mode) {
-      const vm = this
-      vm.$emit('LoadingModel', true)
-      vm.preLen = vm.cart.carts.length
-      if (mode === 'get') {
-        rmData.forEach((item, index) => {
-          const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${item.id}`
-          vm.$http.delete(api).then((response) => {
-            console.log(response.data.success)
-            if (response.data.success) {
-              // 刪除最後一筆後，重新整理購物車
-              if (index + 1 === rmData.length) {
-                vm.addCart()
-              }
-            }
-          })
-        })
-      } else if (mode === 'adjust') {
-        const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${rmData}`
-        console.log(rmData)
-        vm.$http.delete(api).then((response) => {
-          if (response.data.success) {
-            vm.end()
-          }
-        })
-      } else {
-        const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${rmData}`
-        console.log(rmData)
-        let ckr = vm.cart.carts.filter(element => element.id === rmData)
-        vm.$http.delete(api).then((response) => {
-          if (response.data.success) {
-            console.log(ckr[0].product_id)
-            vm.end(ckr[0].product_id)
-          }
-        })
-      }
-    },
-    addCart (pid, qty = 1) {
-      const vm = this
-      vm.filterCarts.forEach(item => {
-        const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-        vm.$http.post(api, { 'data': { 'product_id': item.product_id, 'qty': item.qty } }).then((response) => {
-          if (response.data.success) {
-            console.log('調整新增資料完畢')
-            vm.addLen = vm.addLen + 1
-            if (vm.addLen === vm.adstartlen) {
-              vm.end()
-            }
-          }
-        })
-      })
-    },
-    end (pid) {
-      const vm = this
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-      vm.$http.get(api).then((response) => {
-        if (response.data.success) {
-          // 因為第一次載入頁面preLen不會賦值為0
-          if (response.data.data.carts.length !== vm.preLen) {
-            vm.cart = response.data.data
-            console.log(response.data.data)
-            vm.$emit('LoadingModel', false)
-          } else {
-            console.log(response.data.data.carts)
-            console.log('pid的資料=' + pid)
-            let y = response.data.data.carts.filter(item => item.product_id === pid)
-            console.log(y)
-            vm.removeCart(y[0].id, 'adjust')
-          }
-        }
-      })
-    },
     cancelOrder () {
       this.$router.push('/ProductList/all')
     },
@@ -379,35 +267,30 @@ export default {
         }
       })
     },
-    addCoupon () {
-      const vm = this
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/coupon`
-      vm.$http.post(api, { 'data': { 'code': vm.couponCode } }).then(response => {
-        if (response.data.success) {
-          vm.$bus.$emit('message:push', '已成功加入優惠卷')
-          const apis = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-          vm.$http.get(apis).then((response) => {
-            if (response.data.success) {
-              vm.cart = response.data.data
-            }
-          })
-        } else {
-          vm.couponCode = ''
-          vm.$bus.$emit('message:push', response.data.message)
-        }
-      })
-    }
+    addCoupon (couponCode) {
+      console.log(couponCode)
+      this.$store.dispatch('addCoupon', couponCode)
+    },
+    removeCart (pid) {
+      this.$store.dispatch('cartsModules/UpdateRemoveCart', pid)
+    },
+    ...mapActions('cartsModules', ['cleartCart'])
+  },
+  computed: {
+    ...mapGetters('cartsModules', ['cart'])
   },
   created () {
-    this.$emit('LoadingModel', true)
+    this.$store.dispatch('updateLoad', true)
     this.$emit('closeNavList')
-    this.$emit('cartSw', false)
-    if (!(localStorage.getItem('checkoutStep'))) {
-      this.$router.push('/')
-    } else {
-      this.restartCoupon()
-      localStorage.removeItem('checkoutStep')
-    }
+    this.$store.dispatch('cartsModules/updateCartA', true)
+    this.$store.dispatch('cartsModules/updateCartA', false).then(() => {
+      if (!(localStorage.getItem('checkoutStep'))) {
+        this.$router.push('/')
+      } else {
+        this.cleartCart()
+        localStorage.removeItem('checkoutStep')
+      }
+    })
   }
 }
 </script>
@@ -437,12 +320,15 @@ export default {
           width:10%;
         }
         th:nth-Child(2) {
-          width:50%;
+          width:40%;
         }
         th:nth-Child(3) {
-          width:20%;
+          width:15%;
         }
         th:nth-Child(4) {
+          width:20%;
+        }
+        th:nth-Child(5) {
           width:20%;
         }
       }

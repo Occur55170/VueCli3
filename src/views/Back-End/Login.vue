@@ -39,10 +39,10 @@ export default {
           const token = response.data.token
           const expired = response.data.expired
           document.cookie = `occToken=${token};expires=${new Date(expired)};`
-          vm.$bus.$emit('message:push', response.data.message, 'success')
+          // vm.$bus.$emit('message:push', response.data.message, 'success')
           vm.$router.push('/admin/Products')
         } else {
-          vm.$bus.$emit('message:push', response.data.message, 'danger')
+          // vm.$bus.$emit('message:push', response.data.message, 'danger')
         }
       })
     }

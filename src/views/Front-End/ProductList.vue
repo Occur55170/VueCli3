@@ -1,120 +1,82 @@
 <template>
 <div>
-
   <div class="productListOrder pt-3">
-    <!-- banner -->
     <div class="jumbotron jumbotron-fluid jumbotron-bg d-flex align-items-end productListBN">
-      <div class="container">
+      <div class="indexContainer">
         <h1 class="display-3 font-weight-bold text-white">線上訂購</h1>
       </div>
     </div>
-    <!-- banner -->
-    <!-- main -->
-    <div class="container mainContant mb-1 d-flex justify-content-between flex-wrap">
-        <!-- 類別選單 (List group) -->
-        <div class="list-group pb-2 text-left">
-          <a href="#" class="h5 list-group-item font-weight-bold list-group-item-action list-group-item-light mb-0" @click.prevent="changGroup('all')">全部顯示</a>
-          <a href="#" class="h5 list-group-item font-weight-bold list-group-item-action list-group-item-light mb-0" v-for="(item,key) in GList" :key="key" @click.prevent="changGroup(item)">{{ item }}</a>
-        </div>
-        <!-- 類別選單 (List group) -->
-        <!-- 主要商品列表 (Card) -->
-        <div class="productList">
-          <div class="mb-4" v-for="item in proList" :key="item.id">
-            <div class="card border-0 box-shadow text-center h-100">
-              <a href="#" class="card-title" @click.prevent="moreProduct(item.id)">
-                <img class="card-img-top" :src="item.imageUrl" alt="Card image cap">
-              </a>
-              <div class="card-body">
-                <h4>{{ item.title }}</h4>
-                <p class="h6 text-left">{{ item.description }}</p>
-              </div>
-              <div class="card-footer border-top-0 bg-white" v-if="!item.is_enable">
-                <a href="#" class="btn btn-outline-secondary btn-block btn-sm disabled">缺貨中</a>
-              </div>
-              <div class="card-footer border-top-0 bg-white pt-0" v-if="item.is_enable">
-                <div class=" mb-4">
-                  <p class="h5 text-muted text-left mb-1"  v-show="item.origin_price !== item.price"><del>原價 {{ item.origin_price | corrency }}</del></p>
-                  <p class="h4 font-weight-bold">網路價 <span class="h2 text-danger">{{ item.price | corrency }}</span></p>
-                </div>
-                <a href="#" class="btn btn-outline-secondary btn-block btn-sm" @click.prevent="addCart(item.id)">
-                  <i class="fa fa-cart-plus" aria-hidden="true"></i>搶購去
-                </a>
-              </div>
-          </div>
-        </div>
-        <!-- 主要商品列表 (Card) -->
+    <div class="indexContainer mb-3 arrange">
+      <a href="" class="btn btn-outline-secondary" @click.prevent="changMode = 'slist'"><i class="fas fa-th-large"></i></a>
+      <a href="" class="btn btn-outline-secondary ml-3" @click.prevent="changMode = 'etclist'"><i class="fas fa-list"></i></a>
     </div>
-    <!-- main -->
+    <div class="indexContainer mainContant mb-1 d-flex justify-content-between flex-wrap">
+      <div class="list-group pb-2 text-left">
+        <a href="#" class="h5 list-group-item font-weight-bold list-group-item-action list-group-item-light mb-0" @click.prevent="changGroup('all')">全部顯示</a>
+        <a href="#" class="h5 list-group-item font-weight-bold list-group-item-action list-group-item-light mb-0" v-for="(item,key) in groupList" :key="key" @click.prevent="changGroup(item)">{{ item }}</a>
+      </div>
+      <div class="productList" :class="{'slist':changMode == 'slist','etclist':changMode == 'etclist'}">
+        <div class="mb-4" v-for="item in productList" :key="item.id">
+          <div class="card border-0 box-shadow text-center h-100">
+            <a href="#" class="card-title" @click.prevent="moreProduct(item.id)">
+              <img class="card-img-top" :src="item.imageUrl" alt="Card image cap">
+            </a>
+            <div class="card-body">
+              <h4>{{ item.title }}</h4>
+              <p class="h6 text-left">{{ item.description }}</p>
+            </div>
+            <div class="card-footer border-top-0 bg-white" v-if="!item.is_enable">
+              <a href="#" class="btn btn-outline-secondary btn-block btn-sm disabled">缺貨中</a>
+            </div>
+            <div class="card-footer border-top-0 bg-white" v-if="item.is_enable">
+              <div class=" mb-4">
+                <p class="h5 text-muted text-left" v-show="item.origin_price !== item.price"><del>原價 {{ item.origin_price | corrency }}</del></p>
+                <p class="h4 font-weight-bold">網路價 <span class="h2 text-danger">{{ item.price | corrency }}</span></p>
+              </div>
+              <a href="#" class="btn btn-outline-secondary btn-block btn-sm" @click.prevent="addCart(item.id)">
+                <i class="fa fa-cart-plus" aria-hidden="true"></i>搶購去
+              </a>
+            </div>
+        </div>
+      </div>
+    </div>
   </div>
   </div>
 </div>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
   data () {
     return {
-      productList: [],
-      modalProduct: {},
-      GroupList: [],
-      sort: ''
+      changMode: 'slist'
     }
   },
   methods: {
-    getProducts (page = 1) {
-      const vm = this
-      vm.$emit('LoadingModel', true)
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/products/all`
-      vm.$http.get(api).then((response) => {
-        vm.$emit('LoadingModel', false)
-        if (response.data.success) {
-          vm.productList = response.data.products
-        }
-      })
-    },
     moreProduct (pid) {
-      const vm = this
-      vm.$router.push(`/Product/${pid}`)
+      this.$router.push(`/Product/${pid}`)
     },
-    changGroup (sortName) {
-      if (this.sort !== sortName) {
-        this.sort = sortName
-        this.$router.push(`/productList/${sortName}`)
-      }
+    changGroup (sort) {
+      this.$store.dispatch('productsModules/changGroup', sort)
+      this.$router.push(`/productList/${sort}`)
     },
     addCart (pid, qty = 1) {
-      const vm = this
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-      vm.$emit('LoadingModel', true)
-      vm.$http.post(api, { 'data': { 'product_id': pid, 'qty': qty } }).then((response) => {
-        vm.$emit('getcart', '已成功將商品加入購物車')
-      })
-    }
+      this.$store.dispatch('cartsModules/addCart', { pid, qty })
+    },
+    changArr () {
+      console.log('1')
+    },
+    ...mapActions('productsModules', ['getProducts'])
   },
   computed: {
-    GList () {
-      const vm = this
-      vm.productList.map(element => {
-        if (vm.GroupList.indexOf(element.category) === -1) {
-          vm.GroupList.push(element.category)
-        }
-      })
-      return vm.GroupList
-    },
-    proList () {
-      const vm = this
-      if (vm.sort !== 'all') {
-        return vm.productList.filter(element => {
-          return element.category === vm.sort
-        })
-      } else {
-        return vm.productList
-      }
-    }
+    ...mapGetters('productsModules', ['productList', 'groupList'])
   },
   created () {
     this.$emit('closeNavList')
-    this.$emit('cartSw', true)
+    this.$store.dispatch('cartsModules/updateCartA', true)
     this.sort = this.$route.params.sortId
+    this.$store.commit('productsModules/SORT', this.$route.params.sortId)
     this.getProducts()
   }
 }
@@ -142,6 +104,10 @@ export default {
       z-index:5;
     }
   }
+  .arrange {
+    display:flex;
+    justify-content:flex-end;
+  }
   .mainContant{
     display:flex;
     justify-content:space-between;
@@ -151,14 +117,17 @@ export default {
   }
   .productList{
     width:78%;
+  }
+  .slist{
     display:flex;
     flex-wrap:wrap;
     &>div{
-      width:32%;
-      margin:calc((100% - 96%)/6);
+      width:31%;
+      margin:calc((100% - 93%)/6);
     }
     & .card-title{
       position:relative;
+      margin-bottom:0;
       img{
         width:100%;
         height:230px;
@@ -204,20 +173,124 @@ export default {
         font-size:16px;
       }
     }
+    & .card-footer{
+      padding-bottom:20px;
+    }
+  }
+  .etclist{
+    &>div{
+      width: 100%;
+      .card{
+        flex-flow:row;
+        align-items: center;
+        padding-right:20px;
+      }
+      .card-title{
+        margin-bottom:0;
+        height:120px;
+        width:120px;
+        position:relative;
+        overflow:hidden;
+        img{
+          width:120px;
+        }
+      }
+      .card-body{
+        width:45%;
+        text-align:left;
+        padding-top:0;
+        padding-bottom:0;
+        flex-grow:2;
+        flex-shrink:2;
+        h4{
+          font-weight: bold;
+          margin-bottom: 10px;
+          color:#f28200;
+        }
+      }
+      .card-footer{
+        display:flex;
+        align-items:center;
+        padding:0;
+        width:30%;
+        &>div{
+          margin:0 20px 0 0 !important;
+          .h5{
+            font-size:16px;
+          }
+          .h4{
+            display:flex;
+            align-items:center;
+            font-size:24px;
+            span{
+              margin-bottom:0;
+            }
+          }
+        }
+        a{
+          width: auto;
+        }
+      }
+    }
   }
 }
-@media(max-width:1000px){
+@media(max-width:1050px){
   .productListOrder{
     .list-group{
-      width:28%;
+      width:20%;
     }
     .productList{
-      width:70%;
+      width:78%;
       display:flex;
       flex-wrap:wrap;
       &>div{
-        width:48%;
+        width:32%;
         margin:calc((100% - 96%)/6);
+      }
+    }
+    .etclist{
+      div{
+        width: 100%;
+        justify-content:space-between;
+        .card{
+          width:100%;
+          padding-right: 0;
+        }
+        .card-body{
+          width:50%;
+          text-align:left;
+          padding:0 20px;
+          box-sizing:border-box;
+          flex-shrink:2;
+          line-height:1.6;
+          h4{
+            font-weight: bold;
+            margin-bottom: 10px;
+          }
+          p{
+            line-height:1.6;
+          }
+        }
+        .card-footer{
+          width:30%;
+          &>div{
+            margin: 0 10px 0 0 !important;
+            .h5{
+              font-size:16px;
+            }
+            .h4{
+              display:flex;
+              align-items:center;
+              font-size:20px;
+              span{
+                margin-bottom:0;
+              }
+            }
+          }
+          a{
+            width: auto;
+          }
+        }
       }
     }
   }
@@ -230,14 +303,20 @@ export default {
       justify-content:space-between;
     }
     .list-group{
-      width:28%;
+      width:22%;
+      a{
+        padding:10px;
+        font-size:20px;
+      }
     }
     .productList{
-      width:72%;
+      width:75%;
+    }
+    .slist{
       justify-content:flex-start;
       &>div{
-        width:48%;
-        margin:calc((100% - 96%)/4);
+        width:40%;
+        margin:calc((100% - 80%)/4);
       }
       .card-title img{
         width: 100%;
@@ -250,6 +329,41 @@ export default {
         }
         h4{
           font-size: 20px;
+        }
+      }
+    }
+    .etclist{
+      div{
+        .card{
+          padding-right:10px;
+          box-sizing:border-box;
+        }
+        .card-title{
+          margin-bottom:0;
+          height:120px;
+          width:120px;
+          position:relative;
+          overflow:hidden;
+          img{
+            width:120px;
+          }
+        }
+        .card-body{
+          padding:10px;
+        }
+        .card-footer > {
+          width:32%;
+          div {
+            .h5{
+              display:none;
+            }
+            .h4{
+              display:block;
+            }
+          }
+          a{
+            width:150px;
+          }
         }
       }
     }
@@ -271,6 +385,7 @@ export default {
         border: 1px solid rgba(0,0,0,0.125) !important;
       }
     }
+    .arrange{display:none;}
     .productList{
       width:90%;
       margin:0 auto;
@@ -291,6 +406,32 @@ export default {
         h4{
           font-size: 26px;
         }
+      }
+    }
+    .etclist{
+      div{
+        .card{
+          display:block;
+          padding:10px 20px;
+        }
+        .card-title img{
+          width: 100%;
+          height: 260px;
+        }
+        .card-body{
+          width:auto;
+          padding:10px;
+          .h6{
+            font-size: 15px;
+          }
+          h4{
+            font-size: 26px;
+          }
+        }
+        .card-footer{
+          width:auto;
+        }
+
       }
     }
   }

@@ -10,41 +10,15 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
   name: 'AlertMSG',
-  data () {
-    return {
-      messages: []
-    }
-  },
   methods: {
-    updateMessage (message) {
-      const timestamp = Math.floor(new Date() / 1000)
-      this.messages.push({
-        message,
-        timestamp
-      })
-      this.removeMessageWithTiming(timestamp)
-    },
-    removeMessage (num) {
-      this.messages.splice(num, 1)
-    },
-    removeMessageWithTiming (timestamp) {
-      const vm = this
-      setTimeout(() => {
-        vm.messages.forEach((item, i) => {
-          if (item.timestamp === timestamp) {
-            vm.messages.splice(i, 1)
-          }
-        })
-      }, 1000)
-    }
+    ...mapActions('alertModules', ['updateMessage', 'removeMessageWithTiming'])
   },
-  created () {
-    const vm = this
-    vm.$bus.$on('message:push', (message) => {
-      vm.updateMessage(message)
-    })
+  computed: {
+    ...mapGetters('alertModules', ['messages'])
   }
 }
 </script>
