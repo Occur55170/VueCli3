@@ -7,8 +7,8 @@
       </div>
     </div>
     <div class="indexContainer mb-3 arrange">
-      <a href="" class="btn btn-outline-secondary" @click.prevent="changMode = 'slist'">1</a>
-      <a href="" class="btn btn-outline-secondary ml-3" @click.prevent="changMode = 'etclist'">2</a>
+      <a href="" class="btn btn-outline-secondary" @click.prevent="changMode = 'slist'"><i class="fas fa-th-large"></i></a>
+      <a href="" class="btn btn-outline-secondary ml-3" @click.prevent="changMode = 'etclist'"><i class="fas fa-list"></i></a>
     </div>
     <div class="indexContainer mainContant mb-1 d-flex justify-content-between flex-wrap">
       <div class="list-group pb-2 text-left">
