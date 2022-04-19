@@ -91,7 +91,6 @@ export default {
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/pay/${vm.orderId}`
       vm.$http.post(api).then(response => {
         if (response.data.success) {
-          vm.$emit('getcart')
           vm.searchOrder()
         }
       })
@@ -102,6 +101,7 @@ export default {
       vm.$http.get(api).then(response => {
         if (response.data.success) {
           vm.order = response.data.order
+          vm.$store.dispatch('cartsModules/initCart')
           vm.$store.dispatch('updateLoad', false)
         }
       })
@@ -109,7 +109,6 @@ export default {
   },
   created () {
     this.$emit('closeNavList')
-    this.$emit('cartSw', false)
     this.orderId = this.$route.params.id
     this.getOrder()
   }

@@ -21,14 +21,14 @@
             <router-link to="/Storebase" class="">門市據點</router-link>
           </li>
         </ul>
-        <button type="button" class="cartA" id="btn" @click="openCartModal()">
+        <button type="button" class="cartA" id="btn" @click="openCartModal()" v-show="cartA">
           <i class="fas fa-shopping-cart"></i>
           <span v-if="cart.carts.length !== 0">{{ cart.carts.length }}</span>
         </button>
       </div>
     </header>
     <main>
-      <router-view @closeNavList="closeNavList" @cartSwitch="cartSwitch" :filterCarts="filterCarts"></router-view>
+      <router-view @closeNavList="closeNavList"></router-view>
     </main>
     <footer class="bg-dark text-muted p-2">
       <div class="footer indexContainer">
@@ -109,24 +109,8 @@ import AlertMSG from '@/components/AlertMSG.vue'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  data  () {
-    return {
-      msg: 'Customer',
-      filterCarts: []
-    }
-  },
+  name: 'Customer',
   methods: {
-    cartSwitch (Sw) {
-      if (Sw) {
-        $('.cartA').show()
-        // this.getCart()
-      } else {
-        $('.cartA').hide()
-      }
-    },
-    loadingEvent (opa) {
-      this.isLoading = opa
-    },
     openNavList () {
       $('.navList').slideToggle()
     },
@@ -144,7 +128,6 @@ export default {
     goOrder () {
       $('#cartMoadl').modal('hide')
       localStorage.setItem('checkoutStep', '1')
-      this.clertCart()
       this.$router.push('/Checkout')
     },
     goProduct () {
@@ -159,14 +142,15 @@ export default {
     correctCart (pid, qty) {
       this.$store.dispatch('cartsModules/correctCart', { pid, qty })
     },
-    ...mapActions('cartsModules', ['getCart', 'clertCart'])
+    ...mapActions('cartsModules', ['getCart'])
   },
   computed: {
     ...mapGetters(['isLoading']),
-    ...mapGetters('cartsModules', ['cart'])
+    ...mapGetters('cartsModules', ['cart', 'cartA'])
   },
   created () {
     this.getCart()
+    this.$store.dispatch('cartsModules/updateCartA', true)
   },
   components: {
     AlertMSG

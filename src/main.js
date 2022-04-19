@@ -11,6 +11,7 @@ import 'bootstrap'
 import App from './App.vue'
 import router from './router'
 import store from './store/store'
+import './bus'
 
 /* vue3不支援，之後刪除 */
 import correncyFilter from './filters/corrency'

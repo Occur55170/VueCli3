@@ -134,7 +134,6 @@ export default {
       const vm = this
       vm.isLoading = true
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/products?page=${page}`
-
       this.$http.get(api).then((response) => {
         vm.products = response.data.products
         vm.isLoading = false

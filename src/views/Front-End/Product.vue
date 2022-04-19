@@ -41,8 +41,8 @@
         </div>
         <div class="alert alert-secondary mt-4 w-100 instruction" role="alert">
           <h2 class="text-center">購物說明</h2>
-          <p class="productDesc" id="productDesc">
-          {{ product.content }}
+          <p class="productDesc" id="productDesc" v-html="productContent">
+          <!-- {{ productContent }} -->
           </p>
         </div>
       </div>
@@ -92,14 +92,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('productsModules', ['product'])
+    ...mapGetters('productsModules', ['product', 'productContent'])
   },
   created () {
     this.$emit('closeNavList')
     this.$emit('cartSw', true)
+    this.$store.dispatch('cartsModules/updateCartA', true)
     this.pid = this.$route.params.id
     this.$store.dispatch('productsModules/getProduct', this.$route.params.id)
-    // this.getProduct()
   }
 }
 </script>

@@ -53,13 +53,11 @@
         </table>
       </div>
     </div>
-    <div v-if="order.user.name?false:true" class="my-5 py-5"></div>
   </div>
 </div>
 </template>
 
 <script>
-import $ from 'jquery'
 export default {
   data () {
     return {
@@ -73,18 +71,26 @@ export default {
   methods: {
     searchOrder () {
       const vm = this
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/order/${this.orderId}`
-      vm.$http.get(api).then((response) => {
-        if (response.data.success) {
-          vm.order = response.data.order
-          $('.orderData').show()
-        }
-      })
+      if (vm.orderId !== '') {
+        const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/order/${this.orderId}`
+        vm.$http.get(api).then((response) => {
+          console.log(response)
+          if (response.data.order) {
+            console.log(response.data.order)
+            vm.order = response.data.order
+          } else {
+            this.$store.dispatch('alertModules/updateMessage', '查無此訂單，請重新操作')
+          }
+        })
+      } else {
+        this.$store.dispatch('alertModules/updateMessage', '請輸入訂單編號')
+      }
     }
   },
   created () {
     this.$emit('closeNavList')
     this.$emit('cartSw', true)
+    this.$store.dispatch('cartsModules/updateCartA', true)
   }
 }
 </script>

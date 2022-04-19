@@ -8,12 +8,12 @@ export default {
       carts: [],
       total: 0,
       final_total: 0
-    }
+    },
+    cartA: true
   },
   actions: {
     getCart (context, status) {
       context.dispatch('updateLoad', true, { root: true })
-      // 第一次進入頁面購物車領取，之後更新購物車
       let carts = JSON.parse(localStorage.getItem('carts')) || []
       context.commit('CARTS', carts)
       context.dispatch('updateLoad', false, { root: true })
@@ -22,7 +22,6 @@ export default {
       context.dispatch('updateLoad', true, { root: true })
       let carts = context.state.cart.carts
       if (pid) {
-        console.log(pid, qty)
         let prod = context.rootState.productsModules.productList.find(item => item.id === pid)
         if (!carts.find(item => item.product.id === pid)) {
           context.commit('ADDCART', { 'product': prod, 'qty': qty })
@@ -38,7 +37,7 @@ export default {
           context.dispatch('correctCart', { pid, qty })
         }
       } else {
-        console.log('你來亂的')
+        this.dispatch('alertModules/updateMessage', '加入購物車失敗，請重新整理後再加入購物車一次')
       }
     },
     removeCart (context, pid) {
@@ -56,79 +55,85 @@ export default {
       context.commit('CORRECTCART', { index, qty, msg })
       this.dispatch('updateLoad', false, { root: true })
     },
-    clertCart (context, status) {
-      // 初始化後台購物車
-      // context.dispatch('updateLoad', true, { root: true })
+    cleartCart (context, status) {
+      // 清除之前的購物車
+      context.dispatch('updateLoad', true, { root: true })
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
       axios.get(api).then(response => {
         if (response.data.success) {
-          // 會一直回傳購物車內容給刪除事件清空
-          response.data.data.carts.forEach((item) => {
-            context.dispatch('UpdateRemoveCart')
-          })
+          // 可調整
+          let carts = response.data.data.carts
+          if (carts.length !== 0) {
+            let i = 0
+            carts.forEach((item, index) => {
+              const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${item.id}`
+              axios.delete(url).then(response => {
+                if (response.data.success) {
+                  i = i + 1
+                }
+              }).then(() => {
+                if (i === carts.length) {
+                  context.dispatch('updateCart')
+                }
+              })
+            })
+          } else {
+            context.dispatch('updateCart')
+          }
+          // 可調整
         }
       })
     },
-    UpdateRemoveCart (context, pid) {
-      // context.dispatch('updateLoad', true, { root: true })
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${pid}`
-      axios.delete(api).then(response => {
+    updateCart (context, status) {
+      // 上傳購物車
+      context.dispatch('updateLoad', true, { root: true })
+      let carts = context.state.cart.carts
+      let i = 0
+      carts.forEach((item, index) => {
+        const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
+        let data = { 'product_id': item.product.id, 'qty': item.qty }
+        axios.post(api, { 'data': data }).then(response => {
+          if (response.data.success) {
+            i = i + 1
+            if (i === carts.length) {
+              context.dispatch('initCart')
+            } else {
+              console.log(i)
+            }
+          }
+        })
+      })
+    },
+    initCart (context, status) {
+      // 同步購物車
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
+      axios.get(api).then(response => {
         if (response.data.success) {
+          context.commit('CARTS', response.data.data.carts)
+          context.commit('FINAL_TOTAL', response.data.data.final_total)
+          context.commit('TOTAL', response.data.data.total)
           context.dispatch('updateLoad', false, { root: true })
         }
       })
     },
-    initCart (context, status) {
-      console.log('購物車已清空')
-    // context.dispatch('updateLoad', false, { root: true })
-    //   context.state.cart.carts.forEach((items, index) => {
-    //     const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-    //     let data = { 'product_id': items.product.id, 'qty': items.qty }
-    //     axios.post(api, { 'data': data }).then(response => {
-    //       if (response.data.success) {
-    //         console.log('success')
-    //         console.log(items)
-    //         if (index + 1 === context.state.cart.carts.length) {
-    //           context.dispatch('updateLoad', false, { root: true })
-    //         }
-    //       }
-    //     })
-    //   })
+    UpdateRemoveCart (context, pid) {
+      context.dispatch('updateLoad', true, { root: true })
+      context.dispatch('removeCart', pid)
+      localStorage.setItem('carts', JSON.stringify(context.state.cart.carts))
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${pid}`
+      axios.delete(api).then(response => {
+        if (response.data.success) {
+          localStorage.setItem('carts', JSON.stringify(context.state.cart.carts))
+          context.dispatch('updateLoad', false, { root: true })
+        }
+      })
     },
-    UpdateAddCart (context, pid) {
-    // context.dispatch('initCart')
-    // this.dispatch('updateLoad', false, { root: true })
-    //   context.state.cart.carts.forEach((items, index) => {
-    //     const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-    //     let data = { 'product_id': items.product.id, 'qty': items.qty }
-    //     axios.post(api, { 'data': data }).then(response => {
-    //       if (response.data.success) {
-    //         console.log('success')
-    //         console.log(items)
-    //         if (index + 1 === context.state.cart.carts.length) {
-    //           this.dispatch('updateLoad', false, { root: true })
-    //         }
-    //       }
-    //     })
-    //   })
+    updateCartA (context, status) {
+      context.commit('CARTA', status)
     }
-    // initCart (context, status) {
-    //   // 初始化後台購物車
-    //   context.dispatch('updateLoad', true, { root: true })
-    //   const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-    //   axios.get(api).then(response => {
-    //     if (response.data.success) {
-    //       context.commit('CARTS', response.data.data.carts)
-    //       context.commit('TOTAL', response.data.data.total)
-    //       context.commit('FINAL_TOTAL', response.data.data.final_total)
-    //       context.dispatch('updateLoad', false, { root: true })
-    //     }
-    //   })
-    // },
   },
   mutations: {
     CARTS (state, payload) {
-      // payload 須為陣列
       state.cart.carts = payload
       localStorage.setItem('carts', JSON.stringify(state.cart.carts))
       this.dispatch('updateLoad', false, { root: true })
@@ -158,9 +163,13 @@ export default {
     },
     FINAL_TOTAL (state, payload) {
       state.cart.final_total = payload
+    },
+    CARTA (state, payload) {
+      state.cartA = payload
     }
   },
   getters: {
-    cart: (state) => state.cart
+    cart: (state) => state.cart,
+    cartA: (state) => state.cartA
   }
 }

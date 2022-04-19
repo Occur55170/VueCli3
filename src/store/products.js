@@ -7,7 +7,8 @@ export default {
     productList: [],
     product: {},
     groupList: [],
-    sort: 'all'
+    sort: 'all',
+    productContent: ''
   },
   actions: {
     getProducts (context, status) {
@@ -27,7 +28,7 @@ export default {
       axios.get(api).then((response) => {
         if (response.data.success) {
           context.commit('PRODUCT', response.data.product)
-          // vm.textFilt()
+          context.commit('PRODUCTCONTENT', response.data.product.content)
           context.dispatch('updateLoad', false, { root: true })
         }
       })
@@ -40,15 +41,26 @@ export default {
     PRODUCTlIST (state, status) {
       state.productList = status
     },
-    PRODUCT (state, status) {
-      state.product = status
-    },
     GLIST (state, status) {
       status.map(element => {
         if (state.groupList.indexOf(element.category) === -1) {
           state.groupList.push(element.category)
         }
       })
+    },
+    PRODUCT (state, status) {
+      state.product = status
+    },
+    PRODUCTCONTENT (state, status) {
+      let prodContent = status
+      let newTextAry = []
+      for (let i = 0; prodContent.length > i; i++) {
+        if (prodContent[i] === '♥' && i !== 0) {
+          newTextAry.push('<br>&nbsp;')
+        }
+        newTextAry.push(prodContent[i])
+      }
+      state.productContent = newTextAry.join('')
     },
     SORT (state, status) {
       state.sort = status
@@ -69,6 +81,9 @@ export default {
     },
     product (state) {
       return state.product
+    },
+    productContent (state) {
+      return state.productContent
     }
   }
 }
