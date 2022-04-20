@@ -12,7 +12,7 @@
         <input type="text" v-model="orderId"  placeholder="請輸入訂單編號">
         <a href="" @click.prevent="searchOrder()">查詢</a>
     </div>
-    <div class="orderData">
+    <div class="orderData" v-if="order.user.name">
       <h2 class="font-weight-bold">訂單資訊</h2>
       <div class="con">
         <p><span class="font-weight-bold">編號:</span> {{ order.id }}</p>
@@ -74,7 +74,6 @@ export default {
       if (vm.orderId !== '') {
         const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/order/${this.orderId}`
         vm.$http.get(api).then((response) => {
-          console.log(response)
           if (response.data.order) {
             console.log(response.data.order)
             vm.order = response.data.order
@@ -149,7 +148,6 @@ export default {
     }
   }
   .orderData{
-    display:none;
     h2{
       margin-top:20px;
       font-size:24px;
