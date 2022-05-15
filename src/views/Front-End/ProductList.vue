@@ -1,49 +1,50 @@
 <template>
-<div>
-  <div class="productListOrder pt-3">
-    <div class="jumbotron jumbotron-fluid jumbotron-bg d-flex align-items-end productListBN">
-      <div class="indexContainer">
-        <h1 class="display-3 font-weight-bold text-white">線上訂購</h1>
+  <div>
+    <div class="productListOrder pt-3">
+      <div class="jumbotron jumbotron-fluid jumbotron-bg d-flex align-items-end productListBN">
+        <div class="indexContainer">
+          <h1 class="display-3 font-weight-bold text-white">線上訂購</h1>
+        </div>
       </div>
-    </div>
-    <div class="indexContainer mb-3 arrange">
-      <a href="" class="btn btn-outline-secondary" @click.prevent="changMode = 'slist'"><i class="fas fa-th-large"></i></a>
-      <a href="" class="btn btn-outline-secondary ml-3" @click.prevent="changMode = 'etclist'"><i class="fas fa-list"></i></a>
-    </div>
-    <div class="indexContainer mainContant mb-1 d-flex justify-content-between flex-wrap">
-      <div class="list-group pb-2 text-left">
-        <a href="#" class="h5 list-group-item font-weight-bold list-group-item-action list-group-item-light mb-0" @click.prevent="changGroup('all')">全部顯示</a>
-        <a href="#" class="h5 list-group-item font-weight-bold list-group-item-action list-group-item-light mb-0" v-for="(item,key) in groupList" :key="key" @click.prevent="changGroup(item)">{{ item }}</a>
+      <div class="indexContainer mb-3 arrange">
+        <a href="#" class="btn btn-outline-secondary" @click.prevent="changMode = 'slist'"><i class="fas fa-th-large"></i></a>
+        <a href="#" class="btn btn-outline-secondary ml-3" @click.prevent="changMode = 'etclist'"><i class="fas fa-list"></i></a>
       </div>
-      <div class="productList" :class="{'slist':changMode == 'slist','etclist':changMode == 'etclist'}">
-        <div class="mb-4" v-for="item in productList" :key="item.id">
-          <div class="card border-0 box-shadow text-center h-100">
-            <a href="#" class="card-title" @click.prevent="moreProduct(item.id)">
-              <img class="card-img-top" :src="item.imageUrl" alt="Card image cap">
-            </a>
-            <div class="card-body">
-              <h4>{{ item.title }}</h4>
-              <p class="h6 text-left">{{ item.description }}</p>
-            </div>
-            <div class="card-footer border-top-0 bg-white" v-if="!item.is_enable">
-              <a href="#" class="btn btn-outline-secondary btn-block btn-sm disabled">缺貨中</a>
-            </div>
-            <div class="card-footer border-top-0 bg-white" v-if="item.is_enable">
-              <div class=" mb-4">
-                <p class="h5 text-muted text-left" v-show="item.origin_price !== item.price"><del>原價 {{ item.origin_price | corrency }}</del></p>
-                <p class="h4 font-weight-bold">網路價 <span class="h2 text-danger">{{ item.price | corrency }}</span></p>
-              </div>
-              <a href="#" class="btn btn-outline-secondary btn-block btn-sm" @click.prevent="addCart(item.id)">
-                <i class="fa fa-cart-plus" aria-hidden="true"></i>搶購去
+      <div class="indexContainer mainContant mb-1 d-flex justify-content-between flex-wrap">
+        <div class="list-group pb-2 text-left">
+          <a href="#" class="h5 list-group-item font-weight-bold list-group-item-action list-group-item-light mb-0" @click.prevent="changGroup('all')">全部顯示</a>
+          <a href="#" class="h5 list-group-item font-weight-bold list-group-item-action list-group-item-light mb-0" v-for="(item,key) in groupList" :key="key" @click.prevent="changGroup(item)">{{ item }}</a>
+        </div>
+        <div class="productList" :class="{'slist':changMode == 'slist','etclist':changMode == 'etclist'}">
+          <div class="mb-4" v-for="item in productList" :key="item.id">
+            <div class="card border-0 box-shadow text-center h-100">
+              <a href="#" class="card-title" @click.prevent="moreProduct(item.id)">
+                <img class="card-img-top" :src="item.imageUrl" alt="Card image cap">
               </a>
+              <div class="card-body">
+                <h4>{{ item.title }}</h4>
+                <p class="h6 text-left">{{ item.description }}</p>
+              </div>
+              <div class="card-footer border-top-0 bg-white" v-if="!item.is_enable">
+                <a href="#" class="btn btn-outline-secondary btn-block btn-sm disabled">缺貨中</a>
+              </div>
+              <div class="card-footer border-top-0 bg-white" v-if="item.is_enable">
+                <div class=" mb-4">
+                  <p class="h5 text-muted text-left" v-show="item.origin_price !== item.price"><del>原價 {{ item.origin_price | corrency }}</del></p>
+                  <p class="h4 font-weight-bold">網路價 <span class="h2 text-danger">{{ item.price | corrency }}</span></p>
+                </div>
+                <a href="#" class="btn btn-outline-secondary btn-block btn-sm" @click.prevent="addCart(item.id)">
+                  <i class="fa fa-cart-plus" aria-hidden="true"></i>搶購去
+                </a>
+              </div>
             </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  </div>
-</div>
 </template>
+
 <script>
 import { mapActions, mapGetters } from 'vuex'
 
@@ -64,9 +65,6 @@ export default {
     addCart (pid, qty = 1) {
       this.$store.dispatch('cartsModules/addCart', { pid, qty })
     },
-    changArr () {
-      console.log('1')
-    },
     ...mapActions('productsModules', ['getProducts'])
   },
   computed: {
@@ -75,7 +73,6 @@ export default {
   created () {
     this.$emit('closeNavList')
     this.$store.dispatch('cartsModules/updateCartA', true)
-    this.sort = this.$route.params.sortId
     this.$store.commit('productsModules/SORT', this.$route.params.sortId)
     this.getProducts()
   }
@@ -86,8 +83,9 @@ export default {
 .productListOrder{
   background:#f9f9f9;
   .productListBN{
-    background-image: url(../../assets/images/productListBN.jpg);
-    background-position:center 200%;
+    background-image: url(~@/assets/images/productListBN.jpg);
+    background-size:cover;
+    background-position:center 70%;
     position:relative;
     &::after{
       content:'';
@@ -180,56 +178,56 @@ export default {
   .etclist{
     &>div{
       width: 100%;
-      .card{
-        flex-flow:row;
-        align-items: center;
-        padding-right:20px;
-      }
-      .card-title{
-        margin-bottom:0;
-        height:120px;
+    }
+    .card{
+      flex-flow:row;
+      align-items: center;
+      padding-right:20px;
+    }
+    .card-title{
+      margin-bottom:0;
+      height:120px;
+      width:120px;
+      position:relative;
+      overflow:hidden;
+      img{
         width:120px;
-        position:relative;
-        overflow:hidden;
-        img{
-          width:120px;
-        }
       }
-      .card-body{
-        width:45%;
-        text-align:left;
-        padding-top:0;
-        padding-bottom:0;
-        flex-grow:2;
-        flex-shrink:2;
-        h4{
-          font-weight: bold;
-          margin-bottom: 10px;
-          color:#f28200;
-        }
+    }
+    .card-body{
+      width:45%;
+      text-align:left;
+      padding-top:0;
+      padding-bottom:0;
+      flex-grow:2;
+      flex-shrink:2;
+      h4{
+        font-weight: bold;
+        margin-bottom: 10px;
+        color:#f28200;
       }
-      .card-footer{
-        display:flex;
-        align-items:center;
-        padding:0;
-        width:30%;
-        &>div{
-          margin:0 20px 0 0 !important;
-          .h5{
-            font-size:16px;
-          }
-          .h4{
-            display:flex;
-            align-items:center;
-            font-size:24px;
-            span{
-              margin-bottom:0;
-            }
+    }
+    .card-footer{
+      display:flex;
+      align-items:center;
+      padding:0;
+      width:30%;
+      &>div{
+        margin:0 20px 0 0 !important;
+        .h5{
+          font-size:16px;
+        }
+        .h4{
+          display:flex;
+          align-items:center;
+          font-size:24px;
+          span{
+            margin-bottom:0;
           }
         }
-        a{
-          width: auto;
-        }
+      }
+      a{
+        width: auto;
       }
     }
   }
@@ -252,44 +250,44 @@ export default {
       div{
         width: 100%;
         justify-content:space-between;
-        .card{
-          width:100%;
-          padding-right: 0;
+      }
+      .card{
+        width:100%;
+        padding-right: 0;
+      }
+      .card-body{
+        width:50%;
+        text-align:left;
+        padding:0 20px;
+        box-sizing:border-box;
+        flex-shrink:2;
+        line-height:1.6;
+        h4{
+          font-weight: bold;
+          margin-bottom: 10px;
         }
-        .card-body{
-          width:50%;
-          text-align:left;
-          padding:0 20px;
-          box-sizing:border-box;
-          flex-shrink:2;
+        p{
           line-height:1.6;
-          h4{
-            font-weight: bold;
-            margin-bottom: 10px;
+        }
+      }
+      .card-footer{
+        width:30%;
+        &>div{
+          margin: 0 10px 0 0 !important;
+          .h5{
+            font-size:16px;
           }
-          p{
-            line-height:1.6;
+          .h4{
+            display:flex;
+            align-items:center;
+            font-size:20px;
+            span{
+              margin-bottom:0;
+            }
           }
         }
-        .card-footer{
-          width:30%;
-          &>div{
-            margin: 0 10px 0 0 !important;
-            .h5{
-              font-size:16px;
-            }
-            .h4{
-              display:flex;
-              align-items:center;
-              font-size:20px;
-              span{
-                margin-bottom:0;
-              }
-            }
-          }
-          a{
-            width: auto;
-          }
+        a{
+          width: auto;
         }
       }
     }
@@ -333,37 +331,35 @@ export default {
       }
     }
     .etclist{
-      div{
-        .card{
-          padding-right:10px;
-          box-sizing:border-box;
-        }
-        .card-title{
-          margin-bottom:0;
-          height:120px;
+      .card{
+        padding-right:10px;
+        box-sizing:border-box;
+      }
+      .card-title{
+        margin-bottom:0;
+        height:120px;
+        width:120px;
+        position:relative;
+        overflow:hidden;
+        img{
           width:120px;
-          position:relative;
-          overflow:hidden;
-          img{
-            width:120px;
+        }
+      }
+      .card-body{
+        padding:10px;
+      }
+      .card-footer > {
+        width:32%;
+        div {
+          .h5{
+            display:none;
+          }
+          .h4{
+            display:block;
           }
         }
-        .card-body{
-          padding:10px;
-        }
-        .card-footer > {
-          width:32%;
-          div {
-            .h5{
-              display:none;
-            }
-            .h4{
-              display:block;
-            }
-          }
-          a{
-            width:150px;
-          }
+        a{
+          width:150px;
         }
       }
     }
@@ -409,29 +405,26 @@ export default {
       }
     }
     .etclist{
-      div{
-        .card{
-          display:block;
-          padding:10px 20px;
+      .card{
+        display:block;
+        padding:10px 20px;
+      }
+      .card-title img{
+        width: 100%;
+        height: 260px;
+      }
+      .card-body{
+        width:auto;
+        padding:10px;
+        .h6{
+          font-size: 15px;
         }
-        .card-title img{
-          width: 100%;
-          height: 260px;
+        h4{
+          font-size: 26px;
         }
-        .card-body{
-          width:auto;
-          padding:10px;
-          .h6{
-            font-size: 15px;
-          }
-          h4{
-            font-size: 26px;
-          }
-        }
-        .card-footer{
-          width:auto;
-        }
-
+      }
+      .card-footer{
+        width:auto;
       }
     }
   }

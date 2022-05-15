@@ -3,7 +3,7 @@
     <div class="py-5 mb-5 container" v-if="cart.carts.length==0">
       <h2 class="text-center font-weight-bold">您的購物車目前是空的</h2>
       <div class="alert alert-info p-3 px-5 col-6 mx-auto" role="alert">
-        您可以前往<a href="#" class="text-primary" type="button" @click.prevent="cancelOrder()">產品列表</a>，以選購您想要的商品。
+        您可以前往<a href="#" class="text-primary" @click.prevent="cancelOrder">產品列表</a>，以選購您想要的商品。
       </div>
     </div>
     <div class="checkoutBG main-contant py-5" id="product1" v-if="cart.carts.length!==0">
@@ -57,12 +57,11 @@
           </tbody>
         </table>
         <div class="text-right">
-          <button class="btn mx-2 btn-outline-secondary" type="button" @click.prevent="cancelOrder()">繼續選購</button>
-          <button class="btn mx-2 text-white nextStep" type="button" @click.prevent=" step++ ">確認，下一步</button>
+          <button type="button" class="btn mx-2 btn-outline-secondary" @click.prevent="cancelOrder">繼續選購</button>
+          <button type="button" class="btn mx-2 text-white nextStep" @click.prevent=" step++ ">確認，下一步</button>
         </div>
       </section>
       <!-- 1.購物車 -->
-
       <!-- 2.填寫訂購資訊 -->
       <section class="container bg-white p-4 mt-5 step2Con" v-if="step==2">
         <h2 class="text-center w-100 font-weight-bold">2.填寫訂購資訊</h2>
@@ -88,7 +87,7 @@
               <div class="form-group addressInput">
                 <label for="city" class="w-100">居住地</label>
                 <div>
-                  <select name="" id="city" class="form-control" required>
+                  <select name="city" id="city" class="form-control" required>
                     <option value="縣市" disabled selected>縣市</option>
                     <option value="台北市">台北市</option>
                     <option value="台南市">台南市</option>
@@ -103,9 +102,9 @@
             </div>
             <div class="pay mb-4">
               <h5 class="font-weight-bold">付款方式</h5>
-              <a href="" @click.prevent="payMode='信用卡'" class="payModeA text-decoration-none" :class="{'click':payMode=='信用卡'}">信用卡</a>
-              <a href="" @click.prevent="payMode='代碼繳費'" class="payModeA text-decoration-none" :class="{'click':payMode=='代碼繳費'}">代碼繳費</a>
-              <a href="" @click.prevent="payMode='現金轉帳'" class="payModeA text-decoration-none" :class="{'click':payMode=='現金轉帳'}">現金轉帳</a>
+              <a href="#" @click.prevent="payMode='信用卡'" class="payModeA text-decoration-none" :class="{'click':payMode=='信用卡'}">信用卡</a>
+              <a href="#" @click.prevent="payMode='代碼繳費'" class="payModeA text-decoration-none" :class="{'click':payMode=='代碼繳費'}">代碼繳費</a>
+              <a href="#" @click.prevent="payMode='現金轉帳'" class="payModeA text-decoration-none" :class="{'click':payMode=='現金轉帳'}">現金轉帳</a>
               <form class="creaditFrom" v-if="payMode=='信用卡'">
                 <div class="form-group d-flex flex-wrap">
                 <validation-provider rules="required" v-slot="{ errors,classes }" class="col-12 mb-3">
@@ -133,7 +132,7 @@
               <div class="couponCon mt-3">
                 <input type="text" class="m-2" placeholder="請輸入優惠碼" v-model="couponCode">
                 <div>
-                  <button class="m-2 btn btn-outline-secondary" type="button" @click="addCoupon(couponCode)">套用優惠碼</button>
+                  <button type="button" class="m-2 btn btn-outline-secondary" @click="addCoupon(couponCode)">套用優惠碼</button>
                 </div>
               </div>
               <p v-if="cart.final_total==cart.total" class="CouponTip text-danger my-2 px-2 h6">現在輸入優惠碼"2022"，即可享有8折優惠喔!</p>
@@ -146,14 +145,13 @@
               <textarea id="msg" aria-label="With textarea" class="form-control"></textarea>
             </div>
             <div class="text-right">
-              <button class="btn mx-2 btn-outline-secondary" type="button" @click.prevent="step--">上一步</button>
-              <button class="btn mx-2 text-white nextStep" type="submit" @click.prevent="step++" :disabled="invalid">確認，下一步</button>
+              <button type="button" class="btn mx-2 btn-outline-secondary" @click.prevent="step--">上一步</button>
+              <button type="submit" class="btn mx-2 text-white nextStep" @click.prevent="step++" :disabled="invalid">確認，下一步</button>
             </div>
           </form>
         </validation-observer>
       </section>
       <!-- 2.填寫訂購資訊 -->
-
       <!-- 3.確認購物資訊 -->
       <div class="container mt-5 step3Con" id="productModal3" v-if="step==3">
         <section class="bg-white py-3 mx-auto">
@@ -218,7 +216,7 @@
               </tbody>
             </table>
             <div class="text-center">
-              <button class="btn mx-2 btn-secondary" type="button" @click.prevent="step--">上一步</button>
+              <button type="button" class="btn mx-2 btn-secondary" @click.prevent="step--">上一步</button>
               <button type="submit" class="btn mx-2 btn-primary" @click.prevent="createOrder">確定付款</button>
             </div>
           </div>
@@ -268,7 +266,6 @@ export default {
       })
     },
     addCoupon (couponCode) {
-      console.log(couponCode)
       this.$store.dispatch('addCoupon', couponCode)
     },
     removeCart (pid) {
@@ -346,19 +343,19 @@ export default {
         width:50%;
         margin-bottom:10px;
       }
-      .addressInput {
+    }
+    .addressInput {
+      width:100%;
+      padding:10px 10px 0 10px;
+      &>div {
+        display:flex;
+      }
+      select {
+        width:20%;
+        margin-right:2%;
+      }
+      span {
         width:100%;
-        padding:10px 10px 0 10px;
-        &>div {
-          display:flex;
-        }
-        select {
-          width:20%;
-          margin-right:2%;
-        }
-        span {
-          width:100%;
-        }
       }
     }
     .payModeA {
@@ -490,17 +487,17 @@ export default {
         &>span {
           width:100%;
         }
-        .addressInput {
-          &>div {
-            flex-wrap:wrap;
-          }
-          select {
-            width:50%;
-            margin-bottom:10px;
-          }
-          span {
-            width:100%;
-          }
+      }
+      .addressInput {
+        &>div {
+          flex-wrap:wrap;
+        }
+        select {
+          width:50%;
+          margin-bottom:10px;
+        }
+        span {
+          width:100%;
         }
       }
       .pay {

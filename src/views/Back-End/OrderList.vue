@@ -1,6 +1,5 @@
 <template>
   <div>
-    <loading :active.sync="isLoading" />
     <div class="text-right">
     </div>
     <table class="table mt-4">
@@ -30,7 +29,7 @@
             </div>
           </td>
           <td>{{ order.total | corrency }}</td>
-          <td><button class="btn btn-primary" @click="editModal(order)">編輯</button></td>
+          <td><button type="button" class="btn btn-primary" @click="editModal(order)">編輯</button></td>
           <td>
             <span class="text-success" v-if="order.is_paid">已經付款</span>
             <span class="text-danger" v-else>尚未付款</span>
@@ -64,8 +63,6 @@
                 <div class="form-group">
                   <label for="title">是否付款</label>
                   {{ order.is_paid }}
-                  <!-- <input type="radio" name="location" v-modal="aaa" value="true" id="modePaidY"><label for="modePaidY">是</label>
-                  <input type="radio" name="location" v-modal="aaa" value="false"  id="modePaidN"><label for="modePaidN">否</label> -->
                 </div>
                 <div class="form-group">
                   <label for="title">付款日期</label>
@@ -115,46 +112,42 @@
     <!-- Modal -->
   </div>
 </template>
+
 <script>
 import $ from 'jquery'
-
 export default {
   name: 'orderList',
   data () {
     return {
-      aaa: true,
       orderList: [],
       pagination: {},
       order: {
         user: {}
-      },
-      isLoading: false
+      }
     }
   },
   methods: {
     getOrderList (page = 1) {
       const vm = this
-      vm.isLoading = true
+      vm.$store.dispatch('backendModules/updateload', true)
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/orders?page=${page}`
       vm.$http.get(api).then((response) => {
-        console.log(response.data)
         vm.pagination = response.data.pagination
         vm.orderList = response.data.orders
-        vm.isLoading = false
+        vm.$store.dispatch('backendModules/updateload', false)
       })
     },
     editModal (editOrder) {
-      this.order = Object.assign({}, editOrder)
+      this.order = Object.assign({ ...editOrder })
       $('#oederModal').modal('show')
     },
     updateOrder (oid) {
       const vm = this
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/order/${oid}`
       vm.$http.put(api, { data: vm.order }).then((response) => {
-        console.log(response.data)
         if (response.data.success) {
           vm.$bus.$emit('message:push', response.data.message, 'success')
-          vm.isLoading = false
+          vm.$store.dispatch('backendModules/updateload', false)
           $('#oederModal').modal('hide')
         }
       })

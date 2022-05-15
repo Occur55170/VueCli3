@@ -17,8 +17,8 @@ export default new Router({
     },
     {
       // name: '產品列表',
-      path: '/admin',
-      component: () => import('./views/Back-End/Dashedboard.vue'),
+      path: '/Admin',
+      component: () => import('./views/Back-End/Admin.vue'),
       meta: { requiresAuth: true },
       children: [
         {
@@ -64,8 +64,8 @@ export default new Router({
         },
         {
           name: '門市據點',
-          path: '/storeBase',
-          component: () => import('./views/Front-End/Storebase.vue')
+          path: '/StoreBase',
+          component: () => import('./views/Front-End/StoreBase.vue')
         },
         {
           name: '查詢訂單',

@@ -1,16 +1,14 @@
 <template>
 <div>
   <div class="search py-5 ">
-    <!-- banner -->
-    <div class="jumbotron jumbotron-fluid jumbotron-bg d-flex align-items-end productListBN">
+    <div class="productListBN jumbotron jumbotron-fluid jumbotron-bg d-flex align-items-end">
       <div class="container">
         <h1 class="display-3 font-weight-bold text-white text-center">{{msg }}</h1>
       </div>
     </div>
-    <!-- banner -->
     <div class="searchList pb-2 text-center container">
-        <input type="text" v-model="orderId"  placeholder="請輸入訂單編號">
-        <a href="" @click.prevent="searchOrder()">查詢</a>
+      <input type="text" v-model="orderId"  placeholder="請輸入訂單編號">
+      <a href="#" @click.prevent="searchOrder">查詢</a>
     </div>
     <div class="orderData" v-if="order.user.name">
       <h2 class="font-weight-bold">訂單資訊</h2>
@@ -75,7 +73,6 @@ export default {
         const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/order/${this.orderId}`
         vm.$http.get(api).then((response) => {
           if (response.data.order) {
-            console.log(response.data.order)
             vm.order = response.data.order
           } else {
             this.$store.dispatch('alertModules/updateMessage', '查無此訂單，請重新操作')
@@ -96,7 +93,7 @@ export default {
 
 <style lang="scss" scoped>
 .productListBN{
-  background-image: url(../../assets/images/productListBN.jpg);
+  background-image: url(~@/assets/images/productListBN.jpg);
   background-position:center 20%;
   position:relative;
   &::after{
@@ -167,12 +164,12 @@ export default {
     width: 100%;
     thead{
       color: #4a5158;
-        font-weight: bold;
-        margin-top:20px;
-        font-size:24px;
-        td{
-          padding:10px;
-        }
+      font-weight: bold;
+      margin-top:20px;
+      font-size:24px;
+      td{
+        padding:10px;
+      }
     }
     tbody{
       background-color: #efefef;
@@ -180,9 +177,9 @@ export default {
       line-height:2;
       tr{
         border-bottom:3px solid #fff;
-        td{
-          padding:10px;
-        }
+      }
+      td{
+        padding:10px;
       }
     }
   }
