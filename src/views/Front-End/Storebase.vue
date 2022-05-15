@@ -49,7 +49,6 @@
 </template>
 
 <script>
-
 export default {
   data () {
     return {
@@ -59,6 +58,7 @@ export default {
   created () {
     this.$emit('closeNavList')
     this.$emit('cartSw', true)
+    this.$store.dispatch('cartsModules/updateCartA', true)
   }
 }
 </script>
