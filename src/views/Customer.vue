@@ -12,7 +12,7 @@
             <router-link to="/" class="active"><strong>首頁</strong></router-link>
           </li>
           <li>
-            <router-link to="ProductList/all" class="">產品列表</router-link>
+            <router-link to="/ProductList/all" class="">產品列表</router-link>
           </li>
           <li>
             <router-link to="/Search" class="">查詢訂單</router-link>
@@ -21,13 +21,14 @@
             <router-link to="/Storebase" class="">門市據點</router-link>
           </li>
         </ul>
-        <button type="button" class="cartA" id="btn" @click="openCartModal()">
-         <i class="fas fa-shopping-cart"></i><span v-if="!(cartCount==0)">{{ cartCount }}</span>
+        <button type="button" class="cartA" id="btn" @click="openCartModal()" v-show="cartA">
+          <i class="fas fa-shopping-cart"></i>
+          <span v-if="cart.carts.length !== 0">{{ cart.carts.length }}</span>
         </button>
       </div>
     </header>
     <main>
-      <router-view @LoadingModel="loadingEvent" @getcart="getCart" @closeNavList="closeNavList" @cartSw="cartSw" :filterCarts="filterCarts"></router-view>
+      <router-view @closeNavList="closeNavList"></router-view>
     </main>
     <footer class="bg-dark text-muted p-2">
       <div class="footer indexContainer">
@@ -63,21 +64,20 @@
             <a href="#" class="btn btn-white" @click.prevent="closeCartModal()"><i class="text-white fas fa-times-circle mb-0"></i></a>
           </div>
           <div class="cart-body">
-            <div class="text-center h5 p-3 mb-0" v-if="cartMSG">
+            <div class="text-center h5 p-3 mb-0" v-if="cart.carts.length == 0">
               <h3 class="text-center my-5">您尚未加入商品至購物車</h3>
-              <a href="" class="btn bg-or text-white" @click.prevent="goPl()">趕快去逛逛</a>
             </div>
-            <div v-if="!(cartMSG)">
+            <div v-if="cart.carts.length !== 0">
               <ul>
-                <li v-for="item in filterCarts" :key="item.id">
+                <li v-for="item in cart.carts" :key="item.id">
                   <img :src="item.product.imageUrl" :alt="item.product.title">
                   <div class="w-100">
                     <p class="title">{{ item.product.title }}</p>
                     <div class="price d-flex">
                       <div class="w-50 d-flex align-items-center">
-                        <a href="" class="co-or" @click.prevent="correctCart(item.product_id,-1)" ><i class="fas fa-minus"></i></a>
+                        <a href="" class="co-or" @click.prevent="correctCart(item.product.id,-1)" ><i class="fas fa-minus"></i></a>
                         <span class="w-75 text-center">{{ item.qty }}</span>
-                        <a href="" class="co-or" @click.prevent="correctCart(item.product_id,1)" ><i class="fas fa-plus"></i></a>
+                        <a href="" class="co-or" @click.prevent="correctCart(item.product.id,1)" ><i class="fas fa-plus"></i></a>
                       </div>
                       <div class="w-50 text-right">
                         {{ item.product.price | corrency }}/{{ item.product.unit }}
@@ -92,7 +92,8 @@
             </div>
           </div>
           <div class="cart-footer">
-            <a v-if="!(cartMSG)" @click.prevent="goOrder()"><i class="fa fa-cart-plus" aria-hidden="true"></i> 結帳去</a>
+            <a @click.prevent="goOrder()" v-if="cart.carts.length !== 0"><i class="fa fa-cart-plus" aria-hidden="true"></i> 結帳去</a>
+            <a href="#" class="btn bg-or text-white" @click.prevent="goProduct()" v-if="cart.carts.length == 0">趕快去逛逛</a>
           </div>
         </div>
       </div>
@@ -105,32 +106,11 @@
 <script>
 import $ from 'jquery'
 import AlertMSG from '@/components/AlertMSG.vue'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  data  () {
-    return {
-      msg: 'Customer',
-      isLoading: false,
-      cart: {
-        carts: []
-      },
-      filterCarts: [],
-      cartCount: '',
-      cartMSG: ''
-    }
-  },
+  name: 'Customer',
   methods: {
-    cartSw (Sw) {
-      if (Sw) {
-        $('.cartA').show()
-      } else {
-        $('.cartA').hide()
-      }
-      this.getCart()
-    },
-    loadingEvent (opa) {
-      this.isLoading = opa
-    },
     openNavList () {
       $('.navList').slideToggle()
     },
@@ -145,102 +125,32 @@ export default {
     openCartModal () {
       $('#cartMoadl').modal('show')
     },
-    goPl () {
-      if (this.$route.path !== 'ProductList/all') {
+    goOrder () {
+      $('#cartMoadl').modal('hide')
+      localStorage.setItem('checkoutStep', '1')
+      this.$router.push('/Checkout')
+    },
+    goProduct () {
+      if (this.$route.path !== '/ProductList/all') {
         this.$router.push('ProductList/all')
       }
       this.closeCartModal()
     },
-    getCart (loadMode) {
-      const vm = this
-      vm.isLoading = true
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-      vm.$http.get(api).then((response) => {
-        if (response.data.success) {
-          vm.cart = response.data.data
-          vm.assortCarts(response.data.data.carts)
-          if (loadMode !== undefined) {
-            vm.$bus.$emit('message:push', loadMode)
-          }
-        }
-      })
-    },
-    assortCarts (carts) {
-      // 整合購物車
-      const vm = this
-      vm.filterCarts = []
-      carts.forEach((element, num) => {
-        // 找出重複的值
-        const newItem = vm.filterCarts.find((item, index) => item.product_id === element.product_id)
-        if (!newItem) {
-          vm.filterCarts.push(element)
-        } else {
-          if (newItem.qty + element.qty < 1) {
-            vm.removeCart(element.product_id)
-          } else {
-            newItem.qty = newItem.qty + element.qty
-          }
-        }
-      })
-      vm.cartCount = vm.filterCarts.length
-      if (vm.cartCount) {
-        vm.cartMSG = false
-      } else {
-        vm.cartMSG = true
-      }
-      vm.isLoading = false
-    },
-    correctCart (pid, qty = 1) {
-      const vm = this
-      vm.loadingEvent(true)
-      const filP = vm.filterCarts.filter(element => element.product_id === pid)
-      // 判斷filterCarts數量
-      if (filP[0].qty + qty < 1) {
-        vm.removeCart(pid)
-      } else {
-        const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-        vm.loadingEvent(true)
-        vm.$http.post(api, { data: { product_id: pid, qty: qty } }).then((response) => {
-          if (response.data.success) {
-            let ar = vm.filterCarts.find(item => item.product_id === pid)
-            ar.qty = filP[0].qty + qty
-            vm.loadingEvent(false)
-          }
-        })
-      }
-    },
     removeCart (pid) {
-      const vm = this
-      vm.isLoading = true
-      const del = vm.cart.carts.filter(el => el.product_id === pid)
-      vm.filterCart = vm.filterCarts.filter(item => item.product_id !== pid)
-      del.forEach((element, index) => {
-        const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${element.id}`
-        vm.$http.delete(api).then((response) => {
-          // 刪除最後一筆後，重新整理購物車
-          if (index + 1 === del.length) {
-            let ar = vm.filterCarts.find(item => item.product_id === pid)
-            vm.filterCarts.splice(vm.filterCarts.indexOf(ar), 1)
-            vm.cartCount = vm.filterCarts.length
-            if (vm.cartCount) {
-              vm.cartMSG = false
-            } else {
-              vm.cartMSG = true
-            }
-            vm.loadingEvent(false)
-          }
-        })
-      })
+      this.$store.dispatch('cartsModules/removeCart', pid)
     },
-    goOrder () {
-      const vm = this
-      $('#cartMoadl').modal('hide')
-      localStorage.setItem('checkoutStep', '1')
-      vm.$router.push('/Checkout')
-    }
+    correctCart (pid, qty) {
+      this.$store.dispatch('cartsModules/correctCart', { pid, qty })
+    },
+    ...mapActions('cartsModules', ['getCart'])
+  },
+  computed: {
+    ...mapGetters(['isLoading']),
+    ...mapGetters('cartsModules', ['cart', 'cartA'])
   },
   created () {
     this.getCart()
+    this.$store.dispatch('cartsModules/updateCartA', true)
   },
   components: {
     AlertMSG
