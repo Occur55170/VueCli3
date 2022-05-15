@@ -3,32 +3,32 @@
     <loading :active.sync="isLoading"/>
     <header>
       <div class="indexContainer header">
-        <router-link to="/" class="logo" style="color: #EF8C1A;">
+        <RouterLink to="/" class="logo">
           <img src="@/assets/images/headLogo.png" alt="幸福烘焙logo">
-        </router-link>
-        <a href="" class="navListA" @click.prevent="openNavList()"><i class="fas fa-bars"></i></a>
+        </RouterLink>
+        <a href="#" class="navListA" @click.prevent="openNavList"><i class="fas fa-bars"></i></a>
         <ul class="navList">
           <li>
-            <router-link to="/" class="active"><strong>首頁</strong></router-link>
+            <RouterLink to="/" class="active"><strong>首頁</strong></RouterLink>
           </li>
           <li>
-            <router-link to="/ProductList/all" class="">產品列表</router-link>
+            <RouterLink to="/ProductList/all">產品列表</RouterLink>
           </li>
           <li>
-            <router-link to="/Search" class="">查詢訂單</router-link>
+            <RouterLink to="/Search">查詢訂單</RouterLink>
           </li>
           <li>
-            <router-link to="/Storebase" class="">門市據點</router-link>
+            <RouterLink to="/StoreBase">門市據點</RouterLink>
           </li>
         </ul>
-        <button type="button" class="cartA" id="btn" @click="openCartModal()" v-show="cartA">
+        <button type="button" class="cartA" id="btn" @click="openCartModal" v-show="cartA">
           <i class="fas fa-shopping-cart"></i>
           <span v-if="cart.carts.length !== 0">{{ cart.carts.length }}</span>
         </button>
       </div>
     </header>
     <main>
-      <router-view @closeNavList="closeNavList"></router-view>
+      <RouterView  @closeNavList="closeNavList"></RouterView>
     </main>
     <footer class="bg-dark text-muted p-2">
       <div class="footer indexContainer">
@@ -51,17 +51,17 @@
     <div class="p-3 copyright">
       <p class="text-center m-1">本網站僅個人練習使用．不做任何商業用途。商品圖片與內容均為<a href="https://www.frenchkiss.com.tw/">幸福烘焙</a>所有</p>
       <div class="d-flex justify-content-center mt-2">
-        <a class="" href="https://github.com/Occur55170/" title="github"><i class="fab fa-github"></i>GitHub</a>
-        <a href="" is="router-link" class="ml-3" to="/login"><i class="fas fa-wrench"></i>管理者模式</a>
+        <a href="https://github.com/Occur55170/" title="github"><i class="fab fa-github"></i>GitHub</a>
+        <a href="#" is="RouterLink" class="ml-3" to="/login"><i class="fas fa-wrench"></i>管理者模式</a>
       </div>
     </div>
     <!-- Modal -->
-    <div class="modal cartMoadl" id="cartMoadl" v-on:keyup.enter="closeCartModal()">
+    <div class="modal cartMoadl" id="cartMoadl" v-on:keyup.enter="closeCartModal">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="cart-header">
             <h5 class="cart-title" id="exampleModalLabel">購物車</h5>
-            <a href="#" class="btn btn-white" @click.prevent="closeCartModal()"><i class="text-white fas fa-times-circle mb-0"></i></a>
+            <a href="#" class="btn btn-white" @click.prevent="closeCartModal"><i class="text-white fas fa-times-circle mb-0"></i></a>
           </div>
           <div class="cart-body">
             <div class="text-center h5 p-3 mb-0" v-if="cart.carts.length == 0">
@@ -75,15 +75,15 @@
                     <p class="title">{{ item.product.title }}</p>
                     <div class="price d-flex">
                       <div class="w-50 d-flex align-items-center">
-                        <a href="" class="co-or" @click.prevent="correctCart(item.product.id,-1)" ><i class="fas fa-minus"></i></a>
+                        <a href="#" class="co-or" @click.prevent="correctCart(item.product.id,-1)" ><i class="fas fa-minus"></i></a>
                         <span class="w-75 text-center">{{ item.qty }}</span>
-                        <a href="" class="co-or" @click.prevent="correctCart(item.product.id,1)" ><i class="fas fa-plus"></i></a>
+                        <a href="#" class="co-or" @click.prevent="correctCart(item.product.id,1)" ><i class="fas fa-plus"></i></a>
                       </div>
                       <div class="w-50 text-right">
                         {{ item.product.price | corrency }}/{{ item.product.unit }}
                       </div>
                     </div>
-                    <a href="" class="text-muted close" data-title="取消加入購物車" @click.prevent="removeCart(item.product.id)">
+                    <a href="#" class="text-muted close" data-title="取消加入購物車" @click.prevent="removeCart(item.product.id)">
                       <i class="fas fa-trash-alt"></i>
                     </a>
                   </div>
@@ -92,8 +92,8 @@
             </div>
           </div>
           <div class="cart-footer">
-            <a @click.prevent="goOrder()" v-if="cart.carts.length !== 0"><i class="fa fa-cart-plus" aria-hidden="true"></i> 結帳去</a>
-            <a href="#" class="btn bg-or text-white" @click.prevent="goProduct()" v-if="cart.carts.length == 0">趕快去逛逛</a>
+            <a @click.prevent="goOrder" v-if="cart.carts.length !== 0"><i class="fa fa-cart-plus" aria-hidden="true"></i> 結帳去</a>
+            <a href="#" class="btn bg-or text-white" @click.prevent="goProduct" v-if="cart.carts.length == 0">趕快去逛逛</a>
           </div>
         </div>
       </div>
@@ -157,351 +157,357 @@ export default {
   }
 }
 </script>
+
 <style lang="scss" scoped>
-  .vld-overlay.is-full-page{z-index:1070;}
-  header{
-    box-shadow: 0 0 10px 4px #5a5a5a;
-    padding:10px 0;
-    background:#fffbe7;
-    position:fixed;
-    top:0;
-    left:0;
-    z-index:997;
-    width:100%;
-    .header{
-      display:flex;
-      justify-content:flex-end;
-      align-items:center;
-    }
-    .logo{
-      flex-grow:2;
-    }
-    .logo img{
+.vld-overlay.is-full-page{z-index:1070;}
+header{
+  box-shadow: 0 0 10px 4px #5a5a5a;
+  padding:10px 0;
+  background:#fffbe7;
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:997;
+  width:100%;
+  .header{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+  }
+  .logo{
+    flex-grow:2;
+    img{
       width:230px;
     }
-    .navListA{
-      display: none;
+  }
+  .navListA{
+    display: none;
+  }
+  .navList{
+    display:flex;
+    list-style-type:none;
+    padding:0 10px;
+    margin-bottom:0;
+    &>li:last-Child a{
+      border-width:0;
     }
-    .navList{
-      display:flex;
-      list-style-type:none;
-      padding:0 10px;
-      margin-bottom:0;
-      &>li:last-Child a{
-        border-width:0;
-      }
-      a{
-        display:inline-block;
-        margin:0 20px;
-        padding:0 5px;
-        box-sizing:border-box;
-        color:#706d63;
-        font-weight:bold;
-        font-size:18px;
-        text-decoration:none;
-        position:relative;
-        &::after{
-          content:'';
-          transition:all .8s;
-          background:#706d63;
-          width:0;
-          height:1px;
-          position:absolute;
-          bottom:0;
-          left:45%;
-        }
-        &:hover::after{
-          width:100%;
-          left:0;
-          background:#706d63;
-        }
-      }
-    }
-    .cartA{
+    a{
       display:inline-block;
+      margin:0 20px;
       padding:0 5px;
       box-sizing:border-box;
       color:#706d63;
       font-weight:bold;
-      font-size:28px;
+      font-size:18px;
       text-decoration:none;
       position:relative;
-      border:0;
-      background:unset;
+      &::after{
+        content:'';
+        transition:all .8s;
+        background:#706d63;
+        width:0;
+        height:1px;
+        position:absolute;
+        bottom:0;
+        left:45%;
+      }
+      &:hover::after{
+        width:100%;
+        left:0;
+        background:#706d63;
+      }
+    }
+  }
+  .cartA{
+    display:inline-block;
+    padding:0 5px;
+    box-sizing:border-box;
+    color:#706d63;
+    font-weight:bold;
+    font-size:28px;
+    text-decoration:none;
+    position:relative;
+    border:0;
+    background:unset;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    & span{
+      font-size:15px;
+      position:absolute;
+      bottom:-10%;
+      right:-10%;
       display:flex;
       justify-content:center;
       align-items:center;
-      & span{
-        font-size:15px;
-        position:absolute;
-        bottom:-10%;
-        right:-10%;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        border-radius:99em;
-        width:20px;
-        height:20px;
-        color:#fff;
-        background:#dc3545;
-      }
+      border-radius:99em;
+      width:20px;
+      height:20px;
+      color:#fff;
+      background:#dc3545;
     }
   }
-  .show{
-    display: flex !important
-  }
-  .cartMoadl{
-    justify-content: flex-end;
-    align-items: flex-start;
-    padding-right:0 !important;
+}
+.show{
+  display: flex !important
+}
+.cartMoadl{
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding-right:0 !important;
+  &>div{
+    transform:translateX(100%);
+    transition:all .5s;
+    background:#fff;
+    text-align:left;
+    height:100%;
+    margin:0;
+    width:410px;
     &>div{
-      transform:translateX(100%);
-      transition:all .5s;
-      background:#fff;
+      height: 100%;
+    }
+  }
+  .cart-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#f8a835;
+    padding:10px 20px;
+    box-sizing:border-box;
+    h5{margin-bottom: 0;font-weight: bold;font-size: 24px;color: #fff;}
+  }
+  .cart-body{
+    box-sizing:border-box;
+    padding:10px 20px;
+    text-align: right;
+    p{
+      margin-bottom: 0;
+    }
+    ul{
+      padding: 0;
+      margin-bottom: 0;
+      list-style-type: none;
       text-align:left;
-      height:100%;
-      margin:0;
-      width:410px;
-      &>div{
-        height: 100%;
+      li{
+        border-bottom:1px solid #acacac;
+        position: relative;
+        padding:20px 10px;
+        display: flex;
+        align-items: center;
+        &>img{
+          width:20%;
+          margin-right:5%;
+        }
       }
-    }
-    .cart-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      background:#f8a835;
-      padding:10px 20px;
-      box-sizing:border-box;
-      h5{margin-bottom: 0;font-weight: bold;font-size: 24px;color: #fff;}
-    }
-    .cart-body{
-      box-sizing:border-box;
-      padding:10px 20px;
-      text-align: right;
-      p{margin-bottom: 0;}
-      ul{
-        padding: 0;
-        margin-bottom: 0;
-        list-style-type: none;
-        text-align:left;
-        li{
-          border-bottom:1px solid #acacac;
-          position: relative;
-          padding:20px 10px;
-          display: flex;
-          align-items: center;
-          &>img{width:20%;margin-right:5%;}
-          .title{
-            font-weight: bold;
-            font-size: 20px;
+      .title{
+        font-weight: bold;
+        font-size: 20px;
+      }
+      .price{
+        color: #666;
+        font-weight: bold;
+        font-size:20px;
+        margin-top:10px;
+        div{
+          &>a{
+            text-decoration:none;
+            font-size:16px;
           }
-          .price{
-            color: #666;
-            font-weight: bold;
-            font-size:20px;
-            margin-top:10px;
-            div{
-              &>a{
-                text-decoration:none;
-                font-size:16px;
-              }
-              &:hover{
-                text-decoration:none;
-              }
-            }
-          }
-          .close{
-            position: absolute;
-            top:10px;
-            right:10px;
+          &:hover{
+            text-decoration:none;
           }
         }
       }
+      .close{
+        position: absolute;
+        top:10px;
+        right:10px;
+      }
     }
-    .cart-footer{
-      text-align:right;
-      padding:10px 20px;
-      box-sizing:border-box;
-      &>a{
-        background:#f28200;
+  }
+  .cart-footer{
+    text-align:right;
+    padding:10px 20px;
+    box-sizing:border-box;
+    &>a{
+      background:#f28200;
+      color:#fff;
+      padding:6px 18px;
+      border-radius:5px;
+      font-size:18px;
+      cursor: pointer;
+      &:hover{
+        background:#cb6d00;
         color:#fff;
-        padding:6px 18px;
-        border-radius:5px;
-        font-size:18px;
-        cursor: pointer;
-        &:hover{
-          background:#cb6d00;
-          color:#fff;
-        }
+      }
+    }
+  }
+}
+main{
+  margin:65px 0 0 0;
+}
+footer{
+  ul{
+    list-style-type:none;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .footerLogo{
+    width:30%;
+    img{
+      max-width:80px;
+    }
+    p{
+      display:none;
+    }
+  }
+  .copright{
+    width:100%;
+    box-sizing:border-box;
+    padding:20px;
+    p{
+      margin-bottom:0;
+      font-size:16px;
+    }
+  }
+  .shopContact{
+    width:30%;
+    text-align: right;
+    a{
+      font-size:30px;
+    }
+  }
+}
+@media(max-width:768px){
+  header{
+    .navList{
+      a{
+        margin:0 10px;
       }
     }
   }
   main{
-    margin:65px 0 0 0;
+    margin:95px 0 0 0;
   }
   footer{
-    ul{
-      list-style-type:none;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
+    .footer{
+      padding:20px 0;
+      ul{
+        flex-wrap:wrap;
+      }
       .footerLogo{
-        width:30%;
+        width:100%;
+        margin-right:0 !important;
+        display:flex;
+        flex-wrap:wrap;
+        justify-content:center;
         img{
-          max-width:80px;
+          width:12%;
+          max-width: 120px;
+          margin-right:0 !important;
         }
         p{
-          display:none;
+          margin:20px auto !important;
+          display:block;
+          text-align:center;
+          color:#fff;
+          width:100%;
+          font-size:18px;
         }
       }
       .copright{
         width:100%;
-        box-sizing:border-box;
-        padding:20px;
+        padding:10px 20px;
         p{
-          margin-bottom:0;
-          font-size:16px;
+          font-size:15px;
         }
       }
       .shopContact{
-        width:30%;
-        text-align: right;
-        a{
-          font-size:30px;
-        }
+        display:none;
       }
     }
   }
-  @media(max-width:768px){
-    header{
-      .navList{
-        a{
-          margin:0 10px;
-        }
-      }
+}
+@media(max-width:600px){
+  header {
+    box-shadow: 0 0 10px 4px #ccc;
+    .header {
+      padding:0 20px;
+      justify-content:space-between;
     }
-    main{
-      margin:95px 0 0 0;
-    }
-    footer{
-      .footer{
-        padding:20px 0;
-        ul{
-          flex-wrap:wrap;
-          .footerLogo{
-            width:100%;
-            margin-right:0 !important;
-            display:flex;
-            flex-wrap:wrap;
-            justify-content:center;
-            img{
-              width:12%;
-              max-width: 120px;
-              margin-right:0 !important;
-            }
-            p{
-              margin:20px auto !important;
-              display:block;
-              text-align:center;
-              color:#fff;
-              width:100%;
-              font-size:18px;
-            }
-          }
-          .copright{
-            width:100%;
-            padding:10px 20px;
-            p{
-              font-size:15px;
-            }
-          }
-          .shopContact{
-            display:none;
-          }
-        }
-      }
-    }
-  }
-  @media(max-width:600px){
-    header {
-      box-shadow: 0 0 10px 4px #ccc;
-      .header {
-        padding:0 20px;
-        justify-content:space-between;
-      }
-      .logo {
-        order:2;
-        flex-grow:0;
-        img {
-          width:75%;
-          display:block;
-          margin:0 auto;
-        }
-      }
-      .navListA {
-        order:1;
+    .logo {
+      order:2;
+      flex-grow:0;
+      img {
+        width:75%;
         display:block;
-        font-size:36px;
-        color:#333;
+        margin:0 auto;
       }
-      .navList {
-        display: none;
-        z-index: -1;
-        position:absolute;
-        top:100%;
-        left:0;
+    }
+    .navListA {
+      order:1;
+      display:block;
+      font-size:36px;
+      color:#333;
+    }
+    .navList {
+      display: none;
+      z-index: -1;
+      position:absolute;
+      top:100%;
+      left:0;
+      width:100%;
+      background:#fff;
+      flex-wrap:wrap;
+      border-bottom:1px solid #999;
+      li {
         width:100%;
-        background:#fff;
-        flex-wrap:wrap;
-        border-bottom:1px solid #999;
-        li {
-          width:100%;
-          padding:10px;
-          text-align:center;
-          border-bottom:1px solid #ccc;
-          &:last-Child {
-            border:0;
-          }
-        }
-      }
-      .cartA {order:3;margin:0;}
-    }
-    main {
-      margin:80px 0 0 0;
-    }
-    footer {
-      .footer {
-        ul {
-          .footerLogo {
-            width:100%;
-            margin-right:0 !important;
-            img {
-              width:20%;
-            }
-            p {
-              font-size: 4.2vw;
-            }
-          }
-          .copright {
-            width:100%;
-            padding:0 0 20px 0;
-            p {
-              font-size:14px;
-            }
-          }
-          .shopContact {
-            display:none;
-          }
+        padding:10px;
+        text-align:center;
+        border-bottom:1px solid #ccc;
+        &:last-Child {
+          border:0;
         }
       }
     }
-    .cartMoadl {
-      .cart-body {
-        h3 {
-          font-size:1.6rem;
+    .cartA {
+      order:3;margin:0;
+    }
+  }
+  main {
+    margin:80px 0 0 0;
+  }
+  footer {
+    .footer {
+      .footerLogo {
+        width:100%;
+        margin-right:0 !important;
+        img {
+          width:20%;
         }
+        p {
+          font-size: 4.2vw;
+        }
+      }
+      .copright {
+        width:100%;
+        padding:0 0 20px 0;
+        p {
+          font-size:14px;
+        }
+      }
+      .shopContact {
+        display:none;
       }
     }
   }
+  .cartMoadl {
+    .cart-body {
+      h3 {
+        font-size:1.6rem;
+      }
+    }
+  }
+}
 </style>

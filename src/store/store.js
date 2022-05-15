@@ -4,6 +4,7 @@ import axios from 'axios'
 import productsModules from './products'
 import cartsModules from './carts'
 import alertModules from './alertMsg'
+import backendModules from './backend'
 
 Vue.use(Vuex)
 
@@ -43,6 +44,7 @@ export default new Vuex.Store({
   modules: {
     productsModules,
     alertModules,
-    cartsModules
+    cartsModules,
+    backendModules
   }
 })

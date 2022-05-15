@@ -5,7 +5,7 @@
       <ul class="pagination">
         <li class="page-item" :class="{'disabled':!pagination.has_pre}">
           <a class="page-link" href="#" aria-label="Previous" @click="changePage(pagination.current_page-1)">
-          <span aria-hidden="true">&laquo;</span>
+            <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
         <li class="page-item" v-for="page in pagination.total_pages" :key="page" :class="{'active':pagination.current_page == page}">

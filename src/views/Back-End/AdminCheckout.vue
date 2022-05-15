@@ -22,7 +22,6 @@
             </tr>
           </tfoot>
         </table>
-
         <table class="table">
           <tbody>
             <tr>
@@ -51,7 +50,7 @@
           </tbody>
         </table>
         <div class="text-right" v-if="order.is_paid === false">
-          <button class="btn btn-danger" @click="payOrder">確認付款去</button>
+          <button type="button" class="btn btn-danger" @click="payOrder">確認付款去</button>
         </div>
       </form>
     </div>
@@ -74,20 +73,18 @@ export default {
       const vm = this
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/order/${vm.orderId}`
       vm.$http.get(api).then((response) => {
-        console.log(response.data)
         if (response.data.order) {
           vm.order = response.data.order
         } else {
           this.$router.push('/Customer_Order')
         }
+        vm.$store.dispatch('backendModules/updateload', false)
       })
     },
     payOrder () {
       const vm = this
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/pay/${vm.orderId}`
-      console.log(api)
       vm.$http.post(api).then((response) => {
-        console.log(response.data)
         if (response.data.success) {
           vm.getOrder()
         }

@@ -1,12 +1,13 @@
 <template>
 <div>
+  <loading :active.sync="isLoading"/>
   <Navbar/>
   <div class="container-fluid">
     <div class="row">
-      <sidebar/>
+      <Sidebar/>
       <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-        <router-view></router-view>
-        <alert/>
+        <RouterView/>
+        <BackendMSG/>
       </main>
     </div>
   </div>
@@ -15,8 +16,9 @@
 
 <script>
 import Navbar from './Navbar'
-import sidebar from './Sidebar'
-import alert from './AlertMessage'
+import Sidebar from './Sidebar'
+import BackendMSG from '@/components/BackendMSG.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'dashboard',
@@ -31,14 +33,17 @@ export default {
       })
     }
   },
+  computed: {
+    ...mapGetters('backendModules', ['isLoading'])
+  },
   created () {
     const token = document.cookie.replace(/(?:(?:^|.*;\s*)occToken\s*=\s*([^;]*).*$)|^.*$/, '$1')
     this.$http.defaults.headers.common.Authorization = `${token}`
   },
   components: {
     Navbar,
-    sidebar,
-    alert
+    Sidebar,
+    BackendMSG
   }
 }
 </script>

@@ -11,7 +11,6 @@ import 'bootstrap'
 import App from './App.vue'
 import router from './router'
 import store from './store/store'
-import './bus'
 
 /* vue3不支援，之後刪除 */
 import correncyFilter from './filters/corrency'
@@ -51,7 +50,6 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth) {
     const api = `${process.env.VUE_APP_APIPATH}/api/user/check`
     axios.post(api).then((response) => {
-      console.log(response.data.success)
       if (response.data.success) {
         next()
       } else {

@@ -1,13 +1,12 @@
 <template>
   <div>
-    <loading :active.sync="isLoading"/>
-
     <div class="row mt-4">
       <div class="col-md-4 mb-4" v-for="item in products" :key="item.id">
-        <div class="card border-0 shadow-sm">
-          <div style="height: 150px; background-size: cover; background-position: center" :style="{backgroundImage:`url(${item.imageUrl})`}">
+        <div class="card h-100 border-0 shadow-sm d-flex flex-wrap">
+          <div class="flex-grow-0 overflow-hidden card-header">
+            <img :src="`${item.imageUrl}`" alt="" class="w-100">
           </div>
-          <div class="card-body">
+          <div class="card-body flex-grow-2">
             <span class="badge badge-secondary float-right ml-2">{{ item.category }}</span>
             <h5 class="card-title">
               <a href="#" class="text-dark h3">{{ item.title }}</a>
@@ -20,7 +19,7 @@
               <div class="h4">現在只要 {{ item.price| corrency }} 元</div>
             </div>
           </div>
-          <div class="card-footer d-flex">
+          <div class="card-footer d-flex flex-grow-0">
             <button type="button" class="btn btn-outline-secondary btn-sm" @click="productMore(item.id)">
               <i class="fas fa-spinner fa-spin" v-if="status.loadingItem===item.id"></i>
               查看更多
@@ -33,7 +32,6 @@
         </div>
       </div>
     </div>
-
     <!-- Modal -->
     <div class="modal fade" id="singleMode" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -72,57 +70,55 @@
       </div>
     </div>
     <!-- Modal -->
-
     <!--  加入購物車 -->
     <div class="my-5 row justify-content-center">
       <div class="col-md-6">
-          <table class="table">
-            <thead>
-              <th></th>
-              <th>品名</th>
-              <th>數量</th>
-              <th class="text-center">單價</th>
-            </thead>
-            <tbody>
-              <tr v-for="item in cart.carts" :key="item.id">
-                <td class="align-middle">
-                  <button type="button" class="btn btn-outline-danger btn-sm" @click="removeCart(item.id)">
-                    <i class="far fa-trash-alt"></i>
-                  </button>
-                </td>
-                <td class="align-middle">
-                  {{ item.product.title }}
-                  <div class="text-success" v-if="!(cart.total==cart.final_total)">已套用優惠券</div>
-                </td>
-                <td class="align-middle">{{ item.qty }}/{{ item.product.unit }}</td>
-                <td class="align-middle text-center">{{ item.final_total | corrency }}</td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colspan="3" class="text-right">總計</td>
-                <td class="text-center">{{ cart.total | corrency}}</td>
-              </tr>
-              <tr v-if="!(cart.total==cart.final_total)">
-                <td colspan="3" class="text-right text-success">折扣價</td>
-                <td class="text-center text-success">{{ cart.final_total | corrency}}</td>
-              </tr>
-            </tfoot>
-          </table>
-          <div class="input-group mb-3 input-group-sm">
-            <input type="text" class="form-control" placeholder="請輸入優惠碼" v-model="cartCode">
-            <div class="input-group-append">
-              <button class="btn btn-outline-secondary" type="button" @click="useCoupon">套用優惠碼</button>
-              <button class="btn btn-outline-danger" type="button" @click="cancelCoupon">取消優惠碼</button>
-            </div>
+        <table class="table">
+          <thead>
+            <th></th>
+            <th>品名</th>
+            <th>數量</th>
+            <th class="text-center">單價</th>
+          </thead>
+          <tbody>
+            <tr v-for="item in cart.carts" :key="item.id">
+              <td class="align-middle">
+                <button type="button" class="btn btn-outline-danger btn-sm" @click="removeCart(item.id)">
+                  <i class="far fa-trash-alt"></i>
+                </button>
+              </td>
+              <td class="align-middle">
+                {{ item.product.title }}
+                <div class="text-success" v-if="!(cart.total==cart.final_total)">已套用優惠券</div>
+              </td>
+              <td class="align-middle">{{ item.qty }}/{{ item.product.unit }}</td>
+              <td class="align-middle text-center">{{ item.final_total | corrency }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3" class="text-right">總計</td>
+              <td class="text-center">{{ cart.total | corrency}}</td>
+            </tr>
+            <tr v-if="!(cart.total==cart.final_total)">
+              <td colspan="3" class="text-right text-success">折扣價</td>
+              <td class="text-center text-success">{{ cart.final_total | corrency}}</td>
+            </tr>
+          </tfoot>
+        </table>
+        <div class="input-group mb-3 input-group-sm">
+          <input type="text" class="form-control" placeholder="請輸入優惠碼" v-model="cartCode">
+          <div class="input-group-append">
+            <button type="button" class="btn btn-outline-secondary" @click="useCoupon">套用優惠碼</button>
+            <button type="button" class="btn btn-outline-danger" @click="cancelCoupon">取消優惠碼</button>
           </div>
+        </div>
       </div>
     </div>
     <!-- 加入購物車 -->
-
     <div class="my-5 row justify-content-center">
       <validation-observer class="col-md-6" v-slot="{ invalid }">
-        <form @submit.prevent="createOrder">
+        <form>
           <div class="my-3">
             <validation-provider rules="required|email" v-slot="{ errors,classes }">
               <label for="email">Email</label>
@@ -156,7 +152,7 @@
             <textarea name="" id="comment" class="form-control" cols="30" rows="10" v-model="form.message"></textarea>
           </div>
           <div class="text-right">
-            <button class="btn btn-danger" :disabled="invalid">送出訂單</button>
+            <button type="button" class="btn btn-danger" :disabled="invalid" @click.prevent="createOrder">送出訂單</button>
           </div>
         </form>
       </validation-observer>
@@ -166,6 +162,7 @@
 
 <script>
 import $ from 'jquery'
+
 export default {
   name: 'customerOrder',
   data () {
@@ -173,7 +170,6 @@ export default {
       products: {},
       singleProduct: {},
       cart: {},
-      isLoading: false,
       cartCode: '',
       status: {
         loadingItem: '',
@@ -193,11 +189,11 @@ export default {
   methods: {
     getProducts () {
       const vm = this
-      vm.isLoading = true
+      vm.$store.dispatch('backendModules/updateload', true)
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/products/all`
       vm.$http.get(api).then((response) => {
         vm.products = response.data.products
-        vm.isLoading = false
+        vm.$store.dispatch('backendModules/updateload', false)
       })
     },
     productMore (id) {
@@ -213,7 +209,7 @@ export default {
     },
     addCart (id, qty = 1) {
       const vm = this
-      vm.isLoading = true
+      vm.$store.dispatch('backendModules/updateload', true)
       vm.status.loadingCart = id
       const cartDate = { 'product_id': id, 'qty': qty }
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
@@ -222,7 +218,9 @@ export default {
           $('#singleMode').modal('hide')
           vm.status.loadingCart = ''
           vm.getCart()
-          vm.$bus.$emit('message:push', response.data.message, 'success')
+          let message = response.data.message
+          let success = 'success'
+          vm.$store.dispatch('backendModules/updateMessage', { message, success })
         }
       })
     },
@@ -232,52 +230,56 @@ export default {
       vm.$http.get(api).then((response) => {
         if (response.data.success) {
           vm.cart = response.data.data
-          vm.isLoading = false
+          vm.$store.dispatch('backendModules/updateload', false)
         }
       })
     },
     removeCart (id) {
       const vm = this
-      vm.isLoading = true
+      vm.$store.dispatch('backendModules/updateload', true)
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${id}`
       vm.$http.delete(api).then((response) => {
         vm.getCart()
-        vm.$bus.$emit('message:push', response.data.message, 'success')
+        let message = response.data.message
+        let success = 'success'
+        vm.$store.dispatch('backendModules/updateMessage', { message, success })
       })
     },
     useCoupon () {
       const vm = this
-      vm.isLoading = true
+      vm.$store.dispatch('backendModules/updateload', true)
       let code = { 'code': vm.cartCode }
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/coupon`
       vm.$http.post(api, { 'data': code }).then((response) => {
         if (response.data.success) {
           vm.cart.final_total = response.data.data.final_total
-          vm.$bus.$emit('message:push', response.data.message, 'success')
+          let message = response.data.message
+          let success = 'success'
+          vm.$store.dispatch('backendModules/updateMessage', { message, success })
         }
-        vm.isLoading = false
+        vm.$store.dispatch('backendModules/updateload', false)
       })
     },
     cancelCoupon () {
       const vm = this
-      vm.isLoading = true
+      vm.$store.dispatch('backendModules/updateload', true)
       let code = { 'code': 'cancel' }
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/coupon`
       vm.$http.post(api, { 'data': code }).then((response) => {
-        console.log(response.data)
         if (response.data.success) {
           vm.cart.final_total = response.data.data.final_total
-          vm.$bus.$emit('message:push', '已經取消優惠卷', 'success')
+          let message = '已經取消優惠卷'
+          let success = 'success'
+          vm.$store.dispatch('backendModules/updateMessage', { message, success })
         }
-        vm.isLoading = false
+        vm.$store.dispatch('backendModules/updateload', false)
       })
     },
     createOrder () {
       const vm = this
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/order`
-      vm.isLoading = true
+      vm.$store.dispatch('backendModules/updateload', true)
       vm.$http.post(api, { 'data': vm.form }).then((response) => {
-        console.log(response.data)
         if (response.data.success) {
           vm.$router.push(`/AdminCheckout/${response.data.orderId}`)
         }
@@ -290,3 +292,12 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.card-header{
+  height:200px;
+  img{
+    transform:translateY(-15%);
+  }
+}
+</style>

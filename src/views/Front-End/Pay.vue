@@ -69,11 +69,12 @@
         </p>
       </div>
       <div class="text-center h2 mt-3">
-        <router-link to="/ProductList/all" class="btn btn-outline-secondary">返回產品列表頁</router-link>
+        <RouterLink to="/ProductList/all" class="btn btn-outline-secondary">返回產品列表頁</RouterLink>
       </div>
     </div>
   </div>
 </template>
+
 <script>
 export default {
   data () {

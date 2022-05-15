@@ -4,7 +4,7 @@
       <nav aria-label="breadcrumb" role="navigation">
         <ol class="breadcrumb bg-transparent pl-0">
           <li class="breadcrumb-item">
-            <router-link to="/ProductList/all">產品列表</router-link>
+            <RouterLink to="/ProductList/all">產品列表</RouterLink>
           </li>
           <li class="breadcrumb-item">
             <a href="#" @click.prevent="proCate(product.category)">{{ product.category }}</a>
@@ -12,7 +12,6 @@
           <li class="breadcrumb-item active" aria-current="page">{{ product.title }}</li>
         </ol>
       </nav>
-
       <div class="d-flex flex-wrap align-items-start">
         <img :src="product.imageUrl" class="proImg" :alt="product.title">
         <div class="proCon">
@@ -23,12 +22,12 @@
             <p class="webPrice">網路價<span>{{ product.price|corrency }}</span></p>
           </div>
           <div class="qtyCon" v-if="product.is_enable!==0">
-            <button class="btn mb-0" @click.prevent="qty--" :disabled="qty<2"><i class="fas fa-minus"></i></button>
-            <input type="number" v-model.number="qty"  class="text-center" @blur="qtyblur()">
-            <button class="btn mb-0" @click.prevent="qty++"><i class="fas fa-plus"></i></button>
+            <button type="button" class="btn mb-0" @click.prevent="qty--" :disabled="qty<2"><i class="fas fa-minus"></i></button>
+            <input type="number" v-model.number="qty"  class="text-center" @blur="qtyblur">
+            <button type="button" class="btn mb-0" @click.prevent="qty++"><i class="fas fa-plus"></i></button>
           </div>
           <div class="d-flex align-items-center justify-content-between">
-            <button class="btn bg-or text-white" @click="addCart(product.id,qty)" :disabled="product.is_enable==0">
+            <button type="button" class="btn bg-or text-white" @click="addCart(qty)" :disabled="product.is_enable==0">
               <span v-if="product.is_enable!==0"><i class="fa fa-cart-plus" aria-hidden="true"></i> 加入購物車</span>
               <span v-if="product.is_enable==0">缺貨中</span>
             </button>
@@ -42,7 +41,6 @@
         <div class="alert alert-secondary mt-4 w-100 instruction" role="alert">
           <h2 class="text-center">購物說明</h2>
           <p class="productDesc" id="productDesc" v-html="productContent">
-          <!-- {{ productContent }} -->
           </p>
         </div>
       </div>
@@ -80,7 +78,7 @@ export default {
       }
       $('#productDesc').html(newTextAry.join(''))
     },
-    addCart (pid, qty = 1) {
+    addCart (qty = 1) {
       let prod = this.product
       this.$store.dispatch('cartsModules/addCart', { prod, qty })
     },

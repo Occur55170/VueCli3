@@ -29,7 +29,6 @@ export default {
           context.dispatch('correctCart', { pid, qty })
         }
       } else if (prod) {
-        console.log(prod, qty)
         let pid = prod.id
         if (!carts.find(item => item.product.id === prod.id)) {
           context.commit('ADDCART', { 'product': prod, 'qty': qty })
@@ -47,7 +46,6 @@ export default {
       context.commit('REMOVECART', index)
     },
     correctCart (context, { pid, qty }) {
-      console.log(pid, qty)
       context.dispatch('updateLoad', true, { root: true })
       let carts = context.state.cart.carts
       let index = carts.indexOf(carts.find(item => item.product.id === pid))
@@ -65,7 +63,7 @@ export default {
           let carts = response.data.data.carts
           if (carts.length !== 0) {
             let i = 0
-            carts.forEach((item, index) => {
+            carts.forEach(item => {
               const url = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart/${item.id}`
               axios.delete(url).then(response => {
                 if (response.data.success) {
@@ -89,7 +87,7 @@ export default {
       context.dispatch('updateLoad', true, { root: true })
       let carts = context.state.cart.carts
       let i = 0
-      carts.forEach((item, index) => {
+      carts.forEach(item => {
         const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
         let data = { 'product_id': item.product.id, 'qty': item.qty }
         axios.post(api, { 'data': data }).then(response => {
@@ -97,8 +95,6 @@ export default {
             i = i + 1
             if (i === carts.length) {
               context.dispatch('initCart')
-            } else {
-              console.log(i)
             }
           }
         })

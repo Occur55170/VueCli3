@@ -2,7 +2,7 @@
 <div>
   <loading :active.sync="isLoading" />
   <div class="text-right">
-    <button class="btn btn-primary mt-4" @click="editModal(true)">建立新產品</button>
+    <button type="button" class="btn btn-primary mt-4" @click="editModal(true)">建立新產品</button>
   </div>
   <table class="table mt-4">
     <thead>
@@ -24,8 +24,8 @@
           <span v-else>未啟用</span>
         </td>
         <td>
-          <button class="btn btn-outline-primary btn-sm" @click="editModal(false,item)">編輯</button>
-          <button class="btn btn-outline-danger btn-sm" @click="delProduct(item.id)">刪除</button>
+          <button type="button" class="btn btn-outline-primary btn-sm" @click="editModal(false,item)">編輯</button>
+          <button type="button" class="btn btn-outline-danger btn-sm" @click="delProduct(item.id)">刪除</button>
         </td>
       </tr>
     </tbody>
@@ -132,11 +132,11 @@ export default {
   methods: {
     getProducts (page = 1) {
       const vm = this
-      vm.isLoading = true
+      vm.$store.dispatch('backendModules/updateload', true)
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/products?page=${page}`
       this.$http.get(api).then((response) => {
         vm.products = response.data.products
-        vm.isLoading = false
+        vm.$store.dispatch('backendModules/updateload', false)
         vm.pagination = response.data.pagination
       })
     },
@@ -145,7 +145,7 @@ export default {
         this.tempProduct = {}
         this.isNew = true
       } else {
-        this.tempProduct = Object.assign({}, item)
+        this.tempProduct = Object.assign({ ...item })
         this.isNew = false
       };
       $('#productModal').modal('show')
@@ -159,14 +159,17 @@ export default {
         httpMethods = 'put'
       };
       this.$http[httpMethods](api, { 'data': vm.tempProduct }).then((response) => {
-        console.log(response.data.message)
         if (response.data.success) {
           $('#productModal').modal('hide')
-          this.$bus.$emit('message:push', '新增成功', 'success')
+          let message = '新增成功'
+          let success = 'success'
+          vm.$store.dispatch('backendModules/updateMessage', { message, success })
           vm.getProducts()
         } else {
           $('#productModal').modal('hide')
-          this.$bus.$emit('message:push', '新增失敗', 'danger')
+          let message = '新增失敗'
+          let success = 'danger'
+          vm.$store.dispatch('backendModules/updateMessage', { message, success })
         };
       })
     },
@@ -174,7 +177,9 @@ export default {
       const vm = this
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/product/${productId}`
       this.$http.delete(api).then((response) => {
-        this.$bus.$emit('message:push', response.data.message, 'success')
+        let message = response.data.message
+        let success = 'success'
+        vm.$store.dispatch('backendModules/updateMessage', { message, success })
         vm.getProducts()
       })
     },
@@ -193,10 +198,13 @@ export default {
         vm.status.fileLoading = false
         if (response.data.success) {
           vm.$set(vm.tempProduct, 'imageUrl', response.data.imageUrl)
-          this.$bus.$emit('message:push', '圖片上傳成功', 'success')
-          console.log(response.data)
+          let message = '圖片上傳成功'
+          let success = 'success'
+          vm.$store.dispatch('backendModules/updateMessage', { message, success })
         } else {
-          this.$bus.$emit('message:push', response.data.message, 'danger')
+          let message = response.data.message
+          let success = 'danger'
+          vm.$store.dispatch('backendModules/updateMessage', { message, success })
         }
       })
     }
