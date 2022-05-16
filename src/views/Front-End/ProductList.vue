@@ -211,7 +211,7 @@ export default {
       display:flex;
       align-items:center;
       padding:0;
-      width:30%;
+      width:35%;
       &>div{
         margin:0 20px 0 0 !important;
         .h5{
