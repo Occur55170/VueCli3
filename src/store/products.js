@@ -76,14 +76,8 @@ export default {
         return state.productList
       }
     },
-    groupList (state) {
-      return state.groupList
-    },
-    product (state) {
-      return state.product
-    },
-    productContent (state) {
-      return state.productContent
-    }
+    groupList: state => state.groupList,
+    product: state => state.product,
+    productContent: state => state.productContent
   }
 }

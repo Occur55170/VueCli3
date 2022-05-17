@@ -170,7 +170,7 @@ export default {
   },
   methods: {
     goProduct (pid) {
-      this.$router.push(`/product/${pid}`)
+      this.$router.push(`/Product/${pid}`)
     },
     subscription () {
       this.$store.dispatch()

@@ -18,21 +18,23 @@
         <div class="productList" :class="{'slist':changMode == 'slist','etclist':changMode == 'etclist'}">
           <div class="mb-4" v-for="item in productList" :key="item.id">
             <div class="card border-0 box-shadow text-center h-100">
-              <a href="#" class="card-title" @click.prevent="moreProduct(item.id)">
+              <a href="#" class="card-title" :title="item.title" @click.prevent="moreProduct(item.id)">
                 <img class="card-img-top" :src="item.imageUrl" alt="Card image cap">
               </a>
               <div class="card-body">
-                <h4>{{ item.title }}</h4>
-                <p class="h6 text-left">{{ item.description }}</p>
+                <a href="#" :title="item.title" @click.prevent="moreProduct(item.id)">
+                  <h4>{{ item.title }}</h4>
+                  <p class="h6 text-left">{{ item.description }}</p>
+                  <div class=" mt-4">
+                    <p class="h5 text-muted text-left" v-show="item.origin_price !== item.price"><del>原價 {{ item.origin_price | corrency }}</del></p>
+                    <p class="h4 font-weight-bold">網路價 <span class="h2 text-danger">{{ item.price | corrency }}</span></p>
+                  </div>
+                </a>
               </div>
               <div class="card-footer border-top-0 bg-white" v-if="!item.is_enable">
                 <a href="#" class="btn btn-outline-secondary btn-block btn-sm disabled">缺貨中</a>
               </div>
               <div class="card-footer border-top-0 bg-white" v-if="item.is_enable">
-                <div class=" mb-4">
-                  <p class="h5 text-muted text-left" v-show="item.origin_price !== item.price"><del>原價 {{ item.origin_price | corrency }}</del></p>
-                  <p class="h4 font-weight-bold">網路價 <span class="h2 text-danger">{{ item.price | corrency }}</span></p>
-                </div>
                 <a href="#" class="btn btn-outline-secondary btn-block btn-sm" @click.prevent="addCart(item.id)">
                   <i class="fa fa-cart-plus" aria-hidden="true"></i>搶購去
                 </a>
@@ -59,8 +61,10 @@ export default {
       this.$router.push(`/Product/${pid}`)
     },
     changGroup (sort) {
-      this.$store.dispatch('productsModules/changGroup', sort)
-      this.$router.push(`/productList/${sort}`)
+      if (this.$route.params.sortId !== sort) {
+        this.$store.dispatch('productsModules/changGroup', sort)
+        this.$router.push(`/ProductList/${sort}`)
+      }
     },
     addCart (pid, qty = 1) {
       this.$store.dispatch('cartsModules/addCart', { pid, qty })
@@ -169,6 +173,10 @@ export default {
         line-height:1.6;
         margin-bottom:0;
         font-size:16px;
+      }
+      a{
+        text-decoration:none;
+        color:#000;
       }
     }
     & .card-footer{

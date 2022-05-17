@@ -90,13 +90,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('productsModules', ['product', 'productContent'])
+    ...mapGetters('productsModules', ['product', 'productContent', 'productList'])
   },
   created () {
     this.$emit('closeNavList')
     this.$emit('cartSw', true)
     this.$store.dispatch('cartsModules/updateCartA', true)
-    this.pid = this.$route.params.id
     this.$store.dispatch('productsModules/getProduct', this.$route.params.id)
   }
 }
@@ -168,6 +167,22 @@ export default {
       margin:10px 0;
       line-height:2;
       font-size:18px;
+    }
+  }
+  .similarList{
+    &>div{
+      width:180px;
+      position:relative;
+      img{
+        height:180px;
+      }
+      a{
+        position:absolute;
+        top:0;
+        left:0;
+        height:100%;
+        width:100%;
+      }
     }
   }
 }
