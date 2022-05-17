@@ -8,7 +8,8 @@ export default {
     product: {},
     groupList: [],
     sort: 'all',
-    productContent: ''
+    productContent: '',
+    similar: []
   },
   actions: {
     getProducts (context, status) {
@@ -31,6 +32,16 @@ export default {
           context.commit('PRODUCTCONTENT', response.data.product.content)
           context.dispatch('updateLoad', false, { root: true })
         }
+      }).then(() => {
+        const Allapi = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/products/all`
+        axios.get(Allapi).then((response) => {
+          if (response.data.success) {
+            context.commit('PRODUCTlIST', response.data.products)
+            context.dispatch('updateLoad', false, { root: true })
+          }
+        }).then(() => {
+          context.commit('ADDSIMILAR')
+        })
       })
     },
     changGroup (context, status) {
@@ -49,6 +60,7 @@ export default {
       })
     },
     PRODUCT (state, status) {
+      state.similar = []
       state.product = status
     },
     PRODUCTCONTENT (state, status) {
@@ -64,6 +76,19 @@ export default {
     },
     SORT (state, status) {
       state.sort = status
+    },
+    ADDSIMILAR (state, status) {
+      let filterAry = state.productList.filter(item => item.category === state.product.category)
+      for (let i = 0; i < 4; i++) {
+        let rand = Math.floor(Math.random() * filterAry.length)
+        // 判斷是否有重複推薦
+        let ans = state.similar.some(item => item.id === filterAry[rand].id)
+        if (!ans && filterAry[rand].title !== state.product.title) {
+          state.similar.push(filterAry[rand])
+        } else {
+          i -= 1
+        }
+      }
     }
   },
   getters: {
@@ -78,6 +103,7 @@ export default {
     },
     groupList: state => state.groupList,
     product: state => state.product,
-    productContent: state => state.productContent
+    productContent: state => state.productContent,
+    similarList: state => state.similar
   }
 }

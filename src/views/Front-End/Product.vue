@@ -7,7 +7,7 @@
             <RouterLink to="/ProductList/all">產品列表</RouterLink>
           </li>
           <li class="breadcrumb-item">
-            <a href="#" @click.prevent="proCate(product.category)">{{ product.category }}</a>
+            <RouterLink :to="`/ProductList/${product.category}`">{{ product.category }}</RouterLink>
           </li>
           <li class="breadcrumb-item active" aria-current="page">{{ product.title }}</li>
         </ol>
@@ -44,14 +44,30 @@
           </p>
         </div>
       </div>
-      <a href="#" @click.prevent="moreProduct">跳轉脆皮奶油泡芙</a>
+      <div class="similarList my-5">
+        <h3 class="mb-3">相關商品</h3>
+        <ul class="list-unstyled d-flex justify-content-between">
+          <li v-for="(item, key) in similarList" :key="key">
+            <div class="head text-center">
+              <img :src="item.imageUrl" alt="" class="w-100">
+              <p class="my-2">{{ item.title }}</p>
+              <a href="#" is="RouterLink" :to="`/Product/${item.id}`"></a>
+            </div>
+            <div class="text-center">
+              <p class="price">{{ item.price|corrency }}</p>
+              <button type="button" class="btn bg-or text-white" @click="addOnCart(item.id, qty)" :disabled="product.is_enable==0">
+                <span v-if="product.is_enable!==0"><i class="fa fa-cart-plus" aria-hidden="true"></i>加入購物車</span>
+              </button>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import $ from 'jquery'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   data () {
@@ -60,28 +76,17 @@ export default {
     }
   },
   methods: {
-    proCate (categoryName) {
-      this.$router.push(`/ProductList/${categoryName}`)
-    },
     goOrder () {
       const vm = this
       vm.$router.push(`/Checkout`)
     },
-    textFilt () {
-      const vm = this
-      let prodContent = vm.product.content
-      let newTextAry = []
-      for (let i = 0; prodContent.length > i; i++) {
-        if (prodContent[i] === '♥' && i !== 0) {
-          newTextAry.push('<br>')
-        }
-        newTextAry.push(prodContent[i])
-      }
-      $('#productDesc').html(newTextAry.join(''))
-    },
     addCart (qty = 1) {
       let prod = this.product
       this.$store.dispatch('cartsModules/addCart', { prod, qty })
+    },
+    addOnCart (pid, qty = 1) {
+      console.log(pid)
+      this.$store.dispatch('cartsModules/addCart', { pid, qty })
     },
     qtyblur () {
       const vm = this
@@ -91,20 +96,21 @@ export default {
     },
     moreProduct () {
       this.$router.push('/Product/-MpVFPg2kOWzETFjcyRF')
-    }
+    },
+    ...mapActions('productsModules', ['getProducts'])
   },
   watch: {
     $route (to) {
-      // this.getproductDetail(to.params.id)
       this.$store.dispatch('productsModules/getProduct', this.$route.params.id)
     }
   },
   computed: {
-    ...mapGetters('productsModules', ['product', 'productContent', 'productList'])
+    ...mapGetters('productsModules', ['product', 'productContent', 'productList', 'similarList'])
   },
   created () {
     this.$emit('closeNavList')
     this.$emit('cartSw', true)
+    this.getProducts()
     this.$store.dispatch('cartsModules/updateCartA', true)
     this.$store.dispatch('productsModules/getProduct', this.$route.params.id)
   }
@@ -180,11 +186,17 @@ export default {
     }
   }
   .similarList{
-    &>div{
-      width:180px;
+    h3{
+      border-left:5px solid #666;
+      padding-left:10px;
+    }
+    li{
+      width:22%;
+    }
+    .head{
       position:relative;
-      img{
-        height:180px;
+      p{
+        font-size:18px;
       }
       a{
         position:absolute;
@@ -193,6 +205,12 @@ export default {
         height:100%;
         width:100%;
       }
+    }
+    .price{
+      font-size:22px;
+      margin-bottom:5px;
+      font-weight:bold;
+      color: #dc3545;
     }
   }
 }
@@ -213,8 +231,6 @@ export default {
 }
 @media(max-width:600px){
   .productContent{
-    width:100%;
-    padding:20px;
     nav{
       font-size:16px;
       margin-bottom:10px;
