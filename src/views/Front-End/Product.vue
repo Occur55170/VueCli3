@@ -85,7 +85,6 @@ export default {
       this.$store.dispatch('cartsModules/addCart', { prod, qty })
     },
     addOnCart (pid, qty = 1) {
-      console.log(pid)
       this.$store.dispatch('cartsModules/addCart', { pid, qty })
     },
     qtyblur () {
