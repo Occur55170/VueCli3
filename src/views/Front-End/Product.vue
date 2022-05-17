@@ -44,6 +44,7 @@
           </p>
         </div>
       </div>
+      <a href="#" @click.prevent="moreProduct">跳轉脆皮奶油泡芙</a>
     </div>
   </div>
 </template>
@@ -87,6 +88,9 @@ export default {
       if (vm.qty < 1 || vm.qty === false) {
         vm.qty = 1
       }
+    },
+    moreProduct () {
+      this.$router.push('/Product/-MpVFPg2kOWzETFjcyRF')
     }
   },
   computed: {
