@@ -58,7 +58,7 @@
         </table>
         <div class="text-right">
           <button type="button" class="btn mx-2 btn-outline-secondary" @click.prevent="cancelOrder">繼續選購</button>
-          <button type="button" class="btn mx-2 text-white nextStep" @click.prevent=" step++ ">確認，下一步</button>
+          <button type="button" class="btn bg-or mx-2 text-white" @click.prevent=" step++ ">確認，下一步</button>
         </div>
       </section>
       <!-- 1.購物車 -->
@@ -146,7 +146,7 @@
             </div>
             <div class="text-right">
               <button type="button" class="btn mx-2 btn-outline-secondary" @click.prevent="step--">上一步</button>
-              <button type="submit" class="btn mx-2 text-white nextStep" @click.prevent="step++" :disabled="invalid">確認，下一步</button>
+              <button type="submit" class="btn bg-or mx-2 text-white" @click.prevent="step++" :disabled="invalid">確認，下一步</button>
             </div>
           </form>
         </validation-observer>
@@ -306,9 +306,9 @@ export default {
       font-size:18px;
     }
   }
-  .nextStep {
-    background:#f28200;
-  }
+  // .nextStep {
+    // background:#f28200;
+  // }
   .step1Con {
     table {
       font-size:18px;

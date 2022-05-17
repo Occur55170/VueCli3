@@ -12,7 +12,6 @@ import App from './App.vue'
 import router from './router'
 import store from './store/store'
 
-/* vue3不支援，之後刪除 */
 import correncyFilter from './filters/corrency'
 import dateDue from './filters/dateDue'
 Vue.filter('corrency', correncyFilter)

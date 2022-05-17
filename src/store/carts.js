@@ -83,7 +83,6 @@ export default {
       })
     },
     updateCart (context, status) {
-      // 上傳購物車
       context.dispatch('updateLoad', true, { root: true })
       let carts = context.state.cart.carts
       let i = 0
@@ -101,7 +100,6 @@ export default {
       })
     },
     initCart (context, status) {
-      // 同步購物車
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
       axios.get(api).then(response => {
         if (response.data.success) {

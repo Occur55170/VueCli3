@@ -7,6 +7,7 @@
             <RouterLink to="/ProductList/all">產品列表</RouterLink>
           </li>
           <li class="breadcrumb-item">
+            <!-- <RouterLink :to='`/ProductList/${product.category}`'>產品列表</RouterLink> -->
             <a href="#" @click.prevent="proCate(product.category)">{{ product.category }}</a>
           </li>
           <li class="breadcrumb-item active" aria-current="page">{{ product.title }}</li>
@@ -44,7 +45,22 @@
           </p>
         </div>
       </div>
-      <a href="#" @click.prevent="moreProduct">跳轉脆皮奶油泡芙</a>
+      <div class="similarList my-5 d-flex flex-wrap justify-content-between">
+        <h2 class="font-weight-bold w-100 mb-3">相關商品</h2>
+        <div v-for="(item, key) in similarList" :key="key" class="d-flex flex-column justify-content-between">
+          <div class="head text-center">
+            <img :src="item.imageUrl" alt="" class="w-100">
+            <p class="mb-0">{{ item.title }}</p>
+            <a href="#" :title="item.title" @click.prevent="moreProduct(item.id)"></a>
+          </div>
+          <div class="con text-center">
+            <p class="price">{{ item.price|corrency }}</p>
+            <a href="#" class="btn bg-or text-white mx-auto" @click.prevent="addOnCart(item.id, 1)">
+              <i class="fa fa-cart-plus" aria-hidden="true"></i>搶購去
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -56,7 +72,8 @@ import $ from 'jquery'
 export default {
   data () {
     return {
-      qty: 1
+      qty: 1,
+      toPro: false
     }
   },
   methods: {
@@ -83,18 +100,32 @@ export default {
       let prod = this.product
       this.$store.dispatch('cartsModules/addCart', { prod, qty })
     },
+    addOnCart (pid, qty = 1) {
+      this.$store.dispatch('cartsModules/addCart', { pid, qty })
+    },
     qtyblur () {
       const vm = this
       if (vm.qty < 1 || vm.qty === false) {
         vm.qty = 1
       }
     },
-    moreProduct () {
-      this.$router.push('/Product/-MpVFPg2kOWzETFjcyRF')
+    moreProduct (pid) {
+      this.$router.push(`/Product/${pid}`)
+      this.toPro = true
+    }
+  },
+  watch: {
+    $route (to) {
+      if (this.toPro) {
+        this.$store.dispatch('productsModules/getProduct', this.$route.params.id)
+        this.toPro = false
+      } else {
+        console.log('notPro')
+      }
     }
   },
   computed: {
-    ...mapGetters('productsModules', ['product', 'productContent', 'productList'])
+    ...mapGetters('productsModules', ['product', 'productContent', 'productList', 'similarList'])
   },
   created () {
     this.$emit('closeNavList')
@@ -165,6 +196,9 @@ export default {
         font-size:20px;
       }
     }
+    .addCartA:hover{
+      background:#bd6500;
+    }
   }
   .instruction{
     .productDesc{
@@ -174,11 +208,26 @@ export default {
     }
   }
   .similarList{
+    h2{
+      border-left:5px solid #ccc;
+      padding-left:10px;
+    }
     &>div{
-      width:180px;
+      width:22%;
+      border:1px solid #ccc;
+      box-sizing:border-box;
+      padding:10px;
+    }
+    .head{
       position:relative;
+      font-weight:bold;
+      margin-bottom: 5px;
       img{
         height:180px;
+        margin-bottom:10px;
+      }
+      p{
+        font-size:17px;
       }
       a{
         position:absolute;
@@ -186,6 +235,17 @@ export default {
         left:0;
         height:100%;
         width:100%;
+      }
+    }
+    .con{
+      .price{
+        color:#dc3545;
+        font-size:20px;
+        font-weight:bold;
+        margin-bottom: 10px;
+      }
+      a{
+        width:90%;
       }
     }
   }
