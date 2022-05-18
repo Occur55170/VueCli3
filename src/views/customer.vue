@@ -52,7 +52,6 @@
       <p class="text-center m-1">本網站僅個人練習使用．不做任何商業用途。商品圖片與內容均為<a href="https://www.frenchkiss.com.tw/">幸福烘焙</a>所有</p>
       <div class="d-flex justify-content-center mt-2">
         <a href="https://github.com/Occur55170/" title="github"><i class="fab fa-github"></i>GitHub</a>
-
         <a href="#" is="RouterLink" class="ml-3" to="/login"><i class="fas fa-wrench"></i>管理者模式</a>
       </div>
     </div>
