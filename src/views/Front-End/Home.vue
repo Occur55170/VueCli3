@@ -3,15 +3,9 @@
   <div class="index">
     <div class="text-center indexHead ">
       <a href="#" @click.prevent="goProduct('-MpVSEO-4Ea90UEKn03R')"></a>
-      <transition appear appear-active-class="headLoad">
-        <div class="bg-or w-100"></div>
-      </transition>
-      <transition appear appear-active-class="headLoad">
-        <img src="@/assets/images/index/headerText.png" alt="季節限定" class="headerText">
-      </transition>
-      <transition appear appear-active-class="bannerLoad">
-        <img src="@/assets/images/index/newPro.jpg" alt="仙子水果泡芙" class="banner">
-      </transition>
+      <div class="bg-or w-100"></div>
+      <img src="@/assets/images/index/headerText.png" alt="季節限定" class="headerText">
+      <img src="@/assets/images/index/newPro.jpg" alt="仙子水果泡芙" class="banner">
     </div>
     <div class="serve mt-5 indexContainer">
       <h2 class="text-center"><strong>我們的服務</strong></h2>
@@ -252,30 +246,6 @@ export default {
       width:100%;
       clip-path: polygon(0% 0,50% 0, 90% 100%, 0% 100%);
       margin:0;
-    }
-  }
-  .headLoad{
-    animation:LeftToRight 1s linear;
-    animation-fill-mode:both;
-    @keyframes LeftToRight{
-      from{
-        transform:translateX(-100vw)
-      }
-      to{
-        transform:translateX(0vw)
-      }
-    }
-  }
-  .bannerLoad{
-    animation:incline 1s linear;
-    animation-fill-mode:both;
-    @keyframes incline{
-      from{
-        transform:translateX(-100vw) translateY(-100vh)
-      }
-      to{
-        transform:translateX(0vw) translateY(0vh)
-      }
     }
   }
   .serve{
