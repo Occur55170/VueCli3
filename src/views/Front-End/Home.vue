@@ -58,19 +58,19 @@
             <img src="@/assets/images/index/recommend-1.jpg" alt="脆皮MINI泡芙禮盒" class="w-100 mb-3">
             <p class="h5 text-center"><strong>脆皮MINI泡芙禮盒</strong></p>
             <p class="h6">幸福烘焙最熱賣三種脆皮泡芙一次滿足，脆皮奶油、脆皮巧克力、脆皮楓糖三種口味，九入裝</p>
-            <a href="#" class="bg-or text-white text-center text-decoration-none d-block" @click.prevent="goProduct('-MpVFpW2xS0DpJTv8lU0')">手刀前往</a>
+            <a href="#" class="btn bg-or text-white text-center text-decoration-none d-block" @click.prevent="goProduct('-MpVFpW2xS0DpJTv8lU0')">手刀前往</a>
           </li>
           <li>
             <img src="@/assets/images/index/recommend-2.jpg" alt="經典禮盒" class="w-100 mb-3">
             <p class="h5 text-center"><strong>經典禮盒</strong></p>
             <p class="h6">超人氣泡芙經典禮盒，店內最熱銷人氣商品九種口味一次擁有，伴手禮最佳選擇</p>
-            <a href="#" class="bg-or text-white text-center text-decoration-none d-block" @click.prevent="goProduct('-MpVXsRffaRW18T8woHc')">手刀前往</a>
+            <a href="#" class="btn bg-or text-white text-center text-decoration-none d-block" @click.prevent="goProduct('-MpVXsRffaRW18T8woHc')">手刀前往</a>
           </li>
           <li>
             <img src="@/assets/images/index/recommend-3.jpg" alt="巴黎方塊泡芙禮盒" class="w-100 mb-3">
             <p class="h5 text-center"><strong>巴黎方塊泡芙禮盒</strong></p>
             <p class="h6">香榭道上的花漾磚紋，推砌出巴黎最幸福的光景，一格一格，收藏繽紛的法式甜蜜。</p>
-            <a href="#" class="bg-or text-white text-center text-decoration-none d-block" @click.prevent="goProduct('-MpVYQk9FkOY8wZg_F1H')">手刀前往</a>
+            <a href="#" class="btn bg-or text-white text-center text-decoration-none d-block" @click.prevent="goProduct('-MpVYQk9FkOY8wZg_F1H')">手刀前往</a>
           </li>
         </ul>
       </div>
@@ -87,7 +87,7 @@
               <span class="num">1</span>
             </div>
           </li>
-          <li class="my-3 bg-white p-3 d-flex align-items-center bounceInRight">
+          <li class="my-3 bg-white p-3 d-flex align-items-center">
             <img src="@/assets/images/step/step-2.jpg" alt="熬煮麵糊" class="col-4">
             <div class="w-100">
               <h2>熬煮麵糊</h2>
@@ -103,7 +103,7 @@
               <span class="num">3</span>
             </div>
           </li>
-          <li class="my-3 bg-white p-3 d-flex align-items-center bounceInRight">
+          <li class="my-3 bg-white p-3 d-flex align-items-center">
             <img src="@/assets/images/step/step-4.jpg" alt="高溫烘烤" class="col-4">
             <div class="w-100">
               <h2>高溫烘烤</h2>
@@ -119,7 +119,7 @@
               <span class="num">5</span>
             </div>
           </li>
-          <li class="my-3 bg-white p-3 d-flex align-items-center bounceInRight">
+          <li class="my-3 bg-white p-3 d-flex align-items-center">
             <img src="@/assets/images/step/step-6.jpg" alt="添加鮮奶油" class="col-4">
             <div class="w-100">
               <h2>添加鮮奶油</h2>
@@ -135,7 +135,7 @@
               <span class="num">7</span>
             </div>
           </li>
-          <li class="my-3 bg-white p-3 d-flex align-items-center bounceInRight">
+          <li class="my-3 bg-white p-3 d-flex align-items-center">
             <img src="@/assets/images/step/step-8.jpg" alt="產品上架" class="col-4">
             <div class="w-100">
               <h2>產品上架</h2>
@@ -182,7 +182,8 @@ export default {
     },
     scrollShow () {
       if (window.scrollY > $('.serve ul').position().top - 100) {
-        $('.recommend li').addClass('animate__bounceIn')
+        console.log('111')
+        $('.recommend li').addClass('showRecom')
       }
     }
   },
@@ -291,6 +292,7 @@ export default {
     background-position: 100% 100%;
     box-sizing:border-box;
     padding:20px 2% 80px 2%;
+    overflow:hidden;
     h2{
       color:#EF8C1A;
     }
@@ -308,9 +310,8 @@ export default {
         background:#fff;
         box-sizing:border-box;
         padding:20px;
-        opacity: 0;
-        transform: scale3d(.3,.3,.3);
-        animation-fill-mode: both;
+        transform:rotateY(90deg);
+        backface-visibility: hidden;
       }
       .h6{
         flex-grow:2;
@@ -324,40 +325,10 @@ export default {
         font-weight:bold;
         border-radius:50px;
       }
-    }
-  }
-  .recommendLoad{
-    @keyframes bounceIn {
-      0%,20%,40%,60%,80%,to {
-        animation-timing-function: cubic-bezier(.215,.61,.355,1)
+      .showRecom{
+        transition:all .8s;
+        transform:rotateY(0deg);
       }
-      0% {
-        opacity: 0;
-        transform: scale3d(.3,.3,.3)
-      }
-      20% {
-        transform: scale3d(1.1,1.1,1.1)
-      }
-      40% {
-        transform: scale3d(.9,.9,.9)
-      }
-      60% {
-        opacity: 1;
-        transform: scale3d(1.03,1.03,1.03)
-      }
-      80% {
-        transform: scale3d(.97,.97,.97)
-      }
-      to {
-        opacity: 1;
-        transform: scaleX(1)
-      }
-    }
-    .animate__bounceIn {
-      animation-duration: .75s;
-      animation-duration: calc(var(--animate-duration)*.75);
-      animation-fill-mode: both;
-      animation-name: bounceIn
     }
   }
   .step{

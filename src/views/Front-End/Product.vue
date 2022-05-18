@@ -46,21 +46,21 @@
       </div>
       <div class="similarList my-5">
         <h3 class="mb-3">相關商品</h3>
-        <ul class="list-unstyled d-flex justify-content-between">
-          <li v-for="(item, key) in similarList" :key="key">
+        <carousel class="m-list list-unstyled d-flex justify-content-between" :paginationEnabled="false" :perPage="similarCount" :navigationEnabled="true" navigationNextLabel="<i class='fas fa-angle-right' style='font-size:60px'></i>" navigationPrevLabel="<i class='fas fa-angle-left' style='font-size:60px'></i>" >
+          <slide v-for="(item, key) in similarList" :key="key" class="similarContent">
             <div class="head text-center">
               <img :src="item.imageUrl" alt="" class="w-100">
               <p class="my-2">{{ item.title }}</p>
               <a href="#" is="RouterLink" :to="`/Product/${item.id}`"></a>
             </div>
-            <div class="text-center">
+            <div class="content text-center">
               <p class="price">{{ item.price|corrency }}</p>
               <button type="button" class="btn bg-or text-white" @click="addOnCart(item.id, qty)" :disabled="product.is_enable==0">
                 <span v-if="product.is_enable!==0"><i class="fa fa-cart-plus" aria-hidden="true"></i>加入購物車</span>
               </button>
             </div>
-          </li>
-        </ul>
+          </slide>
+        </carousel>
       </div>
     </div>
   </div>
@@ -68,11 +68,13 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { Carousel, Slide } from 'vue-carousel'
 
 export default {
   data () {
     return {
-      qty: 1
+      qty: 1,
+      similarCount: 4
     }
   },
   methods: {
@@ -91,6 +93,15 @@ export default {
       const vm = this
       if (vm.qty < 1 || vm.qty === false) {
         vm.qty = 1
+      }
+    },
+    similarLi () {
+      if (window.innerWidth <= 600) {
+        this.similarCount = 1
+      } else if (window.innerWidth <= 768) {
+        this.similarCount = 3
+      } else {
+        this.similarCount = 4
       }
     },
     moreProduct () {
@@ -112,6 +123,13 @@ export default {
     this.getProducts()
     this.$store.dispatch('cartsModules/updateCartA', true)
     this.$store.dispatch('productsModules/getProduct', this.$route.params.id)
+    this.$nextTick(() => {
+      this.similarLi()
+    })
+  },
+  components: {
+    Carousel,
+    Slide
   }
 }
 </script>
@@ -189,9 +207,6 @@ export default {
       border-left:5px solid #666;
       padding-left:10px;
     }
-    li{
-      width:22%;
-    }
     .head{
       position:relative;
       p{
@@ -211,6 +226,10 @@ export default {
       font-weight:bold;
       color: #dc3545;
     }
+    .similarContent{
+      box-sizing:border-box;
+      padding:20px;
+    }
   }
 }
 @media(max-width:768px){
@@ -225,6 +244,24 @@ export default {
     }
     .proImg{
       width:45%;
+    }
+  }
+  .similarList{
+    box-sizing:border-box;
+    padding:0 30px;
+    .head{
+      width:100%;
+      p{
+        font-size:20px;
+      }
+    }
+    .content{
+      width:100%;
+      align-self:flex-end;
+      text-align:center;
+    }
+    .VueCarousel-navigation-prev,.VueCarousel-navigation-next{
+      font-size:80px;
     }
   }
 }
@@ -274,6 +311,8 @@ export default {
         line-height:1.6;
         font-size:16px;
       }
+    }
+    .similarList{
     }
   }
 }
