@@ -63,7 +63,7 @@ export default {
   background:#f9f9f9;
   h3{
     color:#BB3D00;
-    margin:10px 0 20px 0;
+    margin:10px 0 20px 0
   }
   li{
     width:43%;
