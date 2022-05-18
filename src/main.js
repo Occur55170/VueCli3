@@ -11,6 +11,7 @@ import 'bootstrap'
 import App from './App.vue'
 import router from './router'
 import store from './store/store'
+import 'animate.css'
 
 import correncyFilter from './filters/corrency'
 import dateDue from './filters/dateDue'

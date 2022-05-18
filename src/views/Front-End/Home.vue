@@ -3,11 +3,17 @@
   <div class="index">
     <div class="text-center indexHead ">
       <a href="#" @click.prevent="goProduct('-MpVSEO-4Ea90UEKn03R')"></a>
-      <div class="bg-or w-100"></div>
-      <img src="@/assets/images/index/headerText.png" alt="季節限定" class="headerText">
-      <img src="@/assets/images/index/newPro.jpg" alt="仙子水果泡芙" class="banner">
+      <transition appear appear-active-class="headLoad">
+        <div class="bg-or w-100"></div>
+      </transition>
+      <transition appear appear-active-class="headLoad">
+        <img src="@/assets/images/index/headerText.png" alt="季節限定" class="headerText">
+      </transition>
+      <transition appear appear-active-class="bannerLoad">
+        <img src="@/assets/images/index/newPro.jpg" alt="仙子水果泡芙" class="banner">
+      </transition>
     </div>
-    <div class="mt-5 serve indexContainer">
+    <div class="serve mt-5 indexContainer">
       <h2 class="text-center"><strong>我們的服務</strong></h2>
       <ul class="d-flex justify-content-around my-5 list-unstyled">
         <li class="text-center h5 col-4 border-dark">
@@ -39,7 +45,6 @@
         </li>
       </ul>
     </div>
-
     <div class="recommend indexContainer">
       <div>
         <h2 class="text-center mt-5 mb-3"><strong>熱門推薦區</strong></h2>
@@ -70,7 +75,6 @@
         </ul>
       </div>
     </div>
-
     <div class="step py-5 indexContainer">
       <div class="mx-auto">
         <h1 class="text-center mb-5"><strong>幸福烘焙  用心製作</strong></h1>
@@ -83,7 +87,7 @@
               <span class="num">1</span>
             </div>
           </li>
-          <li class="my-3 bg-white p-3 d-flex align-items-center">
+          <li class="my-3 bg-white p-3 d-flex align-items-center bounceInRight">
             <img src="@/assets/images/step/step-2.jpg" alt="熬煮麵糊" class="col-4">
             <div class="w-100">
               <h2>熬煮麵糊</h2>
@@ -99,7 +103,7 @@
               <span class="num">3</span>
             </div>
           </li>
-          <li class="my-3 bg-white p-3 d-flex align-items-center">
+          <li class="my-3 bg-white p-3 d-flex align-items-center bounceInRight">
             <img src="@/assets/images/step/step-4.jpg" alt="高溫烘烤" class="col-4">
             <div class="w-100">
               <h2>高溫烘烤</h2>
@@ -115,7 +119,7 @@
               <span class="num">5</span>
             </div>
           </li>
-          <li class="my-3 bg-white p-3 d-flex align-items-center">
+          <li class="my-3 bg-white p-3 d-flex align-items-center bounceInRight">
             <img src="@/assets/images/step/step-6.jpg" alt="添加鮮奶油" class="col-4">
             <div class="w-100">
               <h2>添加鮮奶油</h2>
@@ -131,7 +135,7 @@
               <span class="num">7</span>
             </div>
           </li>
-          <li class="my-3 bg-white p-3 d-flex align-items-center">
+          <li class="my-3 bg-white p-3 d-flex align-items-center bounceInRight">
             <img src="@/assets/images/step/step-8.jpg" alt="產品上架" class="col-4">
             <div class="w-100">
               <h2>產品上架</h2>
@@ -142,8 +146,7 @@
         </ul>
       </div>
     </div>
-
-    <div class="pb-5 pt-0 contact indexContainer text-center">
+    <div class="contact pb-5 pt-0 indexContainer text-center">
       <h1 class="mb-2"><strong>想知道更多我們的訊息？</strong></h1>
       <p class="mb-4">輸入信箱，訂閱我們，隨時獲得第一手優惠訊息！</p>
       <div class="subscription">
@@ -157,6 +160,8 @@
 </template>
 
 <script>
+import $ from 'jquery'
+
 export default {
   data () {
     return {
@@ -174,18 +179,27 @@ export default {
     },
     subscription () {
       this.$store.dispatch()
+    },
+    scrollShow () {
+      if (window.scrollY > $('.serve ul').position().top - 100) {
+        $('.recommend li').addClass('animate__bounceIn')
+      }
     }
   },
   created () {
     this.$emit('closeNavList')
     this.$emit('cartSw', true)
     this.$store.dispatch('cartsModules/updateCartA', true)
+    this.$nextTick(() => {
+      window.addEventListener('scroll', this.scrollShow)
+    })
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .index{
+  overflow:hidden;
   .indexHead{
     background-image: url(~@/assets/images/index/index-1.jpg);
     position:relative;
@@ -239,6 +253,30 @@ export default {
       margin:0;
     }
   }
+  .headLoad{
+    animation:LeftToRight 1s linear;
+    animation-fill-mode:both;
+    @keyframes LeftToRight{
+      from{
+        transform:translateX(-100vw)
+      }
+      to{
+        transform:translateX(0vw)
+      }
+    }
+  }
+  .bannerLoad{
+    animation:incline 1s linear;
+    animation-fill-mode:both;
+    @keyframes incline{
+      from{
+        transform:translateX(-100vw) translateY(-100vh)
+      }
+      to{
+        transform:translateX(0vw) translateY(0vh)
+      }
+    }
+  }
   .serve{
     i{
       font-size:50px;
@@ -270,6 +308,9 @@ export default {
         background:#fff;
         box-sizing:border-box;
         padding:20px;
+        opacity: 0;
+        transform: scale3d(.3,.3,.3);
+        animation-fill-mode: both;
       }
       .h6{
         flex-grow:2;
@@ -283,6 +324,40 @@ export default {
         font-weight:bold;
         border-radius:50px;
       }
+    }
+  }
+  .recommendLoad{
+    @keyframes bounceIn {
+      0%,20%,40%,60%,80%,to {
+        animation-timing-function: cubic-bezier(.215,.61,.355,1)
+      }
+      0% {
+        opacity: 0;
+        transform: scale3d(.3,.3,.3)
+      }
+      20% {
+        transform: scale3d(1.1,1.1,1.1)
+      }
+      40% {
+        transform: scale3d(.9,.9,.9)
+      }
+      60% {
+        opacity: 1;
+        transform: scale3d(1.03,1.03,1.03)
+      }
+      80% {
+        transform: scale3d(.97,.97,.97)
+      }
+      to {
+        opacity: 1;
+        transform: scaleX(1)
+      }
+    }
+    .animate__bounceIn {
+      animation-duration: .75s;
+      animation-duration: calc(var(--animate-duration)*.75);
+      animation-fill-mode: both;
+      animation-name: bounceIn
     }
   }
   .step{
@@ -447,7 +522,6 @@ export default {
           }
         }
       }
-
     }
     .stepList {
       padding-top:0;
