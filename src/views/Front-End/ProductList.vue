@@ -11,9 +11,9 @@
         <a href="#" class="btn ml-3" @click.prevent="changMode = 'etclist'"><i class="fas fa-list"></i></a>
       </div>
       <div class="indexContainer mainContant mb-1 d-flex justify-content-between flex-wrap">
-        <div class="Group-list">
-          <a href="#" class="h5 font-weight-bold co-or" @click.prevent="changGroup('all')">全部顯示</a>
-          <a href="#" class="h5 font-weight-bold co-or" :class="{active: item == sortClass}" v-for="(item,key) in groupList" :key="key" @click.prevent="changGroup(item)">{{ item }}</a>
+        <div class="list-group pb-2 text-left">
+          <a href="#" class="h5 list-group-item font-weight-bold list-group-item-action list-group-item-light mb-0" :class="{active: 'all' == sortClass}" @click.prevent="changGroup('all')">全部顯示</a>
+          <a href="#" class="h5 list-group-item font-weight-bold list-group-item-action list-group-item-light mb-0" :class="{active: item == sortClass}" v-for="(item,key) in groupList" :key="key" @click.prevent="changGroup(item)">{{ item }}</a>
         </div>
         <div class="productList" :class="{'slist':changMode == 'slist','etclist':changMode == 'etclist'}">
           <div class="mb-4" v-for="item in productList" :key="item.id">
