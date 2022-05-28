@@ -7,10 +7,12 @@ import 'vue-loading-overlay/dist/vue-loading.css'
 import { ValidationObserver, ValidationProvider, extend, localize, configure } from 'vee-validate'
 import TW from 'vee-validate/dist/locale/zh_TW.json'
 import * as rules from 'vee-validate/dist/rules'
+import { oneOf } from 'vee-validate/dist/rules'
 import 'bootstrap'
 import App from './App.vue'
 import router from './router'
 import store from './store/store'
+// 滾動式動畫效果
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 
@@ -28,12 +30,13 @@ Vue.config.productionTip = false
 Object.keys(rules).forEach((rule) => {
   extend(rule, rules[rule])
 })
-
+extend('oneOf', {
+  ...oneOf,
+  message: '請選擇付款方式'
+})
 localize('zh_TW', TW)
-
 Vue.component('ValidationObserver', ValidationObserver)
 Vue.component('ValidationProvider', ValidationProvider)
-
 configure({
   classes: {
     valid: 'is-valid',

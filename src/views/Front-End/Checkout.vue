@@ -102,13 +102,21 @@
             </div>
             <div class="pay mb-4">
               <h5 class="font-weight-bold">付款方式</h5>
-                <a href="#" @click.prevent="payMode='信用卡'" value="信用卡" class="payModeA text-decoration-none" :class="{'click':payMode=='信用卡'}">信用卡</a>
-                <a href="#" @click.prevent="payMode='代碼繳費'" value="代碼繳費" class="payModeA text-decoration-none" :class="{'click':payMode=='代碼繳費'}">代碼繳費</a>
-                <a href="#" @click.prevent="payMode='現金轉帳'" value="現金轉帳" class="payModeA text-decoration-none" :class="{'click':payMode=='現金轉帳'}">現金轉帳</a>
-              <validation-provider reles="required" v-slot="{errors,classes}">
-                <input type="text" :class="classes" name="付款方式" v-model="payMode" required v-show="false">
-                <span class="invalid-feedback">{{ errors[0] }}</span>
-              </validation-provider>
+              <ValidationProvider ref="provider" rules="oneOf:1,2,3" v-slot="{ errors }">
+                <label class="radio">
+                  <input name="payment" type="radio" value="1" v-model="payment"/>
+                  信用卡
+                </label>
+                <label class="radio">
+                  <input name="payment" type="radio" value="2" v-model="payment"/>
+                  代碼繳費
+                </label>
+                <label class="radio">
+                  <input name="payment" type="radio" value="3" v-model="payment"/>
+                  現金轉帳
+                </label>
+                <p><span class="text-danger">{{ errors[0] }}</span></p>
+              </ValidationProvider>
               <div class="creaditFrom" v-if="payMode=='信用卡'">
                 <div class="form-group d-flex flex-wrap">
                   <validation-provider rules="required" v-slot="{ errors,classes }" class="col-12 mb-3">
@@ -237,6 +245,7 @@ export default {
   data () {
     return {
       payMode: '',
+      payment: false,
       form: {
         user: {
           name: '',
@@ -276,6 +285,29 @@ export default {
       this.$store.dispatch('cartsModules/UpdateRemoveCart', pid)
     },
     ...mapActions('cartsModules', ['clearCart'])
+  },
+  watch: {
+    'step' () {
+      this.$nextTick(() => {
+        if (this.step === 2) {
+          this.$refs.provider.validate()
+        } else if (this.step === 3) {
+          switch (this.payment) {
+            case 1:
+              this.payMode = '信用卡'
+              break
+            case 2:
+              this.payMode = '現金轉帳'
+              break
+            case 3:
+              this.payMode = '代碼繳費'
+              break
+            default:
+              this.payMode = '現金轉帳'
+          }
+        }
+      })
+    }
   },
   computed: {
     ...mapGetters('cartsModules', ['cart'])
