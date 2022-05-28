@@ -7,13 +7,13 @@
         </div>
       </div>
       <div class="indexContainer mb-3 arrange">
-        <a href="#" class="btn btn-outline-secondary" @click.prevent="changMode = 'slist'"><i class="fas fa-th-large"></i></a>
-        <a href="#" class="btn btn-outline-secondary ml-3" @click.prevent="changMode = 'etclist'"><i class="fas fa-list"></i></a>
+        <a href="#" class="btn" @click.prevent="changMode = 'slist'"><i class="fas fa-th-large"></i></a>
+        <a href="#" class="btn ml-3" @click.prevent="changMode = 'etclist'"><i class="fas fa-list"></i></a>
       </div>
       <div class="indexContainer mainContant mb-1 d-flex justify-content-between flex-wrap">
-        <div class="list-group pb-2 text-left">
-          <a href="#" class="h5 list-group-item font-weight-bold list-group-item-action list-group-item-light mb-0" @click.prevent="changGroup('all')">全部顯示</a>
-          <a href="#" class="h5 list-group-item font-weight-bold list-group-item-action list-group-item-light mb-0" v-for="(item,key) in groupList" :key="key" @click.prevent="changGroup(item)">{{ item }}</a>
+        <div class="Group-list">
+          <a href="#" class="h5 font-weight-bold co-or" @click.prevent="changGroup('all')">全部顯示</a>
+          <a href="#" class="h5 font-weight-bold co-or" :class="{active: item == sortClass}" v-for="(item,key) in groupList" :key="key" @click.prevent="changGroup(item)">{{ item }}</a>
         </div>
         <div class="productList" :class="{'slist':changMode == 'slist','etclist':changMode == 'etclist'}">
           <div class="mb-4" v-for="item in productList" :key="item.id">
@@ -37,10 +37,10 @@
                 </a>
               </div>
               <div class="card-footer border-top-0 bg-white" v-if="!item.is_enable">
-                <a href="#" class="btn btn-outline-secondary btn-block btn-sm disabled">缺貨中</a>
+                <p href="#" class="btn btn-outline-secondary btn-block btn-sm disabled">缺貨中</p>
               </div>
               <div class="card-footer border-top-0 bg-white" v-if="item.is_enable">
-                <a href="#" class="btn btn-outline-secondary btn-block btn-sm" @click.prevent="addCart(item.id)">
+                <a href="#" class="btn btn-or bo-or btn-sm" @click.prevent="addCart(item.id)">
                   <i class="fa fa-cart-plus" aria-hidden="true"></i>搶購去
                 </a>
               </div>
@@ -58,6 +58,7 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   data () {
     return {
+      sortClass: '',
       changMode: 'slist'
     }
   },
@@ -67,6 +68,7 @@ export default {
     },
     changGroup (sort) {
       if (this.$route.params.sortId !== sort) {
+        this.sortClass = sort
         this.$store.dispatch('productsModules/changGroup', sort)
         this.$router.push(`/ProductList/${sort}`)
       }
@@ -115,13 +117,39 @@ export default {
 .arrange {
   display:flex;
   justify-content:flex-end;
+  a{
+    color:#f28200;
+    border:1px solid #f28200;
+    &:hover{
+      background:#f28200;
+      color:#fff;
+    }
+  }
 }
 .mainContant{
   display:flex;
   justify-content:space-between;
 }
-.list-group{
+.Group-list{
   width:20%;
+  display:flex;
+  flex-flow:column;
+  flex-wrap:wrap;
+  a{
+    width:100%;
+    box-sizing:border-box;
+    padding:10px 20px;
+    border:1px solid #f28200;
+    text-decoration:none;
+    &:hover{
+      background:#f28200;
+      color:white;
+    }
+    &.active{
+      background:#f28200;
+      color:white;
+    }
+  }
 }
 .productList{
   width:78%;
@@ -524,7 +552,9 @@ export default {
       border: 1px solid rgba(0,0,0,0.125) !important;
     }
   }
-  .arrange{display:none;}
+  .arrange{
+    display:none;
+  }
   .productList, .slist, .etclist{
     width:90%;
     margin:0 auto;

@@ -7,28 +7,23 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '*',
-      redirect: '/'
-    },
-    {
       name: '登入頁',
       path: '/Login',
       component: () => import('./views/Back-End/Login.vue')
     },
     {
-      // name: '產品列表',
       path: '/Admin',
       component: () => import('./views/Back-End/Admin.vue'),
       meta: { requiresAuth: true },
       children: [
         {
-          mame: '產品頁',
+          name: '產品頁',
           path: 'Products',
           component: () => import('./views/Back-End/Products.vue'),
           meta: { requiresAuth: true }
         },
         {
-          mame: '優惠卷頁面',
+          name: '優惠卷頁面',
           path: 'Coupon',
           component: () => import('./views/Back-End/Coupon.vue'),
           meta: { requiresAuth: true }
@@ -40,7 +35,7 @@ export default new Router({
           meta: { requiresAuth: true }
         },
         {
-          mame: '模擬_購物頁面頁',
+          name: '模擬_購物頁面頁',
           path: '/AdminOrder',
           component: () => import('./views/Back-End/AdminOrder.vue'),
           meta: { requiresAuth: true }
@@ -93,6 +88,10 @@ export default new Router({
           component: () => import('./views/Front-End/Pay.vue')
         }
       ]
+    },
+    {
+      path: '*',
+      redirect: '/'
     }
   ]
 })

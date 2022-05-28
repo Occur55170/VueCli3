@@ -72,17 +72,17 @@
               <validation-provider rules="required" v-slot="{ errors,classes }" class="form-group nameInput">
                 <label for="username">收件人姓名</label>
                 <input type="text" class="form-control" :class="classes" name="姓名" id="username" v-model="form.user.name" placeholder="輸入姓名">
-                <span class="invalid-feedback">{{  errors[0]  }}</span>
+                <span class="invalid-feedback">{{ errors[0] }}</span>
               </validation-provider>
               <validation-provider rules="required|email" v-slot="{ errors,classes }" class="form-group emailInput">
                 <label for="email">收件人信箱</label>
                 <input type="text" class="form-control" :class="classes" name="信箱" id="email" v-model="form.user.email" placeholder="輸入信箱">
-                <span class="invalid-feedback">{{  errors[0]  }}</span>
+                <span class="invalid-feedback">{{ errors[0] }}</span>
               </validation-provider>
               <validation-provider rules="required" v-slot="{errors,classes}" class="form-group phoneInput">
                 <label for="tel">電話</label>
                 <input type="text" class="form-control" id="tel" :class="classes" name="電話" v-model.number="form.user.tel" placeholder="電話" required maxlength="20">
-                <span class="invalid-feedback">{{  errors[0]  }}</span>
+                <span class="invalid-feedback">{{ errors[0] }}</span>
               </validation-provider>
               <div class="form-group addressInput">
                 <label for="city" class="w-100">居住地</label>
@@ -95,37 +95,41 @@
                   </select>
                   <validation-provider reles="required" v-slot="{errors,classes}" class="pr-0">
                     <input type="text" class="form-control" :class="classes" name="地址" id="inputAddress" v-model="form.user.address" placeholder="請填寫地址" required>
-                    <span class="invalid-feedback">{{  errors[0]  }}</span>
+                    <span class="invalid-feedback">{{ errors[0] }}</span>
                   </validation-provider>
                 </div>
               </div>
             </div>
             <div class="pay mb-4">
               <h5 class="font-weight-bold">付款方式</h5>
-              <a href="#" @click.prevent="payMode='信用卡'" class="payModeA text-decoration-none" :class="{'click':payMode=='信用卡'}">信用卡</a>
-              <a href="#" @click.prevent="payMode='代碼繳費'" class="payModeA text-decoration-none" :class="{'click':payMode=='代碼繳費'}">代碼繳費</a>
-              <a href="#" @click.prevent="payMode='現金轉帳'" class="payModeA text-decoration-none" :class="{'click':payMode=='現金轉帳'}">現金轉帳</a>
-              <form class="creaditFrom" v-if="payMode=='信用卡'">
+                <a href="#" @click.prevent="payMode='信用卡'" value="信用卡" class="payModeA text-decoration-none" :class="{'click':payMode=='信用卡'}">信用卡</a>
+                <a href="#" @click.prevent="payMode='代碼繳費'" value="代碼繳費" class="payModeA text-decoration-none" :class="{'click':payMode=='代碼繳費'}">代碼繳費</a>
+                <a href="#" @click.prevent="payMode='現金轉帳'" value="現金轉帳" class="payModeA text-decoration-none" :class="{'click':payMode=='現金轉帳'}">現金轉帳</a>
+              <validation-provider reles="required" v-slot="{errors,classes}">
+                <input type="text" :class="classes" name="付款方式" v-model="payMode" required v-show="false">
+                <span class="invalid-feedback">{{ errors[0] }}</span>
+              </validation-provider>
+              <div class="creaditFrom" v-if="payMode=='信用卡'">
                 <div class="form-group d-flex flex-wrap">
-                <validation-provider rules="required" v-slot="{ errors,classes }" class="col-12 mb-3">
-                  <label for="cardNumber" class="control-label">卡號</label>
-                  <div class="input-group">
-                    <input type="text" maxlength="12" id="cardNumber" name="卡號" v-model.number="credit.cardNum" :class="classes" class="form-control cardNumber" placeholder="**** **** **** ****">
-                    <span class="invalid-feedback">{{  errors[0]  }}</span>
-                  </div>
-                </validation-provider>
-                <validation-provider rules="required" v-slot="{ errors,classes }" class="form-group col-6">
-                  <label for="expireDate" class="control-label">卡片有效月年</label>
-                  <input type="text" id="expireDate" name="卡片有效月年" v-model="credit.expireDate" :class="classes"  class="form-control expireDate" placeholder="MM / YY">
-                  <span class="invalid-feedback">{{  errors[0]  }}</span>
-                </validation-provider>
-                <validation-provider rules="required" v-slot="{ errors,classes }" class="form-group col-6">
-                  <label for="cvc" class="control-label">卡片背面檢查碼</label>
-                  <input type="text" id="cvc" name="卡片背面檢查碼" v-model="credit.cvc" :class="classes"  class="form-control cvc" placeholder="卡片背面檢查碼">
-                  <span class="invalid-feedback">{{  errors[0]  }}</span>
-                </validation-provider>
+                  <validation-provider rules="required" v-slot="{ errors,classes }" class="col-12 mb-3">
+                    <label for="cardNumber" class="control-label">卡號</label>
+                    <div class="input-group">
+                      <input type="text" maxlength="12" id="cardNumber" name="卡號" v-model.number="credit.cardNum" :class="classes" class="form-control cardNumber" placeholder="**** **** **** ****">
+                      <span class="invalid-feedback">{{ errors[0] }}</span>
+                    </div>
+                  </validation-provider>
+                  <validation-provider rules="required" v-slot="{ errors,classes }" class="form-group col-6">
+                    <label for="expireDate" class="control-label">卡片有效月年</label>
+                    <input type="text" id="expireDate" name="卡片有效月年" v-model="credit.expireDate" :class="classes"  class="form-control expireDate" placeholder="MM / YY">
+                    <span class="invalid-feedback">{{ errors[0] }}</span>
+                  </validation-provider>
+                  <validation-provider rules="required" v-slot="{ errors,classes }" class="form-group col-6">
+                    <label for="cvc" class="control-label">卡片背面檢查碼</label>
+                    <input type="text" id="cvc" name="卡片背面檢查碼" v-model="credit.cvc" :class="classes"  class="form-control cvc" placeholder="卡片背面檢查碼">
+                    <span class="invalid-feedback">{{ errors[0] }}</span>
+                  </validation-provider>
                 </div>
-              </form>
+              </div>
             </div>
             <div class="mb-4">
               <h5 class="font-weight-bold">使用優惠卷</h5>
@@ -217,7 +221,7 @@
             </table>
             <div class="text-center">
               <button type="button" class="btn mx-2 btn-secondary" @click.prevent="step--">上一步</button>
-              <button type="submit" class="btn mx-2 btn-primary" @click.prevent="createOrder">確定付款</button>
+              <button type="submit" class="btn mx-2 bg-or text-white" @click.prevent="createOrder">確定付款</button>
             </div>
           </div>
         </section>
@@ -271,7 +275,7 @@ export default {
     removeCart (pid) {
       this.$store.dispatch('cartsModules/UpdateRemoveCart', pid)
     },
-    ...mapActions('cartsModules', ['cleartCart'])
+    ...mapActions('cartsModules', ['clearCart'])
   },
   computed: {
     ...mapGetters('cartsModules', ['cart'])
@@ -284,7 +288,7 @@ export default {
       if (!(localStorage.getItem('checkoutStep'))) {
         this.$router.push('/')
       } else {
-        this.cleartCart()
+        this.clearCart()
         localStorage.removeItem('checkoutStep')
       }
     })
@@ -298,247 +302,246 @@ export default {
   h2 {
     margin-bottom:50px;
   }
-  .stepList {
-    display:flex;
-    justify-content:center;
-    &>div {
-      margin:0 10px;
-      font-size:18px;
-    }
+}
+.stepList {
+  display:flex;
+  justify-content:center;
+  &>div {
+    margin:0 10px;
+    font-size:18px;
   }
-  // .nextStep {
-    // background:#f28200;
-  // }
-  .step1Con {
-    table {
-      font-size:18px;
-      thead {
-        th:nth-Child(1) {
-          width:10%;
-        }
-        th:nth-Child(2) {
-          width:40%;
-        }
-        th:nth-Child(3) {
-          width:15%;
-        }
-        th:nth-Child(4) {
-          width:20%;
-        }
-        th:nth-Child(5) {
-          width:20%;
-        }
+}
+.step1Con {
+  table {
+    font-size:18px;
+    thead {
+      th:nth-Child(1) {
+        width:10%;
       }
-    }
-    .prodImg {
-      width:100px;
-      margin: 0 20px 0 0;
-    }
-  }
-  .step2Con {
-    width:900px;
-    .basicInfo {
-      &>span {
-        padding:10px 10px 0 10px;
-        width:50%;
-        margin-bottom:10px;
+      th:nth-Child(2) {
+        width:40%;
       }
-    }
-    .addressInput {
-      width:100%;
-      padding:10px 10px 0 10px;
-      &>div {
-        display:flex;
+      th:nth-Child(3) {
+        width:15%;
       }
-      select {
+      th:nth-Child(4) {
         width:20%;
-        margin-right:2%;
       }
-      span {
-        width:100%;
+      th:nth-Child(5) {
+        width:20%;
       }
-    }
-    .payModeA {
-      color: #6c757d;
-      padding:8px 15px;
-      display:inline-block;
-      margin: 10px;
-      border-color: #6c757d;
-      border:1px solid #6c757d;
-      border-radius:10px;
-      box-sizing:border-box;
-      overflow:hidden;
-      &::before {
-        content:'\f111';
-        font-family:"Font Awesome 5 Free";
-        border-radius:99em;
-        margin-right:5px;
-        opacity: 1;
-      }
-      &.click::before {
-        content:'\f058';
-        font-family:"Font Awesome 5 Free";
-        border-radius:99em;
-        color:#6c757d;
-        opacity: 1;
-      }
-      &:hover {
-        outline: 2px solid #ff6855;
-        border-color: transparent;
-        box-sizing:border-box;
-      }
-    }
-    .creaditFrom {
-      .NumiCon {
-        border-top-left-radius:5px;
-        border-bottom-left-radius:5px;
-        background:#E0E0E0;
-        padding:8px;
-        box-sizing:border-box;
-        font-size:20px;
-      }
-    }
-    .couponCon {
-      display:flex;
-      width:80%;
-      input {
-        padding:0 10px;
-        width:70%;
-      }
-      &>div {
-        width:30%;
-        width:auto;
-        display:flex;
-      }
-    }
-    .remark {
-      width:75%;
     }
   }
-  .step3Con {
-    width:900px;
-    section {
-      padding:0 5%;
+  .prodImg {
+    width:100px;
+    margin: 0 20px 0 0;
+  }
+}
+.step2Con {
+  width:900px;
+  .basicInfo {
+    &>span {
+      padding:10px 10px 0 10px;
+      width:50%;
+      margin-bottom:10px;
     }
-    table {
-      font-size:16px;
-      tfoot {
-        border-top:1px solid #999;
-        td {padding:8px 10px;}
-        &>tr:last-Child {font-size:24px;font-weight:bold;}
+  }
+  .addressInput {
+    width:100%;
+    padding:10px 10px 0 10px;
+    &>div {
+      display:flex;
+    }
+    select {
+      width:20%;
+      margin-right:2%;
+    }
+    span {
+      width:100%;
+    }
+  }
+  .payModeA {
+    color: #6c757d;
+    padding:8px 15px;
+    display:inline-block;
+    margin: 10px;
+    border-color: #6c757d;
+    border:1px solid #6c757d;
+    border-radius:10px;
+    box-sizing:border-box;
+    overflow:hidden;
+    &::before {
+      content:'\f111';
+      font-family:"Font Awesome 5 Free";
+      border-radius:99em;
+      margin-right:5px;
+      opacity: 1;
+    }
+    &.click::before {
+      content:'\f058';
+      font-family:"Font Awesome 5 Free";
+      border-radius:99em;
+      color:#6c757d;
+      opacity: 1;
+    }
+    &:hover {
+      outline: 2px solid #ff6855;
+      border-color: transparent;
+      box-sizing:border-box;
+    }
+  }
+  .creaditFrom {
+    .NumiCon {
+      border-top-left-radius:5px;
+      border-bottom-left-radius:5px;
+      background:#E0E0E0;
+      padding:8px;
+      box-sizing:border-box;
+      font-size:20px;
+    }
+  }
+  .couponCon {
+    display:flex;
+    width:80%;
+    input {
+      padding:0 10px;
+      width:70%;
+    }
+    &>div {
+      width:30%;
+      width:auto;
+      display:flex;
+    }
+  }
+  .remark {
+    width:75%;
+  }
+}
+.step3Con {
+  width:900px;
+  section {
+    padding:0 5%;
+  }
+  table {
+    font-size:16px;
+    tfoot {
+      border-top:1px solid #999;
+      td {
+        padding:8px 10px;
+        }
+      &>tr:last-Child {
+        font-size:24px;font-weight:bold;
       }
     }
   }
 }
 @media(max-width:1024px) {
-  .checkoutBG {
-    .step2Con {
-      .couponCon {
-        display:flex;
-        width:100%;
-        input {
-          padding:0 10px;
-          width:66%;
-        }
-        &>div {
-          width:32%;
-          button {
-            margin:5px !important;
-            padding:5px;
-          }
+  .step2Con {
+    .couponCon {
+      display:flex;
+      width:100%;
+      input {
+        padding:0 10px;
+        width:66%;
+      }
+      &>div {
+        width:32%;
+        button {
+          margin:5px !important;
+          padding:5px;
         }
       }
     }
   }
 }
 @media(max-width:600px) {
-  .checkoutBG {
-    .stepList {
-      padding: 0 10px;
-      &>div {
-        padding:10px;
-        margin: 0 3px;
-        font-size: 14px;
+  .stepList {
+    padding: 0 10px;
+    &>div {
+      padding:10px;
+      margin: 0 3px;
+      font-size: 14px;
+    }
+  }
+  .step1Con {
+    table {
+      font-size: 16px;
+      thead {
+        th:nth-Child(1) {
+          width:8%;
+        }
+        th:nth-Child(2) {
+          width:50%;
+        }
+        th:nth-Child(3) {
+          width:20%;
+        }
+        th:nth-Child(4) {
+          width:20%;
+        }
       }
     }
-    .step1Con {
-      table {
-        font-size: 16px;
-        thead {
-          th:nth-Child(1) {
-            width:8%;
-          }
-          th:nth-Child(2) {
-            width:50%;
-          }
-          th:nth-Child(3) {
-            width:20%;
-          }
-          th:nth-Child(4) {
-            width:20%;
-          }
-        }
-      }
-      .prodImg{display:none;}
+    .prodImg{
+      display:none;
     }
-    .step2Con {
-      width:100%;
-      .basicInfo {
-        &>span {
-          width:100%;
-        }
-      }
-      .addressInput {
-        &>div {
-          flex-wrap:wrap;
-        }
-        select {
-          width:50%;
-          margin-bottom:10px;
-        }
-        span {
-          width:100%;
-        }
-      }
-      .pay {
-        display:flex;
-        flex-wrap:wrap;
-        h5 {
-          width:100%;
-        }
-        .payModeA {
-          width:auto;
-          margin: 10px 5px;
-          padding: 4px 8px;
-        }
-      }
-      .couponCon {
-        input {
-          padding:5px 10px;
-          font-size:16px;
-          width:100%;
-          margin:0 !important;
-        }
-        &>div {
-          width:50%;
-          button {
-            background:#6c757d;
-            color:#fff;
-            font-size:14px;
-          }
-        }
-        &>p {
-          font-size:16px;
-        }
-      }
-      .remark {
+  }
+  .step2Con {
+    width:100%;
+    .basicInfo {
+      &>span {
         width:100%;
-        margin:20px 0 30px 0!important;
       }
     }
-    .step3Con {
-      width:100%;
+    .addressInput {
+      &>div {
+        flex-wrap:wrap;
+      }
+      select {
+        width:50%;
+        margin-bottom:10px;
+      }
+      span {
+        width:100%;
+      }
     }
+    .pay {
+      display:flex;
+      flex-wrap:wrap;
+      h5 {
+        width:100%;
+      }
+      .payModeA {
+        width:auto;
+        margin: 10px 5px;
+        padding: 4px 8px;
+      }
+    }
+    .couponCon {
+      input {
+        padding:5px 10px;
+        font-size:16px;
+        width:100%;
+        margin:0 !important;
+      }
+      &>div {
+        width:50%;
+        button {
+          background:#6c757d;
+          color:#fff;
+          font-size:14px;
+        }
+      }
+      &>p {
+        font-size:16px;
+      }
+    }
+    .remark {
+      width:100%;
+      margin:20px 0 30px 0!important;
+    }
+  }
+  .step3Con {
+    width:100%;
   }
 }
 </style>

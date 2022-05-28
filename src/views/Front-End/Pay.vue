@@ -130,7 +130,9 @@ export default {
   }
   .coustomer{
     font-size:18px;
-    h2{margin-bottom:20px;}
+    h2{
+      margin-bottom:20px;
+    }
   }
 }
 @media(max-width:768px){
@@ -140,7 +142,6 @@ export default {
     }
     .coustomer{
       font-size:16px;
-      h2{margin-bottom:20px;}
     }
   }
 }

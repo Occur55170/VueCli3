@@ -1,6 +1,6 @@
 <template>
   <div class="Customer">
-    <loading :active.sync="isLoading"/>
+    <Loading :active.sync="isLoading"/>
     <header>
       <div class="indexContainer header">
         <RouterLink to="/" class="logo">
@@ -28,7 +28,7 @@
       </div>
     </header>
     <main class="flex-grow-1 flex-shrink-1">
-      <RouterView  @closeNavList="closeNavList"></RouterView>
+      <RouterView  @closeNavList="closeNavList" />
     </main>
     <footer class="bg-dark text-muted p-2 flex-grow-0 flex-shrink-0">
       <div class="footer indexContainer">
@@ -41,9 +41,9 @@
             <p class="text-center text-white">Copyright © 2022 by Occur</p>
           </li>
           <li class="shopContact">
-            <a class="mx-2 text-white" href="#" title="Facebook"><i class="fab fa-facebook-square"></i></a>
-            <a class="mx-2 text-white" href="#" title="Line"><i class="fab fa-line"></i></a>
-            <a class="mx-2 text-white" href="#" title="Instagrame"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.facebook.com/frenchkisspuff/" target="_blank" class="mx-2 text-white" title="Facebook"><i class="fab fa-facebook-square"></i></a>
+            <a href="https://page.line.me/xat.0000188480.ubo?openQrModal=true" target="_blank" class="mx-2 text-white" title="Line"><i class="fab fa-line"></i></a>
+            <a href="https://www.instagram.com/hengfookbakery/" target="_blank" class="mx-2 text-white" title="Instagrame"><i class="fab fa-instagram"></i></a>
           </li>
         </ul>
       </div>
@@ -93,7 +93,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.vld-overlay.is-full-page{z-index:1070;}
+.vld-overlay.is-full-page{
+  z-index:1070;
+}
 .Customer{
   min-height:100vh;
   display:flex;
@@ -101,7 +103,7 @@ export default {
   justify-content:space-between;
 }
 header{
-  box-shadow: 0 0 10px 4px #5a5a5a;
+  box-shadow: 0 0 20px -5px #626262;
   padding:10px 0;
   background:#fffbe7;
   position:fixed;
@@ -244,36 +246,36 @@ footer{
       ul{
         flex-wrap:wrap;
       }
-      .footerLogo{
-        width:100%;
+    }
+    .footerLogo{
+      width:100%;
+      margin-right:0 !important;
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      img{
+        width:12%;
+        max-width: 120px;
         margin-right:0 !important;
-        display:flex;
-        flex-wrap:wrap;
-        justify-content:center;
-        img{
-          width:12%;
-          max-width: 120px;
-          margin-right:0 !important;
-        }
-        p{
-          margin:20px auto !important;
-          display:block;
-          text-align:center;
-          color:#fff;
-          width:100%;
-          font-size:18px;
-        }
       }
-      .copyright{
+      p{
+        margin:20px auto !important;
+        display:block;
+        text-align:center;
+        color:#fff;
         width:100%;
-        padding:10px 20px;
-        p{
-          font-size:15px;
-        }
+        font-size:18px;
       }
-      .shopContact{
-        display:none;
+    }
+    .copyright{
+      width:100%;
+      padding:10px 20px;
+      p{
+        font-size:15px;
       }
+    }
+    .shopContact{
+      display:none;
     }
   }
 }
@@ -327,27 +329,25 @@ footer{
     margin:80px 0 0 0;
   }
   footer {
-    .footer {
-      .footerLogo {
-        width:100%;
-        margin-right:0 !important;
-        img {
-          width:20%;
-        }
-        p {
-          font-size: 4.2vw;
-        }
+    .footerLogo {
+      width:100%;
+      margin-right:0 !important;
+      img {
+        width:20%;
       }
-      .copyright {
-        width:100%;
-        padding:0 0 20px 0;
-        p {
-          font-size:14px;
-        }
+      p {
+        font-size: 4.2vw;
       }
-      .shopContact {
-        display:none;
+    }
+    .copyright {
+      width:100%;
+      padding:0 0 20px 0;
+      p {
+        font-size:14px;
       }
+    }
+    .shopContact {
+      display:none;
     }
   }
 }

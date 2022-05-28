@@ -1,3 +1,5 @@
 module.exports = {
-  publicPath: '/VueCli3/'
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/VueCli3/'
+    : '/'
 }

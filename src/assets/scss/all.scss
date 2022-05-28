@@ -13,6 +13,20 @@
 .btn.bg-or:hover{
   background: #cb6d00;
 }
+.bg-or{
+  background:#f28200;
+}
+
+.bo-or{
+  border:1px solid #f28200;
+}
+.btn-or{
+  color:#f28200;
+}
+.btn-or:hover{
+  background: #f28200;
+  color: #fff;
+}
 
 .indexContainer{
   padding-left:calc((100% - 1024px) /2) !important;

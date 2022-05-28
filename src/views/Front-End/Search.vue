@@ -8,7 +8,7 @@
     </div>
     <div class="searchList pb-2 text-center container">
       <input type="text" v-model="orderId"  placeholder="請輸入訂單編號">
-      <a href="#" @click.prevent="searchOrder">查詢</a>
+      <a href="#" class="btn bg-or" @click.prevent="searchOrder">查詢</a>
     </div>
     <div class="orderData" v-if="order.user.name">
       <h2 class="font-weight-bold">訂單資訊</h2>
@@ -39,10 +39,10 @@
           </thead>
           <tbody>
             <tr v-for="item in order.products" :key="item.id">
-              <td class="title">{{item.product.title }}</td>
-              <td class="price">{{item.product.price | corrency }}</td>
-              <td class="qty">{{item.qty }} {{ item.product.unit }}</td>
-              <td class="total">{{item.final_total | corrency }}</td>
+              <td class="title">{{ item.product.title }}</td>
+              <td class="price">{{ item.product.price | corrency }}</td>
+              <td class="qty">{{ item.qty }} {{ item.product.unit }}</td>
+              <td class="total">{{ item.final_total | corrency }}</td>
               <div>
                   {{ item.product.coupon }}
               </div>
@@ -117,49 +117,6 @@ export default {
   h1{
     width:100%;
   }
-  .searchList{
-    display:flex;
-    justify-content:center;
-    input{
-      font-size:20px;
-      padding:5px 10px;
-      color: #333;
-      border: 1px solid #CCC;
-      border-radius: 5px;
-      background-color: #f9f9f9;
-      margin-right:5px;
-    }
-    a{
-      font-size:20px;
-      color: #FFFFFF;
-      background:#999;
-      box-sizing:border-box;
-      padding:5px 15px;
-      border:1px solid #999;
-      border-radius: 5px;
-      text-align: center;
-      text-decoration:none;
-      &:hover{
-        background:#666;
-      }
-    }
-  }
-  .orderData{
-    h2{
-      margin-top:20px;
-      font-size:24px;
-    }
-    .con{
-      border: 1px solid #999;
-      box-sizing: border-box;
-      padding:8px 15px;
-      p{
-        font-size:17px;
-        margin-bottom:0px;
-        line-height:2;
-      }
-    }
-  }
   table{
     width: 100%;
     thead{
@@ -181,6 +138,44 @@ export default {
       td{
         padding:10px;
       }
+    }
+  }
+}
+.searchList{
+  display:flex;
+  justify-content:center;
+  input{
+    font-size:20px;
+    padding:5px 10px;
+    color: #333;
+    border: 1px solid #CCC;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin-right:5px;
+  }
+  a{
+    font-size:20px;
+    color: #FFFFFF;
+    box-sizing:border-box;
+    padding:5px 15px;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration:none;
+  }
+}
+.orderData{
+  h2{
+    margin-top:20px;
+    font-size:24px;
+  }
+  .con{
+    border: 1px solid #999;
+    box-sizing: border-box;
+    padding:8px 15px;
+    p{
+      font-size:17px;
+      margin-bottom:0px;
+      line-height:2;
     }
   }
 }

@@ -162,7 +162,7 @@ export default {
         vm.modalItem.sec = '0'
       } else {
         vm.isNew = false
-        vm.modalItem = Object.assign({ ...item })
+        vm.modalItem = Object.assign(item)
         let timestamp = new Date(vm.modalItem.due_date * 1000)
         vm.modalItem.year = timestamp.getFullYear()
         vm.modalItem.month = timestamp.getMonth() + 1

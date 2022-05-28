@@ -1,6 +1,6 @@
 <template>
 <div>
-  <loading :active.sync="isLoading"/>
+  <Loading :active.sync="isLoading"/>
   <Navbar/>
   <div class="container-fluid">
     <div class="row">

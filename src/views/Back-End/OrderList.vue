@@ -54,40 +54,40 @@
               <div class="col-10 mx-auto my-2">
                 <div class="form-group">
                   <label for="title">付款方式</label>
-                  <input type="text" class="form-control" id="title" placeholder="付款方式" v-model="order.create_at">
+                  <input type="text" class="form-control" id="create_at" placeholder="付款方式" v-model="order.create_at">
                 </div>
                 <div class="form-group">
-                  <label for="title">訂單編號</label>
-                  <input type="text" class="form-control" id="title" placeholder="請輸入標題" v-model="order.id">
+                  <label for="id">訂單編號</label>
+                  <input type="text" class="form-control" id="id" placeholder="請輸入編號" v-model="order.id">
                 </div>
                 <div class="form-group">
-                  <label for="title">是否付款</label>
+                  <label for="is_paid">是否付款</label>
                   {{ order.is_paid }}
                 </div>
                 <div class="form-group">
-                  <label for="title">付款日期</label>
-                  <input type="text" class="form-control" id="title" placeholder="請輸入標題" v-model="order.paid_date">
+                  <label for="paid_date">付款日期</label>
+                  <input type="text" class="form-control" id="paid_date" placeholder="請輸入日期" v-model="order.paid_date">
                 </div>
                 <div class="form-group">
-                  <label for="title">總額</label>
-                  <input type="text" class="form-control" id="title" placeholder="請輸入標題" v-model="order.total">
+                  <label for="total">總額</label>
+                  <input type="text" class="form-control" id="total" placeholder="請輸入總額" v-model="order.total">
                 </div>
                 <div class="form-group row mt-3">
                   <div class="col-6 mb-3">
-                    <label for="">買家姓名</label>
-                    <input type="text" class="form-control" id="title" placeholder="請輸入姓名" v-model="order.user.name">
+                    <label for="name">買家姓名</label>
+                    <input type="text" class="form-control" id="name" placeholder="請輸入姓名" v-model="order.user.name">
                   </div>
                   <div class="col-6 mb-3">
-                    <label for="">買家電話</label>
-                    <input type="text" class="form-control" id="title" placeholder="請輸入電話" v-model="order.user.tel">
+                    <label for="tel">買家電話</label>
+                    <input type="text" class="form-control" id="tel" placeholder="請輸入電話" v-model="order.user.tel">
                   </div>
                   <div class="col-6 mb-3">
-                    <label for="">買家信箱</label>
-                    <input type="text" class="form-control" id="title" placeholder="請輸入信箱" v-model="order.user.email">
+                    <label for="email">買家信箱</label>
+                    <input type="text" class="form-control" id="email" placeholder="請輸入信箱" v-model="order.user.email">
                   </div>
                   <div class="col-6 mb-3">
-                    <label for="">買家地址</label>
-                    <input type="text" class="form-control" id="title" placeholder="請輸入地址" v-model="order.user.address">
+                    <label for="address">買家地址</label>
+                    <input type="text" class="form-control" id="address" placeholder="請輸入地址" v-model="order.user.address">
                   </div>
                 </div>
                 <div class="form-group">
@@ -138,7 +138,7 @@ export default {
       })
     },
     editModal (editOrder) {
-      this.order = Object.assign({ ...editOrder })
+      this.order = Object.assign(editOrder)
       $('#oederModal').modal('show')
     },
     updateOrder (oid) {
@@ -146,7 +146,9 @@ export default {
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/order/${oid}`
       vm.$http.put(api, { data: vm.order }).then((response) => {
         if (response.data.success) {
-          vm.$bus.$emit('message:push', response.data.message, 'success')
+          let message = response.data.message
+          let success = 'success'
+          vm.$store.dispatch('backendModules/updateMessage', { message, success })
           vm.$store.dispatch('backendModules/updateload', false)
           $('#oederModal').modal('hide')
         }

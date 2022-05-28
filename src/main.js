@@ -11,6 +11,8 @@ import 'bootstrap'
 import App from './App.vue'
 import router from './router'
 import store from './store/store'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
 
 import correncyFilter from './filters/corrency'
 import dateDue from './filters/dateDue'
@@ -40,6 +42,11 @@ configure({
 })
 
 new Vue({
+  created () {
+    AOS.init({
+      duration: '500'
+    })
+  },
   store,
   render: h => h(App),
   router

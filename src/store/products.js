@@ -64,7 +64,7 @@ export default {
       state.product = status
     },
     PRODUCTCONTENT (state, status) {
-      let prodContent = status
+      const prodContent = status
       let newTextAry = []
       for (let i = 0; prodContent.length > i; i++) {
         if (prodContent[i] === '♥' && i !== 0) {
@@ -78,11 +78,10 @@ export default {
       state.sort = status
     },
     ADDSIMILAR (state, status) {
-      let filterAry = state.productList.filter(item => item.category === state.product.category)
+      const filterAry = state.productList.filter(item => item.category === state.product.category)
       for (let i = 0; i < 4; i++) {
-        let rand = Math.floor(Math.random() * filterAry.length)
-        // 判斷是否有重複推薦
-        let ans = state.similar.some(item => item.id === filterAry[rand].id)
+        const rand = Math.floor(Math.random() * filterAry.length)
+        const ans = state.similar.some(item => item.id === filterAry[rand].id)
         if (!ans && filterAry[rand].title !== state.product.title) {
           state.similar.push(filterAry[rand])
         } else {

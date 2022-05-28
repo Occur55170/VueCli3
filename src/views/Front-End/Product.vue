@@ -1,16 +1,16 @@
 <template>
   <div>
     <div class="productContent">
-      <nav aria-label="breadcrumb" role="navigation">
-        <ol class="breadcrumb bg-transparent pl-0">
-          <li class="breadcrumb-item">
-            <RouterLink to="/ProductList/all">產品列表</RouterLink>
+      <nav aria-label="breadcrumb">
+        <ul>
+          <li>
+            <RouterLink to="/ProductList/all" class="co-or">產品列表</RouterLink>
           </li>
-          <li class="breadcrumb-item">
-            <RouterLink :to="`/ProductList/${product.category}`">{{ product.category }}</RouterLink>
+          <li>
+            <RouterLink :to="`/ProductList/${product.category}`" class="co-or">{{ product.category }}</RouterLink>
           </li>
-          <li class="breadcrumb-item active" aria-current="page">{{ product.title }}</li>
-        </ol>
+          <li class="active co-or" aria-current="page">{{ product.title }}</li>
+        </ul>
       </nav>
       <div class="d-flex flex-wrap align-items-start">
         <img :src="product.imageUrl" class="proImg" :alt="product.title">
@@ -46,7 +46,7 @@
       </div>
       <div class="similarList my-5">
         <h3 class="mb-3">相關商品</h3>
-        <carousel class="m-list list-unstyled d-flex justify-content-between" :paginationEnabled="false" :perPage="similarCount" :navigationEnabled="true" navigationNextLabel="<i class='fas fa-angle-right' style='font-size:60px'></i>" navigationPrevLabel="<i class='fas fa-angle-left' style='font-size:60px'></i>" >
+        <Carousel class="m-list list-unstyled d-flex justify-content-between" :paginationEnabled="false" :perPage="similarCount" :navigationEnabled="true" navigationNextLabel="<i class='fas fa-angle-right' style='font-size:60px'></i>" navigationPrevLabel="<i class='fas fa-angle-left' style='font-size:60px'></i>" >
           <slide v-for="(item, key) in similarList" :key="key" class="similarContent">
             <div class="head text-center">
               <img :src="item.imageUrl" alt="" class="w-100">
@@ -60,7 +60,7 @@
               </button>
             </div>
           </slide>
-        </carousel>
+        </Carousel>
       </div>
     </div>
   </div>
@@ -110,7 +110,7 @@ export default {
     ...mapActions('productsModules', ['getProducts'])
   },
   watch: {
-    $route (to) {
+    $route () {
       this.$store.dispatch('productsModules/getProduct', this.$route.params.id)
     }
   },
@@ -138,113 +138,146 @@ export default {
 .productContent{
   width:900px;
   margin:0 auto;
-  padding:20px 0;
-  nav{
+  padding:40px 0 20px 0;
+}
+nav{
+  margin-bottom:20px;
+  ul{
+    display:flex;
+    list-style-type:none;
+  }
+  li{
+    &::after{
+      content:'/';
+      color:#f28200;
+      margin:0 10px;
+    }
+    &:last-Child::after{
+      display:none;
+    }
+  }
+  a{
+    position:relative;
+    text-decoration: none;
+    color:#f28200;
+    &::after{
+      content:'';
+      background:#f28200;
+      height:1px;
+      width:0;
+      position:absolute;
+      top:100%;
+      left:45%;
+      transition:all .8s;
+    }
+    &:hover::after{
+      width:100%;
+      left:0;
+    }
+  }
+}
+.proImg{
+  width:45%;
+}
+.proCon{
+  margin-left:5%;
+  width:50%;
+  h1{
+    margin-bottom:10px;
+    font-weight:bold;
+  }
+  h4{
+    margin-bottom:10px;
+  }
+  i{
+    margin-bottom:0 !important;
+  }
+  .card-text{
+    font-size:18px;
+    line-height:1.6;
+  }
+  .priceCon{
+    display:flex;
+    justify-content:flex-start;
+    align-items:center;
     margin-bottom:20px;
-  }
-  .proImg{
-    width:45%;
-  }
-  .proCon{
-    margin-left:5%;
-    width:50%;
-    h1{
-      margin-bottom:10px;
-      font-weight:bold;
-    }
-    h4{
-      margin-bottom:10px;
-    }
-    i{
+    .SellPrice{
+      opacity:0.8;
+      margin-top:0 !important;
       margin-bottom:0 !important;
-    }
-    .card-text{
+      text-decoration:line-through;
       font-size:18px;
-      line-height:1.6;
     }
-    .priceCon{
-      display:flex;
-      justify-content:flex-start;
-      align-items:center;
-      margin-bottom:20px;
-      .SellPrice{
-        opacity:0.8;
-        margin-top:0 !important;
-        margin-bottom:0 !important;
-        text-decoration:line-through;
-        font-size:18px;
-      }
-      .webPrice{
-        margin:0 20px !important;
-        font-size:30px;
-        span{
-          font-weight:bold;
-          color:#dc3545;
-          font-size:40px;
-        }
-      }
-    }
-    .qtyCon{
-      display:flex;
-      align-items:stretch;
-      margin-bottom:60px;
-      & button{
-        margin:0 5px;
+    .webPrice{
+      margin:0 20px !important;
+      font-size:30px;
+      span{
         font-weight:bold;
-        font-size:20px;
+        color:#dc3545;
+        font-size:40px;
       }
     }
   }
-  .instruction{
-    .productDesc{
-      margin:10px 0;
-      line-height:2;
+  .qtyCon{
+    display:flex;
+    align-items:stretch;
+    margin-bottom:60px;
+    & button{
+      margin:0 5px;
+      font-weight:bold;
+      font-size:20px;
+    }
+  }
+}
+.instruction{
+  .productDesc{
+    margin:10px 0;
+    line-height:2;
+    font-size:18px;
+  }
+}
+.similarList{
+  h3{
+    border-left:5px solid #666;
+    padding-left:10px;
+  }
+  .head{
+    position:relative;
+    p{
       font-size:18px;
     }
+    a{
+      position:absolute;
+      top:0;
+      left:0;
+      height:100%;
+      width:100%;
+    }
   }
-  .similarList{
-    h3{
-      border-left:5px solid #666;
-      padding-left:10px;
-    }
-    .head{
-      position:relative;
-      p{
-        font-size:18px;
-      }
-      a{
-        position:absolute;
-        top:0;
-        left:0;
-        height:100%;
-        width:100%;
-      }
-    }
-    .price{
-      font-size:22px;
-      margin-bottom:5px;
-      font-weight:bold;
-      color: #dc3545;
-    }
-    .similarContent{
-      box-sizing:border-box;
-      padding:20px;
-    }
+  .price{
+    font-size:22px;
+    margin-bottom:5px;
+    font-weight:bold;
+    color: #dc3545;
+  }
+  .similarContent{
+    box-sizing:border-box;
+    padding:20px;
   }
 }
 @media(max-width:768px){
   .productContent{
     width:100%;
     padding:20px;
-    nav{
-      font-size:16px;
-      ol{
-        margin-bottom:0;
-      }
+  }
+  nav{
+    font-size:16px;
+    ol{
+      margin-bottom:0;
     }
-    .proImg{
-      width:45%;
-    }
+  }
+  .proImg{
+    width:45%;
   }
   .similarList{
     box-sizing:border-box;
@@ -266,53 +299,49 @@ export default {
   }
 }
 @media(max-width:600px){
-  .productContent{
-    nav{
-      font-size:16px;
-      margin-bottom:10px;
-      ol{
-        margin-bottom:0;
-      }
+  nav{
+    font-size:16px;
+    margin-bottom:10px;
+    ol{
+      margin-bottom:0;
     }
-    .proImg{
-      width:100%;
-      margin-bottom:20px;
+  }
+  .proImg{
+    width:100%;
+    margin-bottom:20px;
+  }
+  .proCon{
+    width:100%;
+    margin-top: 0;
+    margin-left: 0;
+    margin-bottom:50px;
+    h1{
+      font-size:28px;
+      font-weight:bold;
     }
-    .proCon{
-      width:100%;
-      margin-top: 0;
-      margin-left: 0;
-      margin-bottom:50px;
-      h1{
-        font-size:28px;
-        font-weight:bold;
-      }
-      .card-text{
-        font-size: 16px;
-      }
-      .priceCon{
-        justify-content: space-between;
-        margin-bottom:30px;
-        .webPrice{
+    .card-text{
+      font-size: 16px;
+    }
+    .priceCon{
+      justify-content: space-between;
+      margin-bottom:30px;
+      .webPrice{
+        font-size:40px;
+        span{
           font-size:40px;
-          span{
-            font-size:40px;
-          }
         }
       }
-      .qtyCon{
-        margin-bottom:20px;
-        justify-content:center;
-      }
     }
-    .instruction{
-      .productDesc{
-        margin:10px 0;
-        line-height:1.6;
-        font-size:16px;
-      }
+    .qtyCon{
+      margin-bottom:20px;
+      justify-content:center;
     }
-    .similarList{
+  }
+  .instruction{
+    .productDesc{
+      margin:10px 0;
+      line-height:1.6;
+      font-size:16px;
     }
   }
 }

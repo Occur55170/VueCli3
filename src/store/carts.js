@@ -14,13 +14,13 @@ export default {
   actions: {
     getCart (context, status) {
       context.dispatch('updateLoad', true, { root: true })
-      let carts = JSON.parse(localStorage.getItem('carts')) || []
+      const carts = JSON.parse(localStorage.getItem('carts')) || []
       context.commit('CARTS', carts)
       context.dispatch('updateLoad', false, { root: true })
     },
     addCart (context, { pid = false, prod = false, qty }) {
       context.dispatch('updateLoad', true, { root: true })
-      let carts = context.state.cart.carts
+      const carts = context.state.cart.carts
       if (pid) {
         let prod = context.rootState.productsModules.productList.find(item => item.id === pid)
         if (!carts.find(item => item.product.id === pid)) {
@@ -29,7 +29,7 @@ export default {
           context.dispatch('correctCart', { pid, qty })
         }
       } else if (prod) {
-        let pid = prod.id
+        const pid = prod.id
         if (!carts.find(item => item.product.id === prod.id)) {
           context.commit('ADDCART', { 'product': prod, 'qty': qty })
         } else {
@@ -41,26 +41,26 @@ export default {
     },
     removeCart (context, pid) {
       context.dispatch('updateLoad', true, { root: true })
-      let carts = context.state.cart.carts
-      let index = carts.indexOf(carts.find(item => item.product.id === pid))
+      const carts = context.state.cart.carts
+      const index = carts.indexOf(carts.find(item => item.product.id === pid))
       context.commit('REMOVECART', index)
     },
     correctCart (context, { pid, qty }) {
       context.dispatch('updateLoad', true, { root: true })
-      let carts = context.state.cart.carts
-      let index = carts.indexOf(carts.find(item => item.product.id === pid))
-      let msg = qty > 0 ? '已新增商品' : '已刪除商品'
+      const carts = context.state.cart.carts
+      const index = carts.indexOf(carts.find(item => item.product.id === pid))
+      const msg = qty > 0 ? '已新增商品' : '已刪除商品'
       context.commit('CORRECTCART', { index, qty, msg })
       this.dispatch('updateLoad', false, { root: true })
     },
-    cleartCart (context, status) {
+    clearCart (context, status) {
       // 清除之前的購物車
       context.dispatch('updateLoad', true, { root: true })
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
       axios.get(api).then(response => {
         if (response.data.success) {
           // 可調整
-          let carts = response.data.data.carts
+          const carts = response.data.data.carts
           if (carts.length !== 0) {
             let i = 0
             carts.forEach(item => {
@@ -84,11 +84,11 @@ export default {
     },
     updateCart (context, status) {
       context.dispatch('updateLoad', true, { root: true })
-      let carts = context.state.cart.carts
+      const carts = context.state.cart.carts
       let i = 0
       carts.forEach(item => {
         const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/cart`
-        let data = { 'product_id': item.product.id, 'qty': item.qty }
+        const data = { 'product_id': item.product.id, 'qty': item.qty }
         axios.post(api, { 'data': data }).then(response => {
           if (response.data.success) {
             i = i + 1
