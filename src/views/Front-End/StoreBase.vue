@@ -50,6 +50,9 @@
 
 <script>
 export default {
+  metaInfo: {
+    title: '門市據點'
+  },
   created () {
     this.$emit('closeNavList')
     this.$emit('cartSw', true)

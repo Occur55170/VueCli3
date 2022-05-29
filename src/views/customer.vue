@@ -12,10 +12,10 @@
             <RouterLink to="/" class="active"><strong>首頁</strong></RouterLink>
           </li>
           <li>
-            <RouterLink to="/ProductList/all">產品列表</RouterLink>
+            <RouterLink to="/ProductList/all">線上訂購</RouterLink>
           </li>
           <li>
-            <RouterLink to="/Search">查詢訂單</RouterLink>
+            <RouterLink to="/Search">訂單查詢</RouterLink>
           </li>
           <li>
             <RouterLink to="/StoreBase">門市據點</RouterLink>

@@ -57,6 +57,9 @@
 
 <script>
 export default {
+  metaInfo: {
+    title: '訂單查詢'
+  },
   data () {
     return {
       msg: '查詢訂單狀態',

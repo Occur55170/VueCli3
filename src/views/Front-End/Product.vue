@@ -71,6 +71,11 @@ import { mapActions, mapGetters } from 'vuex'
 import { Carousel, Slide } from 'vue-carousel'
 
 export default {
+  metaInfo () {
+    return {
+      title: this.product.title
+    }
+  },
   data () {
     return {
       qty: 1,

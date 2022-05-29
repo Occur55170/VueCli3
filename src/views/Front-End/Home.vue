@@ -162,6 +162,9 @@
 import $ from 'jquery'
 
 export default {
+  metaInfo: {
+    title: '幸福烘焙專賣店'
+  },
   data () {
     return {
       subEmail: ''

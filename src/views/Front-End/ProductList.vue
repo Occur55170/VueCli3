@@ -56,6 +56,9 @@
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
+  metaInfo: {
+    title: '線上訂購'
+  },
   data () {
     return {
       sortClass: '',

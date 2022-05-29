@@ -242,6 +242,9 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 export default {
+  metaInfo: {
+    title: '結帳'
+  },
   data () {
     return {
       payMode: '',

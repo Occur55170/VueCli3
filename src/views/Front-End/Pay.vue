@@ -77,6 +77,9 @@
 
 <script>
 export default {
+  metaInfo: {
+    title: '結帳完成'
+  },
   data () {
     return {
       orderId: '',

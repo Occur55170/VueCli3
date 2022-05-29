@@ -9,12 +9,12 @@ import TW from 'vee-validate/dist/locale/zh_TW.json'
 import * as rules from 'vee-validate/dist/rules'
 import { oneOf } from 'vee-validate/dist/rules'
 import 'bootstrap'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
+import VueMeta from 'vue-meta'
 import App from './App.vue'
 import router from './router'
 import store from './store/store'
-// 滾動式動畫效果
-import AOS from 'aos'
-import 'aos/dist/aos.css'
 
 import correncyFilter from './filters/corrency'
 import dateDue from './filters/dateDue'
@@ -23,6 +23,7 @@ Vue.filter('dateDue', dateDue)
 
 Vue.use(VueAxios, axios)
 Vue.use(Vuex)
+Vue.use(VueMeta)
 Vue.component('Loading', Loading)
 
 Vue.config.productionTip = false
