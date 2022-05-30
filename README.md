@@ -65,7 +65,6 @@
 
 * [@fontawesome](https://fontawesome.com/how-to-use/on-the-web/setup/using-package-managers) | icon 圖示
 * [axios](https://www.npmjs.com/package/axios)、[vue-axios](https://www.npmjs.com/package/vue-axios) | 方便串接 API
-* [vue-awesome-swiper](https://github.surmon.me/vue-awesome-swiper/) | Swiper 輪播效果
 * [AOS](https://michalsnik.github.io/aos/) | 滾動式動畫效果
 * [bootstrap](https://www.npmjs.com/package/bootstrap) | CSS library
 * [jquery](https://www.npmjs.com/package/jquery) | 搭配 BS4
